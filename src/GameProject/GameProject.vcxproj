@@ -147,13 +147,29 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EditorScreen.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LoadingScreen.cpp" />
+    <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="EditorScreen.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="ScreenManager.h" />
+    <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="TextureManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{5adab721-cb6c-4ef5-89eb-20ec51a13cfc}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

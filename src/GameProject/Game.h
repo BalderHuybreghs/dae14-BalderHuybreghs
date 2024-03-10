@@ -1,18 +1,20 @@
 #pragma once
 #include "BaseGame.h"
+#include "ScreenManager.h"
+
 class Game : public BaseGame
 {
 public:
-	explicit Game( const Window& window );
+	explicit Game(const Window& window, GameScreen* initialScreenPtr);
 	Game(const Game& other) = delete;
 	Game& operator=(const Game& other) = delete;
-	Game( Game&& other) = delete;
+	Game(Game&& other) = delete;
 	Game& operator=(Game&& other) = delete;
 	// http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rh-override
 	~Game();
 
 	void Update( float elapsedSec ) override;
-	void Draw( ) const override;
+	void Draw() const override;
 
 	// Event handling
 	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
@@ -22,9 +24,11 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
 private:
+  // Variables
+  ScreenManager* m_ScreenManagerPtr;
 
 	// FUNCTIONS
-	void Initialize();
+	void Initialize(GameScreen* initialScreenPtr);
 	void Cleanup( );
 	void ClearBackground( ) const;
 };
