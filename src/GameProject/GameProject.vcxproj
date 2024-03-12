@@ -150,20 +150,24 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="EditorScreen.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
+    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Button.h" />
     <ClInclude Include="EditorScreen.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameDefines.h" />
     <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>

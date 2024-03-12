@@ -1,50 +1,67 @@
 #include "pch.h"
 #include "TextureManager.h"
 #include <iostream>
+#include "GameDefines.h"
 
-//using std::cout;
+TextureManager* TextureManager::_instance = nullptr;
 
-TextureManager::TextureManager()
+const Texture* TextureManager::CreateTextureInstance(const Resource& resource)
 {
-}
+  // Create the texture
+  const std::string path{ resource.ToPath() };
+  Texture* texturePtr{ new Texture(path) };
 
-TextureManager::~TextureManager()
-{
-  // No need to explicitly delete shared_ptr resources, they will be deleted automatically
-}
-
-void TextureManager::CleanTexture(std::string resource)
-{
-  auto it = m_TexturePtrs.find(resource);
-  if (it == m_TexturePtrs.end()) {
-    std::cout << "Clean texture not found: " << resource << std::endl;
-    return;
+  // Check if the texture was able to be created, if not, the texture will be a default one
+  if (texturePtr->IsCreationOk()) {
+    return texturePtr;
   }
 
-  // Check if only one reference to the texture (excluding the one in the map)
-  if (it->second.use_count() == 1) {
-    m_TexturePtrs.erase(it); // Remove the texture from the map
+  std::cerr << "Texture not found: " << path << std::endl;
+
+  delete texturePtr;
+  texturePtr = new Texture(MISSING_TEXTURE_TEXTURE);
+
+  if (!texturePtr->IsCreationOk()) {
+    std::cerr << "Missing texture is missing, aborting program" << std::endl;
+    exit(-1);
   }
+
+  return texturePtr;
 }
 
-std::shared_ptr<Texture> TextureManager::GetTexture(std::string resource)
+const Texture* TextureManager::CreateFromResource(const Resource& resource)
 {
-  auto it = m_TexturePtrs.find(resource);
-  if (it != m_TexturePtrs.end()) {
-    return it->second; // Return existing shared_ptr
+  auto success{ m_TexturePtrs.insert(
+    {
+      resource.GetValue(),
+      CreateTextureInstance(resource)
+    }
+  ) };
+
+  if (success.second) {
+    return success.first->second;
+  }
+
+  std::cerr << "Failed to load texture: " << resource.GetValue() << std::endl;
+}
+
+const Texture* TextureManager::GetTexture(const Resource& resource)
+{
+  auto value{ m_TexturePtrs.find(resource.GetValue()) };
+  if (value != m_TexturePtrs.end()) {
+    return value->second; // Return existing shared_ptr
   }
 
   // Texture not found, create and insert new shared_ptr
-  std::cout << "Loading texture from disk: " << resource << std::endl;
-  std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(resource);
-  m_TexturePtrs[resource] = newTexture;
-  return newTexture;
+  std::cout << "Loading texture from disk: " << resource.GetValue() << std::endl;
+  return CreateFromResource(resource);
 }
 
-TextureManager& TextureManager::GetInstance()
+TextureManager* TextureManager::Instance()
 {
-  // Thanks to https://stackoverflow.com/questions/1008019/how-do-you-implement-the-singleton-design-pattern for implementation
+  if (_instance == nullptr) {
+    _instance = new TextureManager();
+  }
 
-  static TextureManager instance;
-  return instance;
+  return _instance;
 }
