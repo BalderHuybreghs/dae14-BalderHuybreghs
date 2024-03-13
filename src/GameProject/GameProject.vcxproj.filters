@@ -115,6 +115,9 @@
     <ClCompile Include="Tilemap.cpp">
       <Filter>Source Files\Core\Object\World</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectFactory.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="Tilemap.h">
       <Filter>Source Files\Core\Object\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactory.h">
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
