@@ -8,17 +8,17 @@
 
 using namespace utils;
 
-Sprite::Sprite(const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
+Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
   : m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({nullptr, 0})
 {
   SetResource(AddResource(resource) - 1);
 }
 
-void Sprite::Draw(const Point2f& position, bool debug) const
+void Sprite::Draw(bool debug) const
 {
   const Rectf dstRect{
-    position.x - (m_Size.x / 2.f),
-    position.y + (m_Size.y / 2.f),
+    m_Position.x - (m_Size.x / 2.f),
+    m_Position.y + (m_Size.y / 2.f),
     m_Size.x,
     m_Size.y
   };
@@ -70,9 +70,19 @@ int Sprite::AddResource(const std::string& resource)
   return m_States.size();
 }
 
+Point2f Sprite::GetPosition() const
+{
+  return m_Position;
+}
+
 Point2f Sprite::GetSize() const
 {
   return m_Size;
+}
+
+void Sprite::SetPosition(const Point2f& position)
+{
+  m_Position = position;
 }
 
 void Sprite::SetSize(const Point2f& size)

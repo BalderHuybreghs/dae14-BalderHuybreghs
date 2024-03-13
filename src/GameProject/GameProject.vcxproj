@@ -148,7 +148,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CircleShape.cpp" />
-    <ClCompile Include="decal.cpp" />
+    <ClCompile Include="Decal.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="EditorScreen.cpp" />
@@ -173,7 +173,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleShape.h" />
-    <ClInclude Include="decal.h" />
+    <ClInclude Include="Decal.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="EditorScreen.h" />

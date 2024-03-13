@@ -2,8 +2,9 @@
 #include "Shape.h"
 #include "Sprite.h"
 #include "Vector2f.h"
+#include "GameObject.h"
 
-class Player
+class Player : GameObject
 {
 public:
   enum class State
@@ -31,8 +32,8 @@ public:
   Player();
   ~Player();
 
-  void Draw(bool debug = false) const;
-  void Update(float elapsedSec);
+  virtual void Draw(bool debug = false) const override;
+  virtual void Update(float elapsedSec) override;
 
   void RefillDashes(int amount);
 
