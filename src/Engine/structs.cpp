@@ -24,6 +24,22 @@ Point2f::Point2f( float x, float y )
 {
 }
 
+float Point2f::Distance(const Point2f& other) const
+{
+  return sqrtf(powf(x - other.x, 2) + powf(y - other.y, 2));
+}
+
+// Length of the point
+float Point2f::Length() const
+{
+  return sqrtf(x * x + y * y);
+}
+
+float Point2f::SquareLength() const
+{
+  return x * x + y * y;
+}
+
 //-----------------------------------------------------------------
 // Rectf Constructors
 //-----------------------------------------------------------------

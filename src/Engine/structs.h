@@ -20,16 +20,18 @@ struct Point2f
 	float x;
 	float y;
 
-  // Length of the point
-  float Length() const
+  Point2f operator+(const Point2f& other) const
   {
-    return sqrt(x * x + y * y);
+    return Point2f(x + other.x, y + other.y);
   }
 
-  float SquareLength() const
-  {
-    return x * x + y * y;
-  }
+  // Distance
+  float Distance(const Point2f& other) const;
+
+  // Length of the point
+  float Length() const;
+
+  float SquareLength() const;
 };
 
 struct Rectf

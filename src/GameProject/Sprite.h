@@ -10,7 +10,7 @@ public:
   Sprite(const Point2f& size, const std::string& resource);
 
   void Draw(const Point2f& position, bool debug = false) const;
-  void Update(float elapsedTime);
+  void Update(float elapsedSec);
 
   // Resources are states in this case, since resources will be added 
   // within code, states should remain relatively unchanged

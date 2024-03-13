@@ -45,12 +45,13 @@ void Sprite::Draw(const Point2f& position, bool debug) const
   }
 }
 
-void Sprite::Update(float elapsedTime)
+void Sprite::Update(float elapsedSec)
 {
-  m_Time += elapsedTime;
+  m_Time += elapsedSec;
 
   if (m_Time >= FRAMES_PER_SECOND) {
     m_Time = 0;
+    m_Frame = (m_Frame + 1) % m_State.frames;
   }
 }
 

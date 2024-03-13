@@ -24,3 +24,11 @@ float MathUtils::Wave(float amplitude, float period, float phase, float shift, f
 {
   return amplitude * sinf((2 * float(M_PI)) / period * (t + phase)) + shift;
 }
+
+Point2f MathUtils::Lerp(const Point2f& a, const Point2f& b, float t)
+{
+  return Point2f{
+    Lerp(a.x, b.x, t),
+    Lerp(a.y, b.y, t),
+  };
+}
