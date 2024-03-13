@@ -8,23 +8,41 @@
     <Filter Include="Source Files\Screens">
       <UniqueIdentifier>{7d4a91bf-64b7-4efa-beee-585ca2a84b43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Manager">
-      <UniqueIdentifier>{ae7c9620-de64-4107-baa0-66a41c9a7fe7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="pch">
       <UniqueIdentifier>{a7482995-4b7a-40fc-aac2-13fb89b4ddc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Util">
-      <UniqueIdentifier>{fe33d329-3de8-4b7a-b177-b8d31cc6ef47}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{c5d35db0-8435-45b8-88eb-3213502cafde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{a9146af0-4597-4024-94a8-bd808bcf8b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Particle">
+      <UniqueIdentifier>{0c77bc9e-333e-4804-b7e2-9e08553ea304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Manager">
+      <UniqueIdentifier>{ae7c9620-de64-4107-baa0-66a41c9a7fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Player">
+      <UniqueIdentifier>{3b4f960d-5642-474c-9747-50dbff1a4c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Kinematics">
+      <UniqueIdentifier>{e21de479-8885-4c02-913e-08fdfbe30441}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Util">
+      <UniqueIdentifier>{fe33d329-3de8-4b7a-b177-b8d31cc6ef47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Shape">
+      <UniqueIdentifier>{1d164694-b993-4d5c-88ac-26112e9b3aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{ff65c284-6cbe-4372-9d53-901b5f221dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Level">
+      <UniqueIdentifier>{c6fee6fb-5faa-490f-b213-bc3e95f6bf68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -32,10 +50,10 @@
       <Filter>Source Files\Screens</Filter>
     </ClCompile>
     <ClCompile Include="ScreenManager.cpp">
-      <Filter>Source Files\Manager</Filter>
+      <Filter>Source Files\Core\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TextureManager.cpp">
-      <Filter>Source Files\Manager</Filter>
+      <Filter>Source Files\Core\Manager</Filter>
     </ClCompile>
     <ClCompile Include="EditorScreen.cpp">
       <Filter>Source Files\Screens</Filter>
@@ -49,31 +67,58 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionShape.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceUtils.cpp">
-      <Filter>Source Files\Util</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
     <ClCompile Include="MathUtils.cpp">
-      <Filter>Source Files\Util</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
-    <ClCompile Include="CircleCollider.cpp">
+    <ClCompile Include="CircleShape.cpp">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleShape.cpp">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files\Core\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="RectangleCollider.cpp">
-      <Filter>Source Files\Core</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Entity\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Hair.cpp">
+      <Filter>Source Files\Entity\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Joint.cpp">
+      <Filter>Source Files\Core\Kinematics</Filter>
+    </ClCompile>
+    <ClCompile Include="Limb.cpp">
+      <Filter>Source Files\Core\Kinematics</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Core\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Tilemap.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="decal.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
-      <Filter>Source Files\Manager</Filter>
+      <Filter>Source Files\Core\Manager</Filter>
     </ClInclude>
     <ClInclude Include="ScreenManager.h">
-      <Filter>Source Files\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Core\Manager</Filter>
     </ClInclude>
     <ClInclude Include="EditorScreen.h">
       <Filter>Source Files\Screens</Filter>
@@ -87,26 +132,56 @@
     <ClInclude Include="pch.h">
       <Filter>pch</Filter>
     </ClInclude>
-    <ClInclude Include="GameDefines.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionShape.h">
-      <Filter>Source Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceUtils.h">
-      <Filter>Source Files\Util</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClInclude>
     <ClInclude Include="MathUtils.h">
-      <Filter>Source Files\Util</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClInclude>
-    <ClInclude Include="CircleCollider.h">
+    <ClInclude Include="CircleShape.h">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleShape.h">
+      <Filter>Source Files\Core\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Source Files\Core\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleCollider.h">
-      <Filter>Source Files\Core</Filter>
+    <ClInclude Include="GameDefines.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files\Entity\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Hair.h">
+      <Filter>Source Files\Entity\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>Source Files\Core\Kinematics</Filter>
+    </ClInclude>
+    <ClInclude Include="Limb.h">
+      <Filter>Source Files\Core\Kinematics</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Source Files\Core\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Tilemap.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="decal.h">
+      <Filter>Source Files\Level</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

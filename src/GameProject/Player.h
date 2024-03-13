@@ -1,5 +1,5 @@
 #pragma once
-#include "CollisionShape.h"
+#include "Shape.h"
 #include "Sprite.h"
 #include "Vector2f.h"
 
@@ -52,7 +52,7 @@ public:
   bool IsHolding() const;
   bool CanMove(Direction direction) const;
 
-  const CollisionShape* GetCollisionShape() const;
+  const Shape* GetCollisionShape() const;
 
   Direction GetFacingDirection() const;
   Point2f GetPosition() const;
@@ -69,8 +69,8 @@ private:
   Sprite* m_Sprite;
 
   // Colliders
-  CollisionShape* m_Collider;
-  CollisionShape* m_ColliderFeet;
-  CollisionShape* m_ColliderSlideLeft;
-  CollisionShape* m_ColliderSlideRight;
+  Shape* m_Collider;
+  Shape* m_ColliderFeet;
+  Shape* m_ColliderSlideLeft;
+  Shape* m_ColliderSlideRight;
 };

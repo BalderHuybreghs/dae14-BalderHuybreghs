@@ -8,13 +8,8 @@
 
 using namespace utils;
 
-Sprite::Sprite(const Point2f& size)
-  : m_Frame(0), m_Size(size), m_Time(0), m_State({ nullptr, 0 })
-{
-}
-
-Sprite::Sprite(const Point2f& size, const std::string& resource)
-  : Sprite(size)
+Sprite::Sprite(const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
+  : m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({nullptr, 0})
 {
   SetResource(AddResource(resource) - 1);
 }
@@ -34,10 +29,10 @@ void Sprite::Draw(const Point2f& position, bool debug) const
 
   // Every animation is only 1 row
   const Rectf srcRect{
-    float(FRAME_SIZE * m_Frame),
-    FRAME_SIZE,
-    FRAME_SIZE,
-    FRAME_SIZE
+    float(m_FrameSize.x * m_Frame),
+    m_FrameSize.y,
+    m_FrameSize.x,
+    m_FrameSize.y
   };
 
   if (m_State.texture != nullptr) {
@@ -49,7 +44,7 @@ void Sprite::Update(float elapsedSec)
 {
   m_Time += elapsedSec;
 
-  if (m_Time >= FRAMES_PER_SECOND) {
+  if (m_Time >= m_MsPerFrame) {
     m_Time = 0;
     m_Frame = (m_Frame + 1) % m_State.frames;
   }
@@ -68,7 +63,7 @@ int Sprite::AddResource(const std::string& resource)
 
   const Sprite::StateInfo state{
     texture,
-    int(texture->GetWidth() / FRAME_SIZE)
+    int(texture->GetWidth() / m_FrameSize.x)
   };
 
   m_States.push_back(state);

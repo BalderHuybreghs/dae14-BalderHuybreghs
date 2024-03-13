@@ -6,8 +6,7 @@
 class Sprite
 {
 public:
-  Sprite(const Point2f& size);
-  Sprite(const Point2f& size, const std::string& resource);
+  Sprite(const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource);
 
   void Draw(const Point2f& position, bool debug = false) const;
   void Update(float elapsedSec);
@@ -16,7 +15,7 @@ public:
   // within code, states should remain relatively unchanged
   void SetResource(int state);
 
-  // Adds a resource to this sprite and returns its state
+  // Adds a resource to this sprite and returns its id
   int AddResource(const std::string& resource);
 
   Point2f GetSize() const;
@@ -29,6 +28,8 @@ public:
   };
 protected:
   Point2f m_Size;
+  Point2f m_FrameSize;
+  float m_MsPerFrame;
 
   // Internal management
   std::vector<StateInfo> m_States;

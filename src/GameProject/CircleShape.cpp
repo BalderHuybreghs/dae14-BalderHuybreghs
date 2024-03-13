@@ -1,24 +1,24 @@
 #include "pch.h"
-#include "Circle.h"
 #include "utils.h"
-#include "RectangleCollider.h"
+#include "CircleShape.h"
+#include "RectangleShape.h"
 
-Circle::Circle(float radius, const Point2f& position, const Color4f& color = Color4f{ 0.f, 0.f, 0.f, 1.f }, bool filled = false)
+CircleShape::CircleShape(float radius, const Point2f& position, const Color4f& color, bool filled)
   : Shape(position, color, filled), m_Radius(radius)
 {
 }
 
-bool Circle::CollidesWith(const Shape& shape)
+bool CircleShape::CollidesWith(const Shape& shape)
 {
   // Check if the other shape is a circle
-  const Circle* otherCircle = dynamic_cast<const Circle*>(&shape);
+  const CircleShape* otherCircle = dynamic_cast<const CircleShape*>(&shape);
   if (otherCircle)
   {
     return utils::IsOverlapping(GetShape(), otherCircle->GetShape());
   }
 
   // Check if the other shape is a rectangle
-  const Rectangle* otherRectangle = dynamic_cast<const Rectangle*>(&shape);
+  const RectangleShape* otherRectangle = dynamic_cast<const RectangleShape*>(&shape);
   if (otherRectangle)
   {
     return utils::IsOverlapping(otherRectangle->GetShape(), GetShape());
@@ -27,12 +27,12 @@ bool Circle::CollidesWith(const Shape& shape)
   return false;
 }
 
-bool Circle::IsPointInside(const Point2f& point)
+bool CircleShape::IsPointInside(const Point2f& point)
 {
   return utils::IsPointInCircle(point, GetShape());
 }
 
-void Circle::Draw() const
+void CircleShape::Draw() const
 {
   utils::SetColor(m_Color);
 
@@ -43,7 +43,7 @@ void Circle::Draw() const
   }
 }
 
-Circlef Circle::GetShape() const
+Circlef CircleShape::GetShape() const
 {
   return Circlef(m_Position.x, m_Position.y, m_Radius);
 }

@@ -147,13 +147,21 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CircleCollider.cpp" />
-    <ClCompile Include="CollisionShape.cpp" />
+    <ClCompile Include="CircleShape.cpp" />
+    <ClCompile Include="decal.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="EditorScreen.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Hair.cpp" />
+    <ClCompile Include="Joint.cpp" />
+    <ClCompile Include="Limb.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="MathUtils.cpp" />
-    <ClCompile Include="RectangleCollider.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RectangleShape.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuScreen.cpp" />
@@ -161,22 +169,32 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="ResourceUtils.cpp" />
+    <ClCompile Include="Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CircleCollider.h" />
-    <ClInclude Include="CollisionShape.h" />
+    <ClInclude Include="CircleShape.h" />
+    <ClInclude Include="decal.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="EditorScreen.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameDefines.h" />
+    <ClInclude Include="Hair.h" />
+    <ClInclude Include="Joint.h" />
+    <ClInclude Include="Limb.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="MathUtils.h" />
-    <ClInclude Include="RectangleCollider.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RectangleShape.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="ResourceUtils.h" />
+    <ClInclude Include="Tilemap.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
