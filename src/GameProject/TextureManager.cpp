@@ -2,13 +2,14 @@
 #include "TextureManager.h"
 #include <iostream>
 #include "GameDefines.h"
+#include "ResourceUtils.h"
 
 TextureManager* TextureManager::_instance = nullptr;
 
-const Texture* TextureManager::CreateTextureInstance(const Resource& resource)
+const Texture* TextureManager::CreateTextureInstance(const std::string& resource)
 {
   // Create the texture
-  const std::string path{ resource.ToPath() };
+  const std::string path{ ResourceUtils::ResourceToImagePath(resource) };
   Texture* texturePtr{ new Texture(path) };
 
   // Check if the texture was able to be created, if not, the texture will be a default one
@@ -29,11 +30,11 @@ const Texture* TextureManager::CreateTextureInstance(const Resource& resource)
   return texturePtr;
 }
 
-const Texture* TextureManager::CreateFromResource(const Resource& resource)
+const Texture* TextureManager::CreateFromResource(const std::string& resource)
 {
   auto success{ m_TexturePtrs.insert(
     {
-      resource.GetValue(),
+      resource,
       CreateTextureInstance(resource)
     }
   ) };
@@ -42,18 +43,30 @@ const Texture* TextureManager::CreateFromResource(const Resource& resource)
     return success.first->second;
   }
 
-  std::cerr << "Failed to load texture: " << resource.GetValue() << std::endl;
+  std::cerr << "Failed to load texture: " << resource << std::endl;
 }
 
-const Texture* TextureManager::GetTexture(const Resource& resource)
+TextureManager::~TextureManager()
 {
-  auto value{ m_TexturePtrs.find(resource.GetValue()) };
+  // Delete all the textures
+  for (auto& pair : m_TexturePtrs) {
+    delete pair.second;
+    pair.second = nullptr;
+  }
+
+  // Clear out the hashmap
+  m_TexturePtrs.clear();
+}
+
+const Texture* TextureManager::GetTexture(const std::string& resource)
+{
+  auto value{ m_TexturePtrs.find(resource) };
   if (value != m_TexturePtrs.end()) {
     return value->second; // Return existing shared_ptr
   }
 
   // Texture not found, create and insert new shared_ptr
-  std::cout << "Loading texture from disk: " << resource.GetValue() << std::endl;
+  std::cout << "Loading texture from disk: " << resource << std::endl;
   return CreateFromResource(resource);
 }
 

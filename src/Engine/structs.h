@@ -19,9 +19,18 @@ struct Point2f
 
 	float x;
 	float y;
+
+  // Length of the point
+  float Length() const
+  {
+    return sqrt(x * x + y * y);
+  }
+
+  float SquareLength() const
+  {
+    return x * x + y * y;
+  }
 };
-
-
 
 struct Rectf
 {

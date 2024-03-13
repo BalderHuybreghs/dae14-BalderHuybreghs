@@ -11,3 +11,7 @@ static const std::string TEXTURE_EXTENSION{ ".png" };
 static const std::string SOUND_EXTENSION{ ".mp3" };
 
 static const std::string MISSING_TEXTURE_TEXTURE{ "missing_texture" };
+
+// Animation information
+static const int FRAME_SIZE{ 16 };
+static const float FRAMES_PER_SECOND{ 1/24 };
