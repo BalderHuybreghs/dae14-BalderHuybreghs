@@ -49,9 +49,8 @@ const Texture* TextureManager::CreateFromResource(const std::string& resource)
 TextureManager::~TextureManager()
 {
   // Delete all the textures
-  for (auto& pair : m_TexturePtrs) {
+  for (const std::pair<std::string, const Texture*>& pair : m_TexturePtrs) {
     delete pair.second;
-    pair.second = nullptr;
   }
 
   // Clear out the hashmap

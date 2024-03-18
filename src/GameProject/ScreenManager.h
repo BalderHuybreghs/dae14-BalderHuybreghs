@@ -26,7 +26,6 @@ private:
 class GameScreen
 {
 public:
-  GameScreen();
   void SetScreenManager(ScreenManager* screenManagerPtr);
 
   // The screenManagerPtr should not be deleted because it
@@ -45,5 +44,7 @@ public:
   virtual void OnMouseUpEvent(const SDL_MouseButtonEvent& e)     {};
 
 protected:
+  GameScreen();
+
   ScreenManager* m_ScreenManagerPtr;
 };

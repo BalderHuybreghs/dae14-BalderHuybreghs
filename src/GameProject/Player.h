@@ -2,9 +2,9 @@
 #include "Shape.h"
 #include "Sprite.h"
 #include "Vector2f.h"
-#include "GameObject.h"
+#include "ParticleEmitter.h"
 
-class Player : GameObject
+class Player
 {
 public:
   enum class State
@@ -13,23 +13,13 @@ public:
     Running,
     Climbing,
     Holding,
-    Dashing
+    Dashing,
+    Sliding,
+    Crouching,
+    Falling
   };
 
-  // The player can move and dash in 4 cardinal directions
-  enum class Direction
-  {
-    Left,
-    Right,
-    Up,
-    Down,
-    LeftUp,
-    LeftDown,
-    RightUp,
-    RightDown
-  };
-
-  Player();
+  Player(const Point2f& position);
   ~Player();
 
   virtual void Draw(bool debug = false) const override;
@@ -39,23 +29,20 @@ public:
 
   // Player actions
   void Jump();
-  void Dash();
+  void Dash(const Vector2f& direction);
   void Crouch();
   void Hold();
   
   // Will move the player in a direction
-  void Move(Direction direction);
+  void Move(const Vector2f& direction);
 
   // Apply forces such as gravity and the likes
-  void ApplyForce(Vector2f force);
+  void ApplyForce(const Vector2f& force);
 
-  bool IsSliding() const;
-  bool IsHolding() const;
-  bool CanMove(Direction direction) const;
+  bool CanMove(const Vector2f& direction) const;
 
   const Shape* GetCollisionShape() const;
 
-  Direction GetFacingDirection() const;
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
   State GetState() const;
@@ -65,9 +52,11 @@ private:
   int m_Dashes;
 
   State m_State;
-  Direction m_FacingDirection;
+
+  ParticleEmitter* m_JumpParticle;
 
   Sprite* m_Sprite;
+  Sprite* m_Particle;
 
   // Colliders
   Shape* m_Collider;

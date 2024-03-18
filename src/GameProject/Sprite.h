@@ -4,13 +4,13 @@
 #include <unordered_map>
 #include <vector>
 
-class Sprite : public GameObject
+class Sprite
 {
 public:
   Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource);
 
-  void Draw(bool debug = false) const override;
-  void Update(float elapsedSec) override;
+  void Draw(bool debug = false) const;
+  void Update(float elapsedSec);
 
   // Resources are states in this case, since resources will be added 
   // within code, states should remain relatively unchanged

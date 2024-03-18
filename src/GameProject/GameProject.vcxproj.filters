@@ -115,8 +115,11 @@
     <ClCompile Include="Tilemap.cpp">
       <Filter>Source Files\Core\Object\World</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source Files\Core\Manager</Filter>
+    </ClCompile>
     <ClCompile Include="ObjectFactory.cpp">
-      <Filter>Source Files\Core</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -192,8 +195,11 @@
     <ClInclude Include="Tilemap.h">
       <Filter>Source Files\Core\Object\World</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Source Files\Core\Manager</Filter>
+    </ClInclude>
     <ClInclude Include="ObjectFactory.h">
-      <Filter>Source Files\Core</Filter>
+      <Filter>Source Files\Core\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
