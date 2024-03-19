@@ -5,7 +5,7 @@
 #include "ResourceUtils.h"
 
 Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
-  : m_Size(size), m_TileSize(tileSize)
+  : m_Size(size), m_TileSize(tileSize), m_Resource(resource)
 {
   SetResource(resource);
 }
@@ -73,7 +73,7 @@ void Tilemap::SetResource(const std::string& resource)
 void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 {
   if (rawTileData.size() % 3 != 0) {
-    std::cerr << "Tile data is not divisible by 3, concluded that data must be corrupt" << std::endl;
+    std::cerr << "Tile data for '" << m_Resource <<"' is not divisible by 3, concluded that data must be corrupt" << std::endl;
     return;
   }
 
@@ -105,7 +105,6 @@ std::string Tilemap::GetResource()
 std::vector<int> Tilemap::ToRawTileData() const
 {
   std::vector<int> rawTileData;
-  rawTileData.reserve(m_Tiles.size() * 3); // Reserve space for keys and values
 
   for (const auto& pair : m_Tiles) {
     // Push key

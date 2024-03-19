@@ -111,73 +111,48 @@ void Level::Load()
 
   std::ifstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::in | std::ios::binary);
 
-  // If it fails to read the file, it will just return without doing anything special at all
   if (!file.is_open())
   {
     std::cout << "Unable to load level '" << m_Name << "' at " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
     return;
   };
 
-  // Start reading in parts
-  // Start reading the file at position 0
-  char* memblock = new char[sizeof(Point2f)];
+  file.seekg(0, std::ios::beg);
 
-  // Copy over the header information
-  file.read(memblock, sizeof(Point2f));
-  std::memcpy(&m_PlayerSpawn, memblock, sizeof(Point2f));
+  // Read PlayerSpawn
+  file.read(reinterpret_cast<char*>(&m_PlayerSpawn), sizeof(Point2f));
 
-  delete[] memblock;
-  memblock = new char[sizeof(int)];
-
-  // Create tilemap information
   std::vector<int> rawTileInfo;
   int zeroCount{ 0 };
 
-  // Read integers until encountering three consecutive zeros
-  while (file.read(memblock, sizeof(int)))
+  int tileValue;
+  while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
   {
-    int val = (int)*memblock;
-    delete[] memblock;
-    rawTileInfo.push_back(val);
-
-    // Check if the current integer is zero
-    if (val == 0)
+    rawTileInfo.push_back(tileValue);
+    if (tileValue == 0)
     {
-      // Increment the count of consecutive zeros
       zeroCount++;
-
-      // If we encounter three consecutive zeros, break the loop
-      if (zeroCount == 3)
+      if (zeroCount == 4)
         break;
     } else
     {
-      // Reset the count of consecutive zeros if a non-zero integer is encountered
       zeroCount = 0;
     }
   }
 
-  // Pop back 3 times to remove padding
-  rawTileInfo.pop_back();
-  rawTileInfo.pop_back();
-  rawTileInfo.pop_back();
-
+  // Assuming BackgroundTilemap and ForegroundTilemap are initialized correctly
   m_BackgroundTilemapPtr->LoadRawTileData(rawTileInfo);
 
   rawTileInfo.clear();
-
-  // Foreground Tilemap
   zeroCount = 0;
 
-  while (file.read(memblock, sizeof(int)))
+  while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
   {
-    int val = (int)*memblock;
-    delete[] memblock;
-    rawTileInfo.push_back((int)*memblock);
-
-    if (val == 0)
+    rawTileInfo.push_back(tileValue);
+    if (tileValue == 0)
     {
       zeroCount++;
-      if (zeroCount == 3)
+      if (zeroCount == 4)
         break;
     } else
     {
@@ -185,81 +160,72 @@ void Level::Load()
     }
   }
 
-  // Pop back 3 times to remove padding
-  rawTileInfo.pop_back();
-  rawTileInfo.pop_back();
-  rawTileInfo.pop_back();
-
   m_ForegroundTilemapPtr->LoadRawTileData(rawTileInfo);
-  memblock = new char[sizeof(int) + sizeof(Point2f)];
+  rawTileInfo.clear();
 
-  // All raw objects
-  while (file.read(memblock, sizeof(int) + sizeof(Point2f)))
+  int objectId;
+  Point2f position;
+  while (file.read(reinterpret_cast<char*>(&objectId), sizeof(int)) && file.read(reinterpret_cast<char*>(&position), sizeof(Point2f)))
   {
-    // Extract positional and more info
-    int objectId{};
-    Point2f position{};
-
-    std::memcpy(&objectId, memblock, sizeof(int));
-    std::memcpy(&position, memblock + sizeof(int), sizeof(Point2f));
-    delete[] memblock;
-
     m_ObjectBlueprints.push_back(ObjectBlueprint(objectId, position));
   }
 
   file.close();
 }
 
-// Function to get the raw bytes of any type and add them to a vector<char>
-template<typename T>
-void AddValueToVector(const T& value, std::vector<char>& vec)
-{
-  // Treat the value as an array of bytes
-  const char* bytes = reinterpret_cast<const char*>(&value);
 
-  // Add each byte to the vector
-  vec.insert(vec.end(), bytes, bytes + sizeof(T));
-}
+  // Function to get the raw bytes of any type and add them to a vector<char>
+  template<typename T>
+  void AddValueToVector(const T& value, std::vector<char>& vec)
+  {
+    // Treat the value as an array of bytes
+    const char* bytes = reinterpret_cast<const char*>(&value);
 
-// AGAIN, DANGEROUS (naive) IMPLEMENTATION
-void Level::Save() const
-{
-  std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
+    // Add each byte to the vector
+    vec.insert(vec.end(), bytes, bytes + sizeof(T));
+  }
 
-  // Empty value to write
-  const int empty{ 0 };
+  // AGAIN, DANGEROUS (naive) IMPLEMENTATION
+  void Level::Save() const
+  {
+    std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
 
-  // Create the memory stream to write
-  std::vector<char> data;
+    // Empty value to write
+    const int empty{ 0 };
+
+    // Create the memory stream to write
+    std::vector<char> data;
   
-  AddValueToVector(m_PlayerSpawn, data);
+    AddValueToVector(m_PlayerSpawn, data);
 
-  for (int val : m_BackgroundTilemapPtr->ToRawTileData()) {
-    AddValueToVector(val, data);
-  }
+    for (int val : m_BackgroundTilemapPtr->ToRawTileData()) {
+      AddValueToVector(val, data);
+    }
 
-  // Write empty 3 times for file padding, to know where the tilemap ends
-  AddValueToVector(empty, data);
-  AddValueToVector(empty, data);
-  AddValueToVector(empty, data);
+    // Write empty 4 times for file padding, to know where the tilemap ends
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
 
-  for (int val : m_ForegroundTilemapPtr->ToRawTileData()) {
-    AddValueToVector(val, data);
-  }
+    for (int val : m_ForegroundTilemapPtr->ToRawTileData()) {
+      AddValueToVector(val, data);
+    }
   
-  // Again 3x empty for file padding, this to know where the tilemaps end
-  AddValueToVector(empty, data);
-  AddValueToVector(empty, data);
-  AddValueToVector(empty, data);
+    // Again 4x empty for file padding, this to know where the tilemaps end
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
+    AddValueToVector(empty, data);
 
-  // Write the blueprints to the data
-  for (const ObjectBlueprint& bp : m_ObjectBlueprints) {
-    AddValueToVector(bp.GetObjectId(), data);
-    AddValueToVector(bp.GetPosition(), data);
+    // Write the blueprints to the data
+    for (const ObjectBlueprint& bp : m_ObjectBlueprints) {
+      AddValueToVector(bp.GetObjectId(), data);
+      AddValueToVector(bp.GetPosition(), data);
+    }
+
+    // AND FINIT, all we have to do is write the data to the file
+    std::ofstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::out | std::ios::binary);
+    file.write(data.data(), data.size());
+    file.close();
   }
-
-  // AND FINIT, all we have to do is write the data to the file
-  std::ofstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::out | std::ios::binary);
-  file.write(data.data(), data.size());
-  file.close();
-}

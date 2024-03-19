@@ -17,7 +17,7 @@ void EditorScreen::Initialize()
   m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
   m_CurrentTile = 0;
 
-  //m_LevelPtr->Load();
+  m_LevelPtr->Load();
 }
 
 EditorScreen::~EditorScreen()
