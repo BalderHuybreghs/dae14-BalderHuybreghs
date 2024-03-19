@@ -28,6 +28,9 @@ class GameScreen
 public:
   void SetScreenManager(ScreenManager* screenManagerPtr);
 
+  // Gets called when the screen resources should be initialized
+  virtual void Initialize()                                      {};
+
   // The screenManagerPtr should not be deleted because it
   // is part of another class
   virtual ~GameScreen()                                          {};

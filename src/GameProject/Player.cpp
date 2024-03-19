@@ -6,7 +6,7 @@
 
 Player::Player(const Point2f& position)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Dashes(1), m_Collider(nullptr), m_ColliderSlideLeft(nullptr),
-  m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Particle(nullptr), m_JumpParticle(nullptr)
+  m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr)
 {
   // All the player animations
   m_Sprite = new Sprite(m_Position, Point2f{100.f, 100.f}, Point2f{ FRAME_SIZE, FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
@@ -26,7 +26,6 @@ Player::Player(const Point2f& position)
 
 Player::~Player()
 {
-  delete m_JumpParticle;
   delete m_Sprite;
   delete m_Particle;
   delete m_Collider;

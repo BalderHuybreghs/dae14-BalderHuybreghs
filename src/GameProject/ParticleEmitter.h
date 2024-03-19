@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include <vector>
 #include <queue>
+#include "Player.h"
 
 // The particle emitter is essentially a manager for all
 // particles, except for that it also creates these particles in a defined pattern
@@ -13,7 +14,7 @@ public:
   ~ParticleEmitter();
 
   virtual void Draw(bool debug = false) const override;
-  virtual void Update(float elapsedSec) override;
+  virtual void Update(Player& player, float elapsedSec) override;
 
   void SetPosition(const Point2f& maxParticles);
   void SetMaxParticles(int maxParticles);

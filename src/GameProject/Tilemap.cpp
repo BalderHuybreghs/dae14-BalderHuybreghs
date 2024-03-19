@@ -2,6 +2,7 @@
 #include "Tilemap.h"
 #include "TextureManager.h"
 #include <iostream>
+#include "ResourceUtils.h"
 
 Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
   : m_Size(size), m_TileSize(tileSize)
@@ -11,7 +12,7 @@ Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
 
 void Tilemap::Draw(bool debug) const
 {
-  for (const auto& tileInfo : m_Tiles) {
+  for (const std::pair<const int, int>& tileInfo : m_Tiles) {
     DrawSingleTile(KeyToPoint(tileInfo.first), tileInfo.second);
   }
 }
@@ -29,10 +30,10 @@ void Tilemap::DrawSingleTile(const Point2f& position, int tileId) const
   int gridWidth = int(m_TileTexturePtr->GetWidth() / m_TileSize);
 
   const Rectf srcRect{
-    tileId % gridWidth,
-    tileId / gridWidth,
-    m_TileSize,
-    m_TileSize
+    float(tileId % gridWidth),
+    float(tileId / gridWidth),
+    float(m_TileSize),
+    float(m_TileSize)
   };
 
   m_TileTexturePtr->Draw(dstRect, srcRect);
@@ -59,7 +60,8 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
 
 void Tilemap::SetResource(const std::string& resource)
 {
-  m_TileTexturePtr = TextureManager::Instance()->GetTexture(resource);
+  // Grabs tilemaps from the tilemap folder
+  m_TileTexturePtr = TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resource));
 
   // The texture is invalid if it is not divisible by the size of each tile
   if ((int)m_TileTexturePtr->GetWidth() % m_TileSize != 0 || (int)m_TileTexturePtr->GetHeight() % m_TileSize != 0) {
@@ -91,6 +93,11 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 int Tilemap::GetTileCount() const
 {
   return int(m_TileTexturePtr->GetWidth() / m_TileSize) * int(m_TileTexturePtr->GetHeight() / m_TileSize);
+}
+
+std::string Tilemap::GetResource()
+{
+  return m_Resource;
 }
 
 std::vector<int> Tilemap::ToRawTileData() const

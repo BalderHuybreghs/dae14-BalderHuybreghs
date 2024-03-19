@@ -31,10 +31,13 @@ public:
   // Gives the amount of tiles the texture has
   int GetTileCount() const;
 
+  std::string GetResource();
+
   // Convert the tiles to raw data
   std::vector<int> ToRawTileData() const;
 private:
   // Header information
+  std::string m_Resource;
   Point2f m_Size;
   int m_TileSize;
 

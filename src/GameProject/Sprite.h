@@ -1,5 +1,4 @@
 #pragma once
-#include "GameObject.h"
 #include "Texture.h"
 #include <unordered_map>
 #include <vector>
@@ -17,7 +16,7 @@ public:
   void SetResource(int state);
 
   // Adds a resource to this sprite and returns its id
-  int AddResource(const std::string& resource);
+  size_t AddResource(const std::string& resource);
 
   Point2f GetPosition() const;
   Point2f GetSize() const;

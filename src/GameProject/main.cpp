@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <ctime>
 #include "Game.h"
-#include "MenuScreen.h"
+#include "EditorScreen.h"
 
 void StartHeapControl();
 void DumpMemoryLeaks();
@@ -12,7 +12,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-  GameScreen* startScreenPtr{ new MenuScreen{} };
+  GameScreen* startScreenPtr{ new EditorScreen{} };
 	Game* pGame{ new Game{ Window{ "GameProject - Huybreghs, balder - 1DAE14", 846.f , 500.f }, startScreenPtr } };
 	pGame->Run();
 	delete pGame;

@@ -2,7 +2,6 @@
 #include "Shape.h"
 #include "Sprite.h"
 #include "Vector2f.h"
-#include "ParticleEmitter.h"
 
 class Player
 {
@@ -22,8 +21,8 @@ public:
   Player(const Point2f& position);
   ~Player();
 
-  virtual void Draw(bool debug = false) const override;
-  virtual void Update(float elapsedSec) override;
+  void Draw(bool debug = false) const;
+  void Update(float elapsedSec);
 
   void RefillDashes(int amount);
 
@@ -52,8 +51,6 @@ private:
   int m_Dashes;
 
   State m_State;
-
-  ParticleEmitter* m_JumpParticle;
 
   Sprite* m_Sprite;
   Sprite* m_Particle;

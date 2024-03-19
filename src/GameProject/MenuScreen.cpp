@@ -10,6 +10,10 @@ MenuScreen::~MenuScreen()
 {
 }
 
+void MenuScreen::Initialize()
+{
+}
+
 void MenuScreen::Draw()
 {
 }

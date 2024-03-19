@@ -16,6 +16,7 @@ void ScreenManager::SetScreen(GameScreen* newScreenPtr)
   delete m_CurrentScreenPtr;
   m_CurrentScreenPtr = newScreenPtr;
   m_CurrentScreenPtr->SetScreenManager(this);
+  m_CurrentScreenPtr->Initialize();
 }
 
 void ScreenManager::SetParent(ScreenManager* parentPtr)

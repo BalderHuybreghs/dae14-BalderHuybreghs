@@ -44,6 +44,7 @@ const Texture* TextureManager::CreateFromResource(const std::string& resource)
   }
 
   std::cerr << "Failed to load texture: " << resource << std::endl;
+  std::exit(-1);
 }
 
 TextureManager::~TextureManager()
@@ -65,7 +66,7 @@ const Texture* TextureManager::GetTexture(const std::string& resource)
   }
 
   // Texture not found, create and insert new shared_ptr
-  std::cout << "Loading texture from disk: " << resource << std::endl;
+  std::cout << "Loading resource from disk: " << resource << std::endl;
   return CreateFromResource(resource);
 }
 

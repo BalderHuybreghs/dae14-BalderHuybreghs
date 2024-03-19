@@ -57,7 +57,7 @@ void Sprite::SetResource(int state)
   m_Time = 0;
 }
 
-int Sprite::AddResource(const std::string& resource)
+size_t Sprite::AddResource(const std::string& resource)
 {
   const Texture* texture = TextureManager::Instance()->GetTexture(resource);
 

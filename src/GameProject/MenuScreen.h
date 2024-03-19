@@ -7,15 +7,17 @@ public:
   MenuScreen();
   ~MenuScreen();
 
+  void Initialize() override;
+
   // General game functions
-  void Draw();
-  void Update(float elapsedSec);
+  void Draw() override;
+  void Update(float elapsedSec) override;
 
   // Key events
-  void OnKeyDownEvent(SDL_KeyboardEvent key);
-  void OnKeyUpEvent(SDL_KeyboardEvent key);
-  void OnMouseMotionEvent(const SDL_MouseMotionEvent& e);
-  void OnMouseDownEvent(const SDL_MouseButtonEvent& e);
-  void OnMouseUpEvent(const SDL_MouseButtonEvent& e);
+  void OnKeyDownEvent(SDL_KeyboardEvent key) override;
+  void OnKeyUpEvent(SDL_KeyboardEvent key) override;
+  void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) override;
+  void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
+  void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
 };
 

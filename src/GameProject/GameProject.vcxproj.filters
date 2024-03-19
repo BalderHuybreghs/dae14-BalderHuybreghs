@@ -121,6 +121,9 @@
     <ClCompile Include="ObjectFactory.cpp">
       <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
+    <ClCompile Include="ParallaxBackground.cpp">
+      <Filter>Source Files\Core\Object\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -200,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="ObjectFactory.h">
       <Filter>Source Files\Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallaxBackground.h">
+      <Filter>Source Files\Core\Object\World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
