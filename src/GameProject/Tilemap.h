@@ -35,6 +35,9 @@ public:
   // Set a tile at a worldspace
   void SetTile(const Point2f& point, int tileID);
 
+  // Remove a tile from the tilemap
+  void RemoveTile(const Point2f& point);
+
   void SetResource(const std::string& resource);
 
   // Made to load in raw tile data from a binary file, the formay is just key-value int-int
@@ -43,8 +46,12 @@ public:
 
   // Gives the amount of tiles the texture has
   int GetTileCount() const;
+  int GetTileSize() const;
+  std::string GetResource() const;
+  Point2f GetSize() const;
 
-  std::string GetResource();
+  // Gives the rect of the tile in worldspace
+  Rectf GetTileRect(const Point2f& position) const;
 
   // Convert the tiles to raw data
   std::vector<int> ToRawTileData() const;

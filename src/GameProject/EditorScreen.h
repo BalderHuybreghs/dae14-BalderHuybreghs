@@ -4,6 +4,7 @@
 #include "Tilemap.h"
 #include "ObjectBlueprint.h"
 #include "ObjectManager.h"
+#include "Camera.h"
 
 class EditorScreen : public GameScreen
 {
@@ -17,7 +18,7 @@ public:
     TilesetFront,
     TilesetBack,
     Object,
-    Decal,
+    Decal
   };
 
   EditorScreen();
@@ -36,11 +37,15 @@ public:
   void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) override;
   void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
+
+  Point2f ToWorldPos(const Point2f& position);
 private:
   Mode m_EditMode;
+  Point2f m_MousePos;
 
   Level* m_LevelPtr;
-  Tilemap* m_CurrentTilemapPtr;
+  Tilemap* m_CurrentTilemapPtr; // Should not be deleted, holds a reference to the tilemap within the level
+  Camera* m_CameraPtr;
 
   int m_CurrentTile;
 };

@@ -42,7 +42,8 @@ void Tilemap::DrawSingleTile(const Point2f& position, int tileId) const
 bool Tilemap::IsTile(const Point2f& point) const
 {
   // Search for the coordinates in the map
-  auto tile{ m_Tiles.find(PointToKey(point)) };
+  // No auto :(
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::pair<int, int>, int>>>> tile{ m_Tiles.find(PointToKey(point)) };
 
   // Return if the given tile is occupied
   return tile != m_Tiles.end();
@@ -56,6 +57,14 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
   }
 
   m_Tiles.insert_or_assign(PointToKey(point), tileID);
+}
+
+void Tilemap::RemoveTile(const Point2f& point)
+{
+  // Remove the tile if it exists
+  if (IsTile(point)) {
+    m_Tiles.erase(PointToKey(point));
+  }
 }
 
 void Tilemap::SetResource(const std::string& resource)
@@ -97,9 +106,33 @@ int Tilemap::GetTileCount() const
   return int(m_TileTexturePtr->GetWidth() / m_TileSize) * int(m_TileTexturePtr->GetHeight() / m_TileSize);
 }
 
-std::string Tilemap::GetResource()
+int Tilemap::GetTileSize() const
+{
+  return m_TileSize;
+}
+
+std::string Tilemap::GetResource() const
 {
   return m_Resource;
+}
+
+Point2f Tilemap::GetSize() const
+{
+  return m_Size;
+}
+
+Rectf Tilemap::GetTileRect(const Point2f& position) const
+{
+  // Calculate the position of the tile
+  std::pair<int, int> key{ PointToKey(position) };
+  const Point2f worldPos{ KeyToPoint(key) };
+  
+  return Rectf{
+    worldPos.x,
+    worldPos.y,
+    m_TileSize * m_Size.x,
+    m_TileSize * m_Size.y
+  };
 }
 
 std::vector<int> Tilemap::ToRawTileData() const
