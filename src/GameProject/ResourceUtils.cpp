@@ -22,3 +22,7 @@ std::string ResourceUtils::ResourceToTilemapPath(const std::string& resource)
   return GAMEPLAY_RESOURCE + FS + TILEMAP_FOLDER + FS + resource;
 }
 
+std::string ResourceUtils::ResourceToLevelPath(const std::string& resource)
+{
+  return LEVEL_FOLDER + FS + resource + LEVEL_EXTENSION;
+}

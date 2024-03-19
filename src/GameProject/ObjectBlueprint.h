@@ -8,7 +8,6 @@
 class ObjectBlueprint
 {
 public:
-  ObjectBlueprint(const std::vector<char>& raw);
   ObjectBlueprint(int objectId, Point2f position);
 
   // Draws the blueprint as a transparent object, useful for debugging and level editing
@@ -16,9 +15,6 @@ public:
 
   // Constructs the gameobject
   GameObject* Construct() const;
-
-  // Gets the raw binary data of the gameobject
-  std::vector<char> GetRawData() const;
 
   void SetObjectId(int objectId);
   void SetPosition(const Point2f& position);

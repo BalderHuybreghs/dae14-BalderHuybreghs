@@ -7,6 +7,9 @@ static const char FS{ '\\' };
 static const std::string TEXTURE_EXTENSION{ ".png" };
 static const std::string SOUND_EXTENSION{ ".mp3" };
 
+// cev, a combination of celeste and level, very original, I know
+static const std::string LEVEL_EXTENSION{ ".cev" };
+
 // Game folders
 static const std::string TEXTURE_FOLDER{ "texture" };
 static const std::string SOUND_FOLDER{ "sound" };

@@ -76,6 +76,7 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
     std::cerr << "Tile data is not even, concluded that data must be corrupt" << std::endl;
     return;
   }
+
   // Create key-value pairs and insert into hashmap
   for (size_t index = 0; index < rawTileData.size(); index += 2) {
     int key = rawTileData[index];

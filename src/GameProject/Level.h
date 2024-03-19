@@ -27,8 +27,9 @@ public:
   void SetPlayerSpawn(const Point2f& position);
   Point2f GetPlayerSpawn() const;
 
-  // Saves the level to a file with its name
-  void Save();
+  // Save and load the level from and to a file
+  void Load();
+  void Save() const;
 private:
   // Metadata
   std::string m_Name;
