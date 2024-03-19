@@ -6,6 +6,19 @@
 
 TextureManager* TextureManager::_instance = nullptr;
 
+TextureManager::~TextureManager()
+{
+  std::cout << "Cleaning textures" << std::endl;
+
+  // Delete all the textures
+  for (const std::pair<std::string, const Texture*>& pair : m_TexturePtrs) {
+    delete pair.second;
+  }
+
+  // Clear out the hashmap
+  m_TexturePtrs.clear();
+}
+
 const Texture* TextureManager::CreateTextureInstance(const std::string& resource)
 {
   // Create the texture
@@ -32,7 +45,8 @@ const Texture* TextureManager::CreateTextureInstance(const std::string& resource
 
 const Texture* TextureManager::CreateFromResource(const std::string& resource)
 {
-  auto success{ m_TexturePtrs.insert(
+  // No auto allowed :/
+  std::pair<std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const Texture*>>>>, bool> success{ m_TexturePtrs.insert(
     {
       resource,
       CreateTextureInstance(resource)
@@ -44,23 +58,12 @@ const Texture* TextureManager::CreateFromResource(const std::string& resource)
   }
 
   std::cerr << "Failed to load texture: " << resource << std::endl;
-  std::exit(-1);
-}
-
-TextureManager::~TextureManager()
-{
-  // Delete all the textures
-  for (const std::pair<std::string, const Texture*>& pair : m_TexturePtrs) {
-    delete pair.second;
-  }
-
-  // Clear out the hashmap
-  m_TexturePtrs.clear();
+  exit(-1);
 }
 
 const Texture* TextureManager::GetTexture(const std::string& resource)
 {
-  auto value{ m_TexturePtrs.find(resource) };
+  std::unordered_map<std::string, const Texture*>::iterator value{ m_TexturePtrs.find(resource) };
   if (value != m_TexturePtrs.end()) {
     return value->second; // Return existing shared_ptr
   }

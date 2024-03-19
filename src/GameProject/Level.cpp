@@ -44,9 +44,9 @@ void Level::Update(Player& player, float elapsedSec)
   }
 }
 
-void Level::AddObject(GameObject& object)
+void Level::AddObject(GameObject* object)
 {
-  //m_Objects.insert(object);
+  m_Objects.push_back(object);
 }
 
 Tilemap* Level::GetFrontTilemap() const
@@ -57,6 +57,16 @@ Tilemap* Level::GetFrontTilemap() const
 Tilemap* Level::GetBackTilemap() const
 {
   return m_BackgroundTilemapPtr;
+}
+
+void Level::SetPlayerSpawn(const Point2f& position)
+{
+  m_PlayerSpawn = position;
+}
+
+Point2f Level::GetPlayerSpawn() const
+{
+  return m_PlayerSpawn;
 }
 
 void Level::Save()

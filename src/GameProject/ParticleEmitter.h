@@ -14,6 +14,7 @@ public:
   ~ParticleEmitter();
 
   virtual void Draw(bool debug = false) const override;
+  virtual void Draw(Point2f position, bool debug = false) const override;
   virtual void Update(Player& player, float elapsedSec) override;
 
   void SetPosition(const Point2f& maxParticles);

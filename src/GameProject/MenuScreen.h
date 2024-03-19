@@ -20,4 +20,3 @@ public:
   void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
 };
-

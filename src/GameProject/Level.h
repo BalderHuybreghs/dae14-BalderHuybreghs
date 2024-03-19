@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Tilemap.h"
+#include "ObjectBlueprint.h"
 
 class Level
 {
@@ -14,16 +15,21 @@ public:
   void Draw(bool debug = false) const;
   void Update(Player& player, float elapsedSec);
    
-  // Adds an object by reference
-  void AddObject(GameObject& object);
+  // Adds an object by pointer
+  void AddObject(GameObject* object);
 
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
 
+  void SetPlayerSpawn(const Point2f& position);
+  Point2f GetPlayerSpawn() const;
+
   // Saves the level to a file with its name
   void Save();
 private:
+  // Metadata
   std::string m_Name;
+  Point2f m_PlayerSpawn;
 
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 

@@ -66,7 +66,7 @@ void Tilemap::SetResource(const std::string& resource)
   // The texture is invalid if it is not divisible by the size of each tile
   if ((int)m_TileTexturePtr->GetWidth() % m_TileSize != 0 || (int)m_TileTexturePtr->GetHeight() % m_TileSize != 0) {
     std::cerr << "Tilemap texture is non-divisible by: " << m_TileSize << std::endl;
-    std::exit(-1);
+    exit(-1);
   }
 }
 
