@@ -35,7 +35,7 @@ static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_RESOURCE + FS + "climb" }
 static const std::string PLAYER_RUN_RESOURCE{ PLAYER_RESOURCE + FS + "run_slow" };
 static const std::string PLAYER_WALK_RESOURCE{ PLAYER_RESOURCE + FS + "walk" };
 
-static const std::string LEVEL1_NAME{ PLAYER_RESOURCE + FS + "forsaken_city" };
+static const std::string LEVEL1_NAME{ "forsaken_city" };
 
 // Texture information
 static const int TILE_SIZE{ 8 };

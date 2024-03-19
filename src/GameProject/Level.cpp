@@ -11,8 +11,8 @@ Level::Level(const std::string& name, const std::string& foregroundTileResource,
   : m_Name(name)
 {
   // Load both the foreground and background tilemaps
-  m_ForegroundTilemapPtr = new Tilemap(foregroundTileResource, Point2f{1.f, 1.f}, TILE_SIZE);
-  m_BackgroundTilemapPtr = new Tilemap(backgroundTileResource, Point2f{1.f, 1.f}, TILE_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(foregroundTileResource, Point2f{5.f, 5.f}, TILE_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(backgroundTileResource, Point2f{5.f, 5.f}, TILE_SIZE);
 }
 
 Level::~Level()
@@ -114,20 +114,20 @@ void Level::Load()
   // If it fails to read the file, it will just return without doing anything special at all
   if (!file.is_open())
   {
-    std::cout << "Unable to load level: " << m_Name << std::endl;
+    std::cout << "Unable to load level '" << m_Name << "' at " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
     return;
   };
 
   // Start reading in parts
   // Start reading the file at position 0
-  char* memblock{ nullptr };
+  char* memblock = new char[sizeof(Point2f)];
 
   // Copy over the header information
   file.read(memblock, sizeof(Point2f));
   std::memcpy(&m_PlayerSpawn, memblock, sizeof(Point2f));
 
   delete[] memblock;
-  memblock = nullptr;
+  memblock = new char[sizeof(int)];
 
   // Create tilemap information
   std::vector<int> rawTileInfo;
@@ -136,10 +136,12 @@ void Level::Load()
   // Read integers until encountering three consecutive zeros
   while (file.read(memblock, sizeof(int)))
   {
-    rawTileInfo.push_back((int)*memblock);
+    int val = (int)*memblock;
+    delete[] memblock;
+    rawTileInfo.push_back(val);
 
     // Check if the current integer is zero
-    if ((int)*memblock == 0)
+    if (val == 0)
     {
       // Increment the count of consecutive zeros
       zeroCount++;
@@ -154,20 +156,25 @@ void Level::Load()
     }
   }
 
+  // Pop back 3 times to remove padding
+  rawTileInfo.pop_back();
+  rawTileInfo.pop_back();
+  rawTileInfo.pop_back();
+
   m_BackgroundTilemapPtr->LoadRawTileData(rawTileInfo);
 
   rawTileInfo.clear();
-  delete[] memblock;
-  memblock = nullptr;
 
   // Foreground Tilemap
   zeroCount = 0;
 
   while (file.read(memblock, sizeof(int)))
   {
+    int val = (int)*memblock;
+    delete[] memblock;
     rawTileInfo.push_back((int)*memblock);
 
-    if ((int)*memblock == 0)
+    if (val == 0)
     {
       zeroCount++;
       if (zeroCount == 3)
@@ -178,7 +185,13 @@ void Level::Load()
     }
   }
 
+  // Pop back 3 times to remove padding
+  rawTileInfo.pop_back();
+  rawTileInfo.pop_back();
+  rawTileInfo.pop_back();
+
   m_ForegroundTilemapPtr->LoadRawTileData(rawTileInfo);
+  memblock = new char[sizeof(int) + sizeof(Point2f)];
 
   // All raw objects
   while (file.read(memblock, sizeof(int) + sizeof(Point2f)))
@@ -189,12 +202,10 @@ void Level::Load()
 
     std::memcpy(&objectId, memblock, sizeof(int));
     std::memcpy(&position, memblock + sizeof(int), sizeof(Point2f));
+    delete[] memblock;
 
     m_ObjectBlueprints.push_back(ObjectBlueprint(objectId, position));
   }
-
-  delete[] memblock;
-  memblock = nullptr;
 
   file.close();
 }
@@ -213,7 +224,7 @@ void AddValueToVector(const T& value, std::vector<char>& vec)
 // AGAIN, DANGEROUS (naive) IMPLEMENTATION
 void Level::Save() const
 {
-  std::cout << "Saving level: " << m_Name << std::endl;
+  std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
 
   // Empty value to write
   const int empty{ 0 };

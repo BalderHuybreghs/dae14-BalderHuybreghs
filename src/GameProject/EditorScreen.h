@@ -1,6 +1,9 @@
 #pragma once
 #include "ScreenManager.h"
 #include "Level.h"
+#include "Tilemap.h"
+#include "ObjectBlueprint.h"
+#include "ObjectManager.h"
 
 class EditorScreen : public GameScreen
 {
@@ -33,9 +36,12 @@ public:
   void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) override;
   void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
-
-  void ChangeMode();
 private:
+  Mode m_EditMode;
+
   Level* m_LevelPtr;
+  Tilemap* m_CurrentTilemapPtr;
+
+  int m_CurrentTile;
 };
 

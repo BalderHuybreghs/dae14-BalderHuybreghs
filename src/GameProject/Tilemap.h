@@ -3,6 +3,19 @@
 #include <unordered_map>
 #include <vector>
 
+// Custom hash function for std::pair<int, int>
+// TODO: Clean this up / move this to util
+struct PairHash
+{
+  template <class T1, class T2>
+  std::size_t operator () (const std::pair<T1, T2>& p) const
+  {
+    auto hash1 = std::hash<T1>{}(p.first);
+    auto hash2 = std::hash<T2>{}(p.second);
+    return hash1 ^ hash2; // Combine the hash values
+  }
+};
+
 class Tilemap
 {
 public:
@@ -45,11 +58,11 @@ private:
   const Texture* m_TileTexturePtr;
 
   // A mapping of each coordinate and their texture coordinate.
-  // Coordinates are calculated simply by multiplying the x and y values
-  // The texture coordinate may never be more than the texture height multiplied by the texture width.
-  std::unordered_map<int, int> m_Tiles;
+  std::unordered_map<std::pair<int, int>, int, PairHash> m_Tiles;
 
   // Converts a worldpoint to a key point in the tilemap
-  int PointToKey(const Point2f& point) const;
-  Point2f KeyToPoint(int key) const;
+  int ValueToX(float val) const;
+  int ValueToY(float val) const;
+  std::pair<int, int> PointToKey(const Point2f& point) const;
+  Point2f KeyToPoint(std::pair<int, int> key) const;
 };

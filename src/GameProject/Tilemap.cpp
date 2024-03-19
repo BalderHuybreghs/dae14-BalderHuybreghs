@@ -12,7 +12,7 @@ Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
 
 void Tilemap::Draw(bool debug) const
 {
-  for (const std::pair<const int, int>& tileInfo : m_Tiles) {
+  for (const std::pair<std::pair<int, int>, int>& tileInfo : m_Tiles) {
     DrawSingleTile(KeyToPoint(tileInfo.first), tileInfo.second);
   }
 }
@@ -30,8 +30,8 @@ void Tilemap::DrawSingleTile(const Point2f& position, int tileId) const
   int gridWidth = int(m_TileTexturePtr->GetWidth() / m_TileSize);
 
   const Rectf srcRect{
-    float(tileId % gridWidth),
-    float(tileId / gridWidth),
+    float(tileId % gridWidth) * m_TileSize,
+    float(tileId / gridWidth) * m_TileSize,
     float(m_TileSize),
     float(m_TileSize)
   };
@@ -72,22 +72,23 @@ void Tilemap::SetResource(const std::string& resource)
 
 void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 {
-  if (rawTileData.size() % 2 != 0) {
-    std::cerr << "Tile data is not even, concluded that data must be corrupt" << std::endl;
+  if (rawTileData.size() % 3 != 0) {
+    std::cerr << "Tile data is not divisible by 3, concluded that data must be corrupt" << std::endl;
     return;
   }
 
   // Create key-value pairs and insert into hashmap
-  for (size_t index = 0; index < rawTileData.size(); index += 2) {
-    int key = rawTileData[index];
-    int value = rawTileData[index + 1];
+  for (size_t index = 0; index < rawTileData.size(); index += 3) {
+    int x = rawTileData[index];
+    int y = rawTileData[index + 1];
+    int value = rawTileData[index + 2];
 
     if (value > GetTileCount()) {
       std::cerr << "Tile exceeds texture at index (skipping): " << index << std::endl;
       continue;
     }
 
-    m_Tiles.insert(std::make_pair(key, value));
+    m_Tiles.insert(std::make_pair(std::make_pair(x, y), value));
   }
 }
 
@@ -104,27 +105,39 @@ std::string Tilemap::GetResource()
 std::vector<int> Tilemap::ToRawTileData() const
 {
   std::vector<int> rawTileData;
-  rawTileData.reserve(m_Tiles.size() * 2); // Reserve space for keys and values
+  rawTileData.reserve(m_Tiles.size() * 3); // Reserve space for keys and values
 
   for (const auto& pair : m_Tiles) {
-    rawTileData.push_back(pair.first);   // Push key
+    // Push key
+    rawTileData.push_back(pair.first.first);
+    rawTileData.push_back(pair.first.second);
+
+    // Push value
     rawTileData.push_back(pair.second);  // Push value
   }
 
   return rawTileData;
 }
 
-int Tilemap::PointToKey(const Point2f& point) const
+int Tilemap::ValueToX(float val) const
 {
-  return 
-    int(std::round(point.x / (m_TileSize * m_Size.x))) * 
-    int(std::round(point.y / (m_TileSize * m_Size.y)));
+  return int(val/ (m_TileSize * m_Size.x));
 }
 
-Point2f Tilemap::KeyToPoint(int key) const
+int Tilemap::ValueToY(float val) const
+{
+  return int(val / (m_TileSize * m_Size.y));
+}
+
+std::pair<int, int> Tilemap::PointToKey(const Point2f& point) const
+{
+  return std::make_pair(ValueToX(point.x), ValueToY(point.y));
+}
+
+Point2f Tilemap::KeyToPoint(std::pair<int, int> key) const
 {
   return Point2f{
-    (key / m_Size.x)* m_TileSize* m_Size.x,
-    (key % int(m_Size.x))* m_TileSize* m_Size.y
+    key.first * m_TileSize* m_Size.x,
+    key.second * m_TileSize* m_Size.y
   };
 }
