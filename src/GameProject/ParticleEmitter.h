@@ -1,21 +1,18 @@
 #pragma once
 #include "Particle.h"
-#include "GameObject.h"
 #include <vector>
 #include <queue>
-#include "Player.h"
 
 // The particle emitter is essentially a manager for all
 // particles, except for that it also creates these particles in a defined pattern
-class ParticleEmitter : public GameObject
+class ParticleEmitter
 {
 public:
   ParticleEmitter(const Point2f& position, int maxParticles, const Shape& emissionZone, const Vector2f& minVelocity, const Vector2f& maxVelocity, std::vector<Particle*> spawnParticles);
   ~ParticleEmitter();
 
-  virtual void Draw(bool debug = false) const override;
-  virtual void Draw(Point2f position, bool debug = false) const override;
-  virtual void Update(Player& player, float elapsedSec) override;
+  void Draw(bool debug = false) const;
+  void Update(float elapsedSec);
 
   void SetPosition(const Point2f& maxParticles);
   void SetMaxParticles(int maxParticles);

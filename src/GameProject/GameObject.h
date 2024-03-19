@@ -22,7 +22,7 @@ public:
   virtual void Update(Player& player, float elapsedSec) = 0;
 
   // Allows for cloning the given gameobject
-  virtual GameObject* clone() const = 0;
+  virtual GameObject* Clone() const = 0;
 protected:
   GameObject(Point2f position) {};
 

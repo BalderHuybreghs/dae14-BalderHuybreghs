@@ -13,7 +13,7 @@ void Decal::Draw(Point2f position, bool debug) const
 {
 }
 
-GameObject* Decal::clone() const
+GameObject* Decal::Clone() const
 {
   return new Decal(*this);
 }

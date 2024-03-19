@@ -28,7 +28,7 @@ public:
 
   static ObjectManager* Instance();
 private:
-  int m_IdCounter;
+  int m_IdCounter{};
   std::unordered_map<int, const GameObject*> m_ObjectPtrs;
 
   static ObjectManager* _instance;

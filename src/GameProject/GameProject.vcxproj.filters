@@ -38,11 +38,14 @@
     <Filter Include="Source Files\Core\Object">
       <UniqueIdentifier>{ff65c284-6cbe-4372-9d53-901b5f221dab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Core\Object\World">
+    <Filter Include="Source Files\Core\Render">
       <UniqueIdentifier>{bd242535-8a26-4180-9d49-9284bc9713c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Core\Object\Particle">
+    <Filter Include="Source Files\Core\Render\Particle">
       <UniqueIdentifier>{0c77bc9e-333e-4804-b7e2-9e08553ea304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Render\World">
+      <UniqueIdentifier>{cc29101d-d5b1-42d5-96b6-73ce776a178d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,7 +86,7 @@
       <Filter>Source Files\Core\Shape</Filter>
     </ClCompile>
     <ClCompile Include="ParticleEmitter.cpp">
-      <Filter>Source Files\Core\Object\Particle</Filter>
+      <Filter>Source Files\Core\Render\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files\Core</Filter>
@@ -101,19 +104,13 @@
       <Filter>Source Files\Core\Kinematics</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
-      <Filter>Source Files\Core\Object\Particle</Filter>
+      <Filter>Source Files\Core\Render\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\Core\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Decal.cpp">
-      <Filter>Source Files\Core\Object\World</Filter>
-    </ClCompile>
     <ClCompile Include="Tilemap.cpp">
-      <Filter>Source Files\Core\Object\World</Filter>
+      <Filter>Source Files\Core\Render</Filter>
     </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Source Files\Core\Manager</Filter>
@@ -121,8 +118,17 @@
     <ClCompile Include="ObjectFactory.cpp">
       <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectBlueprint.cpp">
+      <Filter>Source Files\Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Core\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Decal.cpp">
+      <Filter>Source Files\Core\Render\World</Filter>
+    </ClCompile>
     <ClCompile Include="ParallaxBackground.cpp">
-      <Filter>Source Files\Core\Object\World</Filter>
+      <Filter>Source Files\Core\Render\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +166,7 @@
       <Filter>Source Files\Core\Shape</Filter>
     </ClInclude>
     <ClInclude Include="ParticleEmitter.h">
-      <Filter>Source Files\Core\Object\Particle</Filter>
+      <Filter>Source Files\Core\Render\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Source Files\Core</Filter>
@@ -181,7 +187,7 @@
       <Filter>Source Files\Core\Kinematics</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
-      <Filter>Source Files\Core\Object\Particle</Filter>
+      <Filter>Source Files\Core\Render\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
       <Filter>Source Files\Level</Filter>
@@ -189,14 +195,8 @@
     <ClInclude Include="GameObject.h">
       <Filter>Source Files\Core\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Source Files\Core\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Decal.h">
-      <Filter>Source Files\Core\Object\World</Filter>
-    </ClInclude>
     <ClInclude Include="Tilemap.h">
-      <Filter>Source Files\Core\Object\World</Filter>
+      <Filter>Source Files\Core\Render</Filter>
     </ClInclude>
     <ClInclude Include="ObjectManager.h">
       <Filter>Source Files\Core\Manager</Filter>
@@ -204,8 +204,17 @@
     <ClInclude Include="ObjectFactory.h">
       <Filter>Source Files\Core\Util</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectBlueprint.h">
+      <Filter>Source Files\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Source Files\Core\Render</Filter>
+    </ClInclude>
     <ClInclude Include="ParallaxBackground.h">
-      <Filter>Source Files\Core\Object\World</Filter>
+      <Filter>Source Files\Core\Render\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Decal.h">
+      <Filter>Source Files\Core\Render\World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

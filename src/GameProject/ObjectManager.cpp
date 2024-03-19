@@ -19,14 +19,14 @@ ObjectManager::~ObjectManager()
 
 GameObject* ObjectManager::CloneObject(int id)
 {
-  return GetBlueprintObject(id)->clone();
+  return GetBlueprintObject(id)->Clone();
 }
 
 const GameObject* ObjectManager::GetBlueprintObject(int id)
 {
   std::unordered_map<int, const GameObject*>::iterator value{ m_ObjectPtrs.find(id) };
   if (value != m_ObjectPtrs.end()) {
-    return value->second->clone();
+    return value->second->Clone();
   }
 
   std::cout << "Could not find registered object with ID: " << id << std::endl;

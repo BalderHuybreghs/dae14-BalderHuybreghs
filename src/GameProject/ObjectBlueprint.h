@@ -18,7 +18,7 @@ public:
   GameObject* Construct() const;
 
   // Gets the raw binary data of the gameobject
-  std::vector<char> GetRawData();
+  std::vector<char> GetRawData() const;
 
   void SetObjectId(int objectId);
   void SetPosition(const Point2f& position);

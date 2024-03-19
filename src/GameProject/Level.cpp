@@ -22,6 +22,18 @@ Level::~Level()
   delete m_ForegroundTilemapPtr;
 }
 
+void Level::Build()
+{
+  // Destroy any possible game objects
+  for (const GameObject* object : m_Objects) {
+    delete object;
+  }
+
+  for (const ObjectBlueprint objectBlueprint : m_ObjectBlueprints) {
+    objectBlueprint.Construct();
+  }
+}
+
 void Level::Draw(bool debug) const
 {
   // Draw the background tilemap
@@ -30,6 +42,13 @@ void Level::Draw(bool debug) const
   // Draw the objects in between the two tilemaps
   for (const GameObject* object : m_Objects) {
     object->Draw(debug);
+  }
+
+  // Draw all the object blueprints in debug mode
+  if (debug) {
+    for (const ObjectBlueprint objectBlueprint : m_ObjectBlueprints) {
+      objectBlueprint.Draw();
+    }
   }
 
   // Draw the foreground tilemap
@@ -44,9 +63,9 @@ void Level::Update(Player& player, float elapsedSec)
   }
 }
 
-void Level::AddObject(GameObject* object)
+void Level::AddBlueprint(const ObjectBlueprint& blueprint)
 {
-  m_Objects.push_back(object);
+  m_ObjectBlueprints.push_back(blueprint);
 }
 
 Tilemap* Level::GetFrontTilemap() const

@@ -12,11 +12,14 @@ public:
   Level(const std::string& name, const std::string& foregroundTileResource, const std::string& backgroundTileResource);
   ~Level();
 
+  // Builds the level and all of its objects from the blueprint
+  void Build();
+
   void Draw(bool debug = false) const;
   void Update(Player& player, float elapsedSec);
    
   // Adds an object by pointer
-  void AddObject(GameObject* object);
+  void AddBlueprint(const ObjectBlueprint& blueprint);
 
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
@@ -30,11 +33,10 @@ private:
   // Metadata
   std::string m_Name;
   Point2f m_PlayerSpawn;
-
-  std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
-
-  // Texture* m_BackgroundPtr;
+  std::vector<ObjectBlueprint> m_ObjectBlueprints;
 
   Tilemap* m_BackgroundTilemapPtr; // The background tilemap for the level
   Tilemap* m_ForegroundTilemapPtr; // The tilemap for the level that contains all general blocks, the tilemap will contain collision information
+
+  std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 };
