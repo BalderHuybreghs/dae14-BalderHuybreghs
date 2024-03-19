@@ -47,6 +47,9 @@
     <Filter Include="Source Files\Core\Render\World">
       <UniqueIdentifier>{cc29101d-d5b1-42d5-96b6-73ce776a178d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Core\Render\Texture">
+      <UniqueIdentifier>{0290a299-9676-4243-9662-f128c33ecc23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -109,9 +112,6 @@
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="Tilemap.cpp">
-      <Filter>Source Files\Core\Render</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Source Files\Core\Manager</Filter>
     </ClCompile>
@@ -121,14 +121,20 @@
     <ClCompile Include="ObjectBlueprint.cpp">
       <Filter>Source Files\Core\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\Core\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Decal.cpp">
       <Filter>Source Files\Core\Render\World</Filter>
     </ClCompile>
     <ClCompile Include="ParallaxBackground.cpp">
       <Filter>Source Files\Core\Render\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Core\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Core\Render\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Tilemap.cpp">
+      <Filter>Source Files\Core\Render\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,9 +201,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Source Files\Core\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Tilemap.h">
-      <Filter>Source Files\Core\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectManager.h">
       <Filter>Source Files\Core\Manager</Filter>
     </ClInclude>
@@ -207,14 +210,20 @@
     <ClInclude Include="ObjectBlueprint.h">
       <Filter>Source Files\Core\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Source Files\Core\Render</Filter>
-    </ClInclude>
     <ClInclude Include="ParallaxBackground.h">
       <Filter>Source Files\Core\Render\World</Filter>
     </ClInclude>
     <ClInclude Include="Decal.h">
       <Filter>Source Files\Core\Render\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Core\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Tilemap.h">
+      <Filter>Source Files\Core\Render\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Source Files\Core\Render\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <climits>
 
 Level::Level(const std::string& name, const std::string& foregroundTileResource, const std::string& backgroundTileResource)
   : m_Name(name)
@@ -105,6 +106,20 @@ Point2f Level::GetPlayerSpawn() const
 // WARNING: THIS IS A VERY DIRTY AND DANGEROUS IMPLEMENTATION, I AM HIGHLY AWARE OF THAT, HOWEVER
 // I JUST WANT A LEVEL EDITOR THAT DOES WHAT IT NEEDS TO DO AND FOR THAT WE WILL ASSUME THAT THE LEVEL
 // FILE WILL REMAIN UNTAMPERED WITH
+// Define a delimiter value
+// Function to get the raw bytes of any type and add them to a vector<char>
+template<typename T>
+void AddValueToVector(const T& value, std::vector<char>& vec)
+{
+  // Treat the value as an array of bytes
+  const char* bytes = reinterpret_cast<const char*>(&value);
+
+  // Add each byte to the vector
+  vec.insert(vec.end(), bytes, bytes + sizeof(T));
+}
+
+constexpr int TILEMAP_DELIMITER = MAXINT;
+
 void Level::Load()
 {
   std::cout << "Loading level: " << m_Name << std::endl;
@@ -123,41 +138,27 @@ void Level::Load()
   file.read(reinterpret_cast<char*>(&m_PlayerSpawn), sizeof(Point2f));
 
   std::vector<int> rawTileInfo;
-  int zeroCount{ 0 };
-
   int tileValue;
+
   while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
   {
+    if (tileValue == TILEMAP_DELIMITER)
+      break;
+
     rawTileInfo.push_back(tileValue);
-    if (tileValue == 0)
-    {
-      zeroCount++;
-      if (zeroCount == 4)
-        break;
-    } else
-    {
-      zeroCount = 0;
-    }
   }
 
   // Assuming BackgroundTilemap and ForegroundTilemap are initialized correctly
   m_BackgroundTilemapPtr->LoadRawTileData(rawTileInfo);
 
   rawTileInfo.clear();
-  zeroCount = 0;
 
   while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
   {
+    if (tileValue == TILEMAP_DELIMITER)
+      break;
+
     rawTileInfo.push_back(tileValue);
-    if (tileValue == 0)
-    {
-      zeroCount++;
-      if (zeroCount == 4)
-        break;
-    } else
-    {
-      zeroCount = 0;
-    }
   }
 
   m_ForegroundTilemapPtr->LoadRawTileData(rawTileInfo);
@@ -173,59 +174,34 @@ void Level::Load()
   file.close();
 }
 
+void Level::Save() const
+{
+  std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
 
-  // Function to get the raw bytes of any type and add them to a vector<char>
-  template<typename T>
-  void AddValueToVector(const T& value, std::vector<char>& vec)
-  {
-    // Treat the value as an array of bytes
-    const char* bytes = reinterpret_cast<const char*>(&value);
+  std::vector<char> data;
 
-    // Add each byte to the vector
-    vec.insert(vec.end(), bytes, bytes + sizeof(T));
+  AddValueToVector(m_PlayerSpawn, data);
+
+  for (int val : m_BackgroundTilemapPtr->ToRawTileData()) {
+    AddValueToVector(val, data);
   }
 
-  // AGAIN, DANGEROUS (naive) IMPLEMENTATION
-  void Level::Save() const
-  {
-    std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
+  // Write the delimiter for the background tilemap
+  AddValueToVector(TILEMAP_DELIMITER, data);
 
-    // Empty value to write
-    const int empty{ 0 };
-
-    // Create the memory stream to write
-    std::vector<char> data;
-  
-    AddValueToVector(m_PlayerSpawn, data);
-
-    for (int val : m_BackgroundTilemapPtr->ToRawTileData()) {
-      AddValueToVector(val, data);
-    }
-
-    // Write empty 4 times for file padding, to know where the tilemap ends
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-
-    for (int val : m_ForegroundTilemapPtr->ToRawTileData()) {
-      AddValueToVector(val, data);
-    }
-  
-    // Again 4x empty for file padding, this to know where the tilemaps end
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-    AddValueToVector(empty, data);
-
-    // Write the blueprints to the data
-    for (const ObjectBlueprint& bp : m_ObjectBlueprints) {
-      AddValueToVector(bp.GetObjectId(), data);
-      AddValueToVector(bp.GetPosition(), data);
-    }
-
-    // AND FINIT, all we have to do is write the data to the file
-    std::ofstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::out | std::ios::binary);
-    file.write(data.data(), data.size());
-    file.close();
+  for (int val : m_ForegroundTilemapPtr->ToRawTileData()) {
+    AddValueToVector(val, data);
   }
+
+  // Write the delimiter for the foreground tilemap
+  AddValueToVector(TILEMAP_DELIMITER, data);
+
+  for (const ObjectBlueprint& bp : m_ObjectBlueprints) {
+    AddValueToVector(bp.GetObjectId(), data);
+    AddValueToVector(bp.GetPosition(), data);
+  }
+
+  std::ofstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::out | std::ios::binary);
+  file.write(data.data(), data.size());
+  file.close();
+}
