@@ -9,7 +9,7 @@
 using namespace utils;
 
 Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
-  : m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({nullptr, 0})
+  : m_Position(position), m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({nullptr, 0})
 {
   SetResource(AddResource(resource) - 1);
 }
@@ -17,8 +17,8 @@ Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& fram
 void Sprite::Draw(bool debug) const
 {
   const Rectf dstRect{
-    m_Position.x - (m_Size.x / 2.f),
-    m_Position.y + (m_Size.y / 2.f),
+    m_Position.x,
+    m_Position.y,
     m_Size.x,
     m_Size.y
   };
@@ -44,7 +44,7 @@ void Sprite::Update(float elapsedSec)
 {
   m_Time += elapsedSec;
 
-  if (m_Time >= m_MsPerFrame) {
+  if (m_Time > m_MsPerFrame) {
     m_Time = 0;
     m_Frame = (m_Frame + 1) % m_State.frames;
   }

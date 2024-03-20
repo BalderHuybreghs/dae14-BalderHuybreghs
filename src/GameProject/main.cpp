@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "EditorScreen.h"
 #include "GameDefines.h"
+#include "PlayingScreen.h"
+#include "LoadingScreen.h"
 
 void StartHeapControl();
 void DumpMemoryLeaks();
@@ -13,7 +15,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-  GameScreen* startScreenPtr{ new EditorScreen{} };
+  GameScreen* startScreenPtr{ new LoadingScreen{ 500 } };
 	Game* pGame{ new Game{ Window{ PROJECT_NAME, WINDOW_WIDTH , WINDOW_HEIGHT }, startScreenPtr } };
 	pGame->Run();
 	delete pGame;

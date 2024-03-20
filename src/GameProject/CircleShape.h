@@ -15,4 +15,7 @@ public:
   Circlef GetShape() const;
 private:
   float m_Radius;
+
+  // Inherited via Shape
+  Point2f GetSimpleSize() const override;
 };

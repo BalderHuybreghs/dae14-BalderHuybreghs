@@ -83,8 +83,8 @@ void EditorScreen::Update(float elapsedSec)
 
     const Vector2f direction{ mouseFromCenter.Normalized() };
 
-    cameraPos.x += CAMERA_DRAG_SPEED * direction.x;
-    cameraPos.y += CAMERA_DRAG_SPEED * direction.y;
+    cameraPos.x += CAMERA_DRAG_SPEED * direction.x * elapsedSec;
+    cameraPos.y += CAMERA_DRAG_SPEED * direction.y * elapsedSec;
 
     m_CameraPtr->SetPosition(cameraPos);
   }

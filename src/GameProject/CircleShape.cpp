@@ -47,3 +47,8 @@ Circlef CircleShape::GetShape() const
 {
   return Circlef(m_Position.x, m_Position.y, m_Radius);
 }
+
+Point2f CircleShape::GetSimpleSize() const
+{
+  return Point2f(m_Radius, m_Radius);
+}

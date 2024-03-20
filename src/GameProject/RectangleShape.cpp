@@ -47,3 +47,8 @@ Rectf RectangleShape::GetShape() const
 {
   return Rectf(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 }
+
+Point2f RectangleShape::GetSimpleSize() const
+{
+    return Point2f(m_Size.x, m_Size.y);
+}

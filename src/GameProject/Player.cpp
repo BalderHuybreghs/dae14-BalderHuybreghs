@@ -3,13 +3,14 @@
 #include <iostream>
 #include "GameDefines.h"
 #include "RectangleShape.h"
+#include "utils.h"
 
 Player::Player(const Point2f& position)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Dashes(1), m_Collider(nullptr), m_ColliderSlideLeft(nullptr),
   m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr)
 {
   // All the player animations
-  m_Sprite = new Sprite(m_Position, Point2f{100.f, 100.f}, Point2f{ FRAME_SIZE, FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
+  m_Sprite = new Sprite(m_Position, Point2f{ 240.f, 240.f}, Point2f{ FRAME_SIZE, FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
   m_Sprite->AddResource(PLAYER_WALK_RESOURCE);
   m_Sprite->AddResource(PLAYER_CLIMB_RESOURCE);
   m_Sprite->AddResource(PLAYER_EDGE_RESOURCE);
@@ -18,10 +19,11 @@ Player::Player(const Point2f& position)
   m_Sprite->AddResource(PLAYER_DUCK_RESOURCE);
   m_Sprite->AddResource(PLAYER_FALL_RESOURCE);
 
-  m_Collider = new RectangleShape(Point2f{ 10.f, 10.f }, m_Position);
-  m_ColliderSlideLeft = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x - 5.f, m_Position.y });
-  m_ColliderSlideRight = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x + 5.f, m_Position.y });
-  m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f });
+  const Color4f debugColor{ 0.f, 5.f, 0.f, 0.5f };
+  m_Collider = new RectangleShape(Point2f{ 90.f, 110.f }, m_Position, debugColor, true);
+  m_ColliderSlideLeft = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, debugColor, true);
+  m_ColliderSlideRight = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, debugColor, true);
+  m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f }, debugColor, true);
 }
 
 Player::~Player()
@@ -56,10 +58,23 @@ void Player::Update(float elapsedSec)
   }
 
   // Update the component positions
-  //m_JumpParticle->SetPosition(m_Position);
-  //m_Sprite->SetPosition(m_Position);
+  //m_JumpParticle->SetPosition(m_Position);\
+  
+  const Point2f spriteSize{ m_Sprite->GetSize() };
+  const Point2f colliderSide{ m_Collider->GetSimpleSize() };
+
+  m_Sprite->SetPosition(Point2f{
+      m_Position.x - spriteSize.x / 2.f,
+      m_Position.y
+  });
+
   //m_Particle->SetPosition(m_Position);
-  m_Collider->SetPosition(m_Position);
+  m_Collider->SetPosition(Point2f{
+    m_Position.x - colliderSide.x / 2.f,
+    m_Position.y
+  });
+
+
   m_ColliderSlideLeft->SetPosition(Point2f{ m_Position.x - 5.f, m_Position.y });
   m_ColliderSlideRight->SetPosition(Point2f{ m_Position.x + 5.f, m_Position.y });
   m_ColliderFeet->SetPosition(Point2f{ m_Position.x, m_Position.y + 5.f });
