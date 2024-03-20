@@ -10,7 +10,7 @@ Player::Player(const Point2f& position)
   m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr)
 {
   // All the player animations
-  m_Sprite = new Sprite(m_Position, Point2f{ 240.f, 240.f}, Point2f{ FRAME_SIZE, FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
+  m_Sprite = new Sprite(m_Position, Point2f{ 200.f, 200.f}, Point2f{ FRAME_SIZE, FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
   m_Sprite->AddResource(PLAYER_WALK_RESOURCE);
   m_Sprite->AddResource(PLAYER_CLIMB_RESOURCE);
   m_Sprite->AddResource(PLAYER_EDGE_RESOURCE);
@@ -20,7 +20,7 @@ Player::Player(const Point2f& position)
   m_Sprite->AddResource(PLAYER_FALL_RESOURCE);
 
   const Color4f debugColor{ 0.f, 5.f, 0.f, 0.5f };
-  m_Collider = new RectangleShape(Point2f{ 90.f, 110.f }, m_Position, debugColor, true);
+  m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, debugColor, true);
   m_ColliderSlideLeft = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, debugColor, true);
   m_ColliderSlideRight = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, debugColor, true);
   m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f }, debugColor, true);

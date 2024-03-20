@@ -55,7 +55,7 @@ Point2f Camera::GetWorldPosition(const Point2f& screenPosition) const
 {
   // Calculate world position from screen position, considering zoom
   return Point2f{
-      screenPosition.x + m_Position.x - (WINDOW_WIDTH / 2.f) * m_Zoom,
-      screenPosition.y + m_Position.y - (WINDOW_HEIGHT / 2.f) * m_Zoom
+      (screenPosition.x - (WINDOW_WIDTH / m_Zoom) / 2) + m_Position.x,
+      (screenPosition.y - (WINDOW_HEIGHT / m_Zoom) / 2) + m_Position.y
   };
 }

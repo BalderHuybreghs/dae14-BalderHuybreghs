@@ -57,4 +57,4 @@ static const float CAMERA_DRAG_SPEED{ 1000 };
 
 // Animation information
 static const int FRAME_SIZE{ 32 };
-static const float FRAMES_PER_SECOND{ 1 / 10.f };
+static const float FRAMES_PER_SECOND{ 1 / 8.f };

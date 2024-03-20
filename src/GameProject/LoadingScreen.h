@@ -5,7 +5,7 @@
 class LoadingScreen : public GameScreen
 {
 public:
-  LoadingScreen(float loadingTime);
+  LoadingScreen(GameScreen* nextScreenPtr, float loadingTime);
   ~LoadingScreen();
 
   void Initialize() override;
@@ -14,8 +14,9 @@ public:
   void Draw() override;
   void Update(float elapsedSec) override;
 private:
-  Sprite* m_LogoSprite;
-  Sprite* m_LoadingSprite;
+  GameScreen* m_NextScreenPtr;
+  Sprite* m_LogoPtr;
+  Sprite* m_LoadingPtr;
 
   float m_TimeLeft;
 };

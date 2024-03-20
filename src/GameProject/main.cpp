@@ -15,7 +15,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-  GameScreen* startScreenPtr{ new LoadingScreen{ 500 } };
+  GameScreen* startScreenPtr{ new LoadingScreen{ new PlayingScreen(), 500 } };
 	Game* pGame{ new Game{ Window{ PROJECT_NAME, WINDOW_WIDTH , WINDOW_HEIGHT }, startScreenPtr } };
 	pGame->Run();
 	delete pGame;
