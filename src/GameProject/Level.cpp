@@ -64,7 +64,7 @@ void Level::Draw(bool debug) const
   // Draw the player spawn position on top of everything in debug mode
   if (debug) {
     utils::SetColor(Color4f{ 1.f, 0.f, 0.f, 1.f });
-    utils::DrawEllipse(m_PlayerSpawn, 10.f, 10.f);
+    utils::DrawEllipse(m_PlayerSpawn, 20.f, 20.f);
   }
 }
 

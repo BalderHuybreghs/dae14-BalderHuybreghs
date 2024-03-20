@@ -5,6 +5,7 @@
 #include "ObjectBlueprint.h"
 #include "ObjectManager.h"
 #include "Camera.h"
+#include "Shape.h"
 
 class EditorScreen : public GameScreen
 {
@@ -46,6 +47,8 @@ private:
   Level* m_LevelPtr;
   Tilemap* m_CurrentTilemapPtr; // Should not be deleted, holds a reference to the tilemap within the level
   Camera* m_CameraPtr;
+
+  Shape* m_MouseDragBorder;
 
   int m_CurrentTile;
 };

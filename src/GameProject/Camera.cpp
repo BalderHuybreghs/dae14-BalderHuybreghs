@@ -14,8 +14,8 @@ Camera::Camera(const Rectf& rect)
 void Camera::PushMatrix()
 {
   glPushMatrix();
+  //glScalef(m_Rect.width, m_Rect.height, 0);
   glTranslatef(-m_Rect.left, -m_Rect.bottom, 0);
-  // glScalef(m_Rect.width, m_Rect.height, 0);
 }
 
 void Camera::PopMatrix()

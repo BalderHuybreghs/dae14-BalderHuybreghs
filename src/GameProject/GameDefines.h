@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 
+static const std::string PROJECT_NAME{ "GameProject - Huybreghs, balder - 1DAE14" };
+
 static const char FS{ '\\' };
 
 // File extensions
@@ -37,8 +39,16 @@ static const std::string PLAYER_WALK_RESOURCE{ PLAYER_RESOURCE + FS + "walk" };
 
 static const std::string LEVEL1_NAME{ "forsaken_city" };
 
+// Screen info
+static const float WINDOW_WIDTH{ 1280.f };
+static const float WINDOW_HEIGHT{ 800.f };
+
 // Texture information
 static const int TILE_SIZE{ 8 };
+
+static const float MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL{ WINDOW_WIDTH * 0.2f };
+static const float MOUSE_DRAG_BORDER_MARGIN_VERTICAL{ WINDOW_HEIGHT * 0.2f };
+static const float CAMERA_DRAG_SPEED{ 10 };
 
 // Animation information
 static const int FRAME_SIZE{ 16 };

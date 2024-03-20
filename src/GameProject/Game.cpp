@@ -2,7 +2,7 @@
 #include "Game.h"
 
 Game::Game(const Window& window, GameScreen* initialScreenPtr)
-	:BaseGame{ window }
+	: BaseGame{ window }
 {
 	Initialize(initialScreenPtr);
 }
