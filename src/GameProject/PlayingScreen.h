@@ -27,4 +27,6 @@ private:
   Level* m_LevelPtr;
   Player* m_PlayerPtr;
   Camera* m_CameraPtr;
+
+  Tilemap* m_TilemapPtr;
 };

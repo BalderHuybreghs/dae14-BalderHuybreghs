@@ -31,6 +31,8 @@ Level::~Level()
 
 void Level::Build()
 {
+  std::cout << "Building level '" << m_Name << "'" << std::endl;
+
   // Destroy any possible game objects
   for (const GameObject* object : m_Objects) {
     delete object;

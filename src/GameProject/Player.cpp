@@ -60,6 +60,11 @@ void Player::Update(float elapsedSec)
     }
   }
 
+  m_Position = Point2f{
+    m_Position.x + m_Velocity.x * elapsedSec,
+    m_Position.y + m_Velocity.y * elapsedSec
+  };
+
   // Update the component positions
   //m_JumpParticle->SetPosition(m_Position);\
   
@@ -145,6 +150,11 @@ bool Player::CanMove(const Vector2f& direction) const
 const Shape* Player::GetCollisionShape() const
 {
     return m_Collider;
+}
+
+void Player::SetPosition(const Point2f& position)
+{
+  m_Position = position;
 }
 
 Point2f Player::GetPosition() const

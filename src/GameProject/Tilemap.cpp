@@ -81,6 +81,8 @@ void Tilemap::SetResource(const std::string& resource)
 
 void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 {
+  std::cout << "Loading raw tilemap data for '" << m_Resource << "'" << std::endl;
+
   if (rawTileData.size() % 3 != 0) {
     std::cerr << "Tile data for '" << m_Resource <<"' is not divisible by 3, concluded that data must be corrupt" << std::endl;
     return;
@@ -137,6 +139,8 @@ Rectf Tilemap::GetTileRect(const Point2f& position) const
 
 std::vector<int> Tilemap::ToRawTileData() const
 {
+  std::cout << "Fetching raw tilemap data for '" << m_Resource << "'" << std::endl;
+
   std::vector<int> rawTileData;
 
   for (const auto& pair : m_Tiles) {
@@ -153,7 +157,7 @@ std::vector<int> Tilemap::ToRawTileData() const
 
 int Tilemap::ValueToX(float val) const
 {
-  return int(val/ (m_TileSize * m_Size.x));
+  return int(val / (m_TileSize * m_Size.x));
 }
 
 int Tilemap::ValueToY(float val) const

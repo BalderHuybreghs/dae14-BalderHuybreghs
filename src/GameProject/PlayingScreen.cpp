@@ -26,6 +26,7 @@ void PlayingScreen::Initialize()
 
   const Point2f playerPos{ m_PlayerPtr->GetPosition() };
   m_CameraPtr = new Camera(m_PlayerPtr->GetPosition());
+  m_TilemapPtr = m_LevelPtr->GetFrontTilemap();
 
   // Build the level at the end of creation
   m_LevelPtr->Build();
@@ -41,8 +42,17 @@ void PlayingScreen::Draw()
 
 void PlayingScreen::Update(float elapsedSec)
 {
+  const Point2f oldPlayerPosition{ m_PlayerPtr->GetPosition() };
+
   m_LevelPtr->Update(*m_PlayerPtr, elapsedSec);
   m_PlayerPtr->Update(elapsedSec);
+
+  // Collision stuffs
+  if (m_TilemapPtr->IsTile(m_PlayerPtr->GetPosition())) {
+    m_PlayerPtr->SetPosition(oldPlayerPosition);
+  } else {
+    m_PlayerPtr->ApplyForce(GRAVITY);
+  }
 
   m_CameraPtr->SetPosition(m_PlayerPtr->GetPosition());
 }

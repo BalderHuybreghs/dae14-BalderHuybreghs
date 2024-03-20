@@ -42,6 +42,8 @@ public:
 
   const Shape* GetCollisionShape() const;
 
+  void SetPosition(const Point2f& position);
+
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
   State GetState() const;

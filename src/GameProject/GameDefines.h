@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "Vector2f.h"
 
 static const std::string PROJECT_NAME{ "GameProject - Huybreghs, balder - 1DAE14" };
 
@@ -58,3 +59,6 @@ static const float CAMERA_DRAG_SPEED{ 1000 };
 // Animation information
 static const int FRAME_SIZE{ 32 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
+
+// Playing information
+static const Vector2f GRAVITY{0.f, -10.f};
