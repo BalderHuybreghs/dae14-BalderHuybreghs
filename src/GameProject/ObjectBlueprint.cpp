@@ -6,6 +6,7 @@
 ObjectBlueprint::ObjectBlueprint(int objectId, Point2f position)
   : m_ObjectId(0), m_Position(position)
 {
+  std::cout << "Creating Blueprint '" << m_ObjectId << "' at (" << m_Position.x << ', ' << m_Position.y << ")" << std::endl;
   SetObjectId(objectId);
 }
 
@@ -17,7 +18,10 @@ void ObjectBlueprint::Draw() const
 
 GameObject* ObjectBlueprint::Construct() const
 {
-  return ObjectManager::Instance()->CloneObject(m_ObjectId);
+  std::cout << "Constructing object '" << m_ObjectId << "' at (" << m_Position.x << ', ' << m_Position.y << ")" << std::endl;
+  GameObject* obj{ ObjectManager::Instance()->CloneObject(m_ObjectId) };
+  obj->SetPosition(m_Position);
+  return obj;
 }
 
 void ObjectBlueprint::SetObjectId(int objectId)

@@ -8,10 +8,11 @@ TextureManager* TextureManager::_instance = nullptr;
 
 TextureManager::~TextureManager()
 {
-  std::cout << "Cleaning textures" << std::endl;
+  std::cout << "Cleaning registered textures" << std::endl;
 
   // Delete all the textures
   for (const std::pair<std::string, const Texture*>& pair : m_TexturePtrs) {
+    std::cout << "Deleting texture with ID: '" << pair.first << '\'' << std::endl;
     delete pair.second;
   }
 
@@ -76,8 +77,16 @@ const Texture* TextureManager::GetTexture(const std::string& resource)
 TextureManager* TextureManager::Instance()
 {
   if (_instance == nullptr) {
+    std::cout << "Creating texture manager" << std::endl;
     _instance = new TextureManager();
   }
 
   return _instance;
+}
+
+void TextureManager::DestroyInstance()
+{
+  std::cout << "Destroying texture manager" << std::endl;
+  delete _instance;
+  _instance = nullptr;
 }

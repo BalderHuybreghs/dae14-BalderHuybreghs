@@ -27,6 +27,7 @@ public:
   int GetObjectCount();
 
   static ObjectManager* Instance();
+  static void DestroyInstance();
 private:
   int m_IdCounter{};
   std::unordered_map<int, const GameObject*> m_ObjectPtrs;

@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Camera.h"
 #include "GameDefines.h"
+#include "iostream"
 
 Camera::Camera(const Point2f position, float zoom)
   : m_Position(position), m_Zoom(zoom)
 {
+  std::cout << "Creating camera at (" << position.x << ", " << position.y << ") with zoom factor " << zoom << std::endl;
 }
 
 Camera::Camera(const Point2f& position)

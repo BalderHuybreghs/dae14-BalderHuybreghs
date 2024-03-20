@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Game.h"
+#include "ObjectManager.h"
+#include "TextureManager.h"
 
 Game::Game(const Window& window, GameScreen* initialScreenPtr)
 	: BaseGame{ window }
@@ -22,6 +24,10 @@ void Game::Cleanup()
 {
   delete m_ScreenManagerPtr;
   m_ScreenManagerPtr = nullptr;
+
+  // Cleanup the managers, as the resources will not be used anymore at this point
+  ObjectManager::DestroyInstance();
+  TextureManager::DestroyInstance();
 }
 
 void Game::Update(float elapsedSec)

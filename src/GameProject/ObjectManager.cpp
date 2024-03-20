@@ -10,6 +10,7 @@ ObjectManager::~ObjectManager()
 
   // Delete all the textures
   for (const std::pair<int, const GameObject*>& pair : m_ObjectPtrs) {
+    std::cout << "Deleting object with ID: '" << pair.first << '\'' << std::endl;
     delete pair.second;
   }
 
@@ -19,6 +20,7 @@ ObjectManager::~ObjectManager()
 
 GameObject* ObjectManager::CloneObject(int id)
 {
+  std::cout << "Cloning object with ID: " << id << std::endl;
   return GetBlueprintObject(id)->Clone();
 }
 
@@ -45,17 +47,25 @@ int ObjectManager::GetObjectCount()
   return int(m_ObjectPtrs.size());
 }
 
+bool ObjectManager::ObjectWithIdExists(int id)
+{
+  std::unordered_map<int, const GameObject*>::iterator value{ m_ObjectPtrs.find(id) };
+  return value != m_ObjectPtrs.end();
+}
+
 ObjectManager* ObjectManager::Instance()
 {
   if (_instance == nullptr) {
+    std::cout << "Creating object manager" << std::endl;
     _instance = new ObjectManager();
   }
 
   return _instance;
 }
 
-bool ObjectManager::ObjectWithIdExists(int id)
+void ObjectManager::DestroyInstance()
 {
-  std::unordered_map<int, const GameObject*>::iterator value{ m_ObjectPtrs.find(id) };
-  return value != m_ObjectPtrs.end();
+  std::cout << "Destroying object manager" << std::endl;
+  delete _instance;
+  _instance = nullptr;
 }

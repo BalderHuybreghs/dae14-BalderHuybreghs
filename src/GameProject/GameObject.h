@@ -23,6 +23,9 @@ public:
 
   // Allows for cloning the given gameobject
   virtual GameObject* Clone() const = 0;
+ 
+  void SetPosition(const Point2f& position);
+  Point2f GetPosition();
 protected:
   GameObject(Point2f position) {};
 

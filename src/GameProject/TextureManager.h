@@ -15,6 +15,7 @@ public:
   const Texture* GetTexture(const std::string& resource);
 
   static TextureManager* Instance();
+  static void DestroyInstance();
 protected:
   const Texture* CreateTextureInstance(const std::string& resource);
   const Texture* CreateFromResource(const std::string& resource);
