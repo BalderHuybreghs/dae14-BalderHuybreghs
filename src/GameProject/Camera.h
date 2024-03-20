@@ -13,13 +13,14 @@ public:
       Linear
     };
 
-    Rectf goal;      // The goal for the camera to reach
+    Point2f goal;    // The goal for the camera to reach
+    float zoomGoal;  // The zoom goal
     float duration;  // The duration in milliseconds
     Type type;       // Motion type, the camera may move in a certain way
   };
 
-  Camera(const Rectf& rect, const Rectf& area);
-  Camera(const Rectf& rect);
+  Camera(const Point2f position, float zoom);
+  Camera(const Point2f& position);
 
   void PushMatrix();
   void PopMatrix();
@@ -27,16 +28,16 @@ public:
   // The camera has the ability to follow objects in a certain pattern
   void Update(float elapsedSec);
 
-  void SetRect(const Rectf& rect);
-  void SetArea(const Rectf& area);
-  Rectf GetRect() const;
-  Rectf GetArea() const;
+  void SetPosition(const Point2f& position);
+  void SetZoom(float zoom);
+
+  float GetZoom() const;
+  Point2f GetPosition() const;
+  Point2f GetWorldPosition(const Point2f& screenPosition) const;
 private:
   std::queue<AnimationGoal> m_AnimationGoals;
 
-  Rectf m_Rect;
-
-  // A limited area of control for the camera
-  Rectf m_Area;
+  Point2f m_Position;
+  float m_Zoom;
 };
 

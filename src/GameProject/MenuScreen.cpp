@@ -22,11 +22,11 @@ void MenuScreen::Update(float elapsedSec)
 {
 }
 
-void MenuScreen::OnKeyDownEvent(SDL_KeyboardEvent key)
+void MenuScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
 }
 
-void MenuScreen::OnKeyUpEvent(SDL_KeyboardEvent key)
+void MenuScreen::OnKeyUpEvent(const SDL_KeyboardEvent& key)
 {
 }
 

@@ -1,21 +1,23 @@
 #include "pch.h"
 #include "Camera.h"
+#include "GameDefines.h"
 
-Camera::Camera(const Rectf& rect, const Rectf& area)
-  : m_Rect(rect), m_Area(area)
+Camera::Camera(const Point2f position, float zoom)
+  : m_Position(position), m_Zoom(zoom)
 {
 }
 
-Camera::Camera(const Rectf& rect)
-  : Camera(rect, Rectf())
+Camera::Camera(const Point2f& position)
+  : Camera(position, 1.f)
 {
 }
 
 void Camera::PushMatrix()
 {
   glPushMatrix();
-  //glScalef(m_Rect.width, m_Rect.height, 0);
-  glTranslatef(-m_Rect.left, -m_Rect.bottom, 0);
+  glTranslatef(-m_Position.x + WINDOW_WIDTH / 2, -m_Position.y + WINDOW_HEIGHT / 2, 0);
+  glScalef(m_Zoom, m_Zoom, 0);
+  glTranslatef(-WINDOW_WIDTH / 2, -WINDOW_HEIGHT / 2, 0);
 }
 
 void Camera::PopMatrix()
@@ -28,22 +30,31 @@ void Camera::Update(float elapsedSec)
   // TODO: Implement this
 }
 
-void Camera::SetRect(const Rectf& rect)
+void Camera::SetPosition(const Point2f& position)
 {
-  m_Rect = rect;
+  m_Position = position;
 }
 
-void Camera::SetArea(const Rectf& area)
+void Camera::SetZoom(float zoom)
 {
-  m_Area = area;
+  m_Zoom = zoom;
 }
 
-Rectf Camera::GetRect() const
+float Camera::GetZoom() const
 {
-  return m_Rect;
+  return m_Zoom;
 }
 
-Rectf Camera::GetArea() const
+Point2f Camera::GetPosition() const
 {
-  return m_Area;
+  return m_Position;
+}
+
+Point2f Camera::GetWorldPosition(const Point2f& screenPosition) const
+{
+  // Calculate world position from screen position, considering zoom
+  return Point2f{
+      (screenPosition.x + m_Position.x),
+      (screenPosition.y + m_Position.y)
+  };
 }

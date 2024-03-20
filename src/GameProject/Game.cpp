@@ -36,7 +36,7 @@ void Game::Draw() const
   m_ScreenManagerPtr->GetScreen()->Draw();
 }
 
-void Game::ProcessKeyDownEvent(const SDL_KeyboardEvent & e)
+void Game::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 {
   m_ScreenManagerPtr->GetScreen()->OnKeyDownEvent(e);
 }
@@ -59,6 +59,11 @@ void Game::ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
 void Game::ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
 {
   m_ScreenManagerPtr->GetScreen()->OnMouseUpEvent(e);
+}
+
+void Game::ProcessMouseWheelEvent(const SDL_MouseWheelEvent& e)
+{
+  m_ScreenManagerPtr->GetScreen()->OnMouseWheelEvent(e);
 }
 
 void Game::ClearBackground() const

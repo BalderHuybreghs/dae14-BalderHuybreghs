@@ -4,6 +4,7 @@
 #include <iostream>
 #include "utils.h"
 #include "RectangleShape.h"
+#include "MathUtils.h"
 
 using namespace utils;
 
@@ -25,8 +26,7 @@ void EditorScreen::Initialize()
 
   m_LevelPtr->Load();
 
-  const Rectf cameraRect{ 0.f, 0.f, WINDOW_WIDTH, WINDOW_HEIGHT };
-  m_CameraPtr = new Camera(cameraRect);
+  m_CameraPtr = new Camera(Point2f{ 0, 0 });
   m_MouseDragBorder = new RectangleShape(Point2f{ WINDOW_WIDTH - MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL * 2, WINDOW_HEIGHT - MOUSE_DRAG_BORDER_MARGIN_VERTICAL * 2 }, Point2f{ MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL, MOUSE_DRAG_BORDER_MARGIN_VERTICAL });
 }
 
@@ -47,7 +47,7 @@ void EditorScreen::Draw()
 
   // Draw an outline around the tile the player may build
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
-  const Rectf selectedTileRect{ m_CurrentTilemapPtr->GetTileRect(ToWorldPos(m_MousePos)) };
+  const Rectf selectedTileRect{ m_CurrentTilemapPtr->GetTileRect(m_CameraPtr->GetWorldPosition(m_MousePos)) };
 
   // Draw red if we are working in negative coordinates
   if (selectedTileRect.left < 0 || selectedTileRect.bottom < 0) {
@@ -74,7 +74,7 @@ void EditorScreen::Update(float elapsedSec)
 
   // If the mouse is outside of a given area, move the camera over the world (warcraft style)
   if (!m_MouseDragBorder->IsPointInside(m_MousePos)) {
-    Rectf cameraRect{ m_CameraPtr->GetRect() };
+    Point2f cameraPos{ m_CameraPtr->GetPosition() };
 
     const Vector2f mouseFromCenter(
       m_MousePos.x - WINDOW_WIDTH / 2,
@@ -83,14 +83,14 @@ void EditorScreen::Update(float elapsedSec)
 
     const Vector2f direction{ mouseFromCenter.Normalized() };
 
-    cameraRect.left += CAMERA_DRAG_SPEED * direction.x;
-    cameraRect.bottom += CAMERA_DRAG_SPEED * direction.y;
+    cameraPos.x += CAMERA_DRAG_SPEED * direction.x;
+    cameraPos.y += CAMERA_DRAG_SPEED * direction.y;
 
-    m_CameraPtr->SetRect(cameraRect);
+    m_CameraPtr->SetPosition(cameraPos);
   }
 }
 
-void EditorScreen::OnKeyDownEvent(SDL_KeyboardEvent key)
+void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
   switch (key.keysym.sym)
   {
@@ -104,12 +104,12 @@ void EditorScreen::OnKeyDownEvent(SDL_KeyboardEvent key)
     m_LevelPtr->Save();
   	break;
   case SDLK_g:
-    m_LevelPtr->SetPlayerSpawn(ToWorldPos(m_MousePos));
+    m_LevelPtr->SetPlayerSpawn(m_CameraPtr->GetWorldPosition(m_MousePos));
     break;
   }
 }
 
-void EditorScreen::OnKeyUpEvent(SDL_KeyboardEvent key)
+void EditorScreen::OnKeyUpEvent(const SDL_KeyboardEvent& key)
 {
 }
 
@@ -119,10 +119,10 @@ void EditorScreen::OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
 
   switch(e.state) {
     case SDL_BUTTON_LEFT:
-      m_CurrentTilemapPtr->SetTile(ToWorldPos(m_MousePos), m_CurrentTile);
+      m_CurrentTilemapPtr->SetTile(m_CameraPtr->GetWorldPosition(m_MousePos), m_CurrentTile);
       break;
     case SDL_BUTTON_MIDDLE:
-      m_CurrentTilemapPtr->RemoveTile(ToWorldPos(m_MousePos));
+      m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(m_MousePos));
       break;
   }
 }
@@ -135,12 +135,25 @@ void EditorScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 {
 }
 
-Point2f EditorScreen::ToWorldPos(const Point2f& position)
+void EditorScreen::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
 {
-  const Rectf cameraRect{ m_CameraPtr->GetRect() };
+  // To zoom the camera in around the mouse
+  Point2f cameraPos{ m_CameraPtr->GetPosition() };
+  Point2f mouseWorldPos{ m_CameraPtr->GetWorldPosition(m_MousePos) };
+  float cameraZoom{ m_CameraPtr->GetZoom() };
 
-  return Point2f{
-    position.x + cameraRect.left,
-    position.y + cameraRect.bottom
-  };
+  if (e.y > 0) // Scroll up
+  {
+    cameraZoom += SCROLL_ZOOM_FACTOR;
+  } else if (e.y < 0) // Scroll down
+  {
+    cameraZoom -= SCROLL_ZOOM_FACTOR;
+  }
+
+  // Lerp towards the mouse
+  cameraPos.x = MathUtils::Lerp(cameraPos.x, mouseWorldPos.x, SCROLL_ZOOM_FACTOR * 2);
+  cameraPos.y = MathUtils::Lerp(cameraPos.y, mouseWorldPos.y, SCROLL_ZOOM_FACTOR * 2);
+
+  m_CameraPtr->SetPosition(cameraPos);
+  m_CameraPtr->SetZoom(cameraZoom);
 }

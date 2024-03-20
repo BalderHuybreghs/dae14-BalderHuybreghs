@@ -21,11 +21,11 @@ void PlayingScreen::Update(float elapsedSec)
 {
 }
 
-void PlayingScreen::OnKeyDownEvent(SDL_KeyboardEvent key)
+void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
 }
 
-void PlayingScreen::OnKeyUpEvent(SDL_KeyboardEvent key)
+void PlayingScreen::OnKeyUpEvent(const SDL_KeyboardEvent& key)
 {
 }
 

@@ -40,11 +40,12 @@ public:
   virtual void Update(float elapsedSec)                          {};
 
   // Key events
-  virtual void OnKeyDownEvent(SDL_KeyboardEvent key)             {};
-  virtual void OnKeyUpEvent(SDL_KeyboardEvent key)               {};
+  virtual void OnKeyDownEvent(const SDL_KeyboardEvent& key)      {};
+  virtual void OnKeyUpEvent(const SDL_KeyboardEvent& key)        {};
   virtual void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) {};
   virtual void OnMouseDownEvent(const SDL_MouseButtonEvent& e)   {};
   virtual void OnMouseUpEvent(const SDL_MouseButtonEvent& e)     {};
+  virtual void OnMouseWheelEvent(const SDL_MouseWheelEvent& e)   {};
 
 protected:
   GameScreen();

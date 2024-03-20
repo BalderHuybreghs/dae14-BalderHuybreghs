@@ -22,6 +22,7 @@ public:
 	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
 	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
+  void ProcessMouseWheelEvent(const SDL_MouseWheelEvent& e) override;
 
 private:
   // Variables

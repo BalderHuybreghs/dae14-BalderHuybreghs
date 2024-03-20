@@ -46,8 +46,10 @@ static const float WINDOW_HEIGHT{ 800.f };
 // Texture information
 static const int TILE_SIZE{ 8 };
 
+// Editor related settings
 static const float MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL{ WINDOW_WIDTH * 0.2f };
 static const float MOUSE_DRAG_BORDER_MARGIN_VERTICAL{ WINDOW_HEIGHT * 0.2f };
+static const float SCROLL_ZOOM_FACTOR{ 0.05f };
 static const float CAMERA_DRAG_SPEED{ 10 };
 
 // Animation information
