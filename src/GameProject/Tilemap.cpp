@@ -230,7 +230,7 @@ void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>
       ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0);  // Go right
       ++cornersFound;
     } else if (IsTile(x + 1, y + 1) && !IsTile(x + 1, y) && !IsTile(x, y + 1)) { // Edge case (diagonal connection)
-      shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height }); 
+      shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y + tile.height }); 
       ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1); // Go down
       ++cornersFound;
     }
@@ -260,8 +260,8 @@ void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>
       ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0); // Go left
       ++cornersFound;
     } else if (IsTile(x - 1, y - 1) && !IsTile(x, y - 1) && !IsTile(x - 1, y)) { // Edge case (diagonal connection)
-      shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height });
-      ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1); // Go down
+      shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y });
+      ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1); // Go up
       ++cornersFound;
     }
 

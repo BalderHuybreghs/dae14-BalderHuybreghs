@@ -33,6 +33,9 @@ void EditorScreen::Initialize()
 
 EditorScreen::~EditorScreen()
 {
+  // Save the level before exiting
+  m_LevelPtr->Save();
+
   delete m_LevelPtr;
   delete m_CameraPtr;
   delete m_MouseDragBorder;
