@@ -50,7 +50,7 @@ public:
   // Remove a tile from the tilemap
   void RemoveTile(const Point2f& point);
 
-  void SetResource(const std::string& resource);
+  void SetState(const std::string& resource);
 
   // Made to load in raw tile data from a binary file, the formay is just key-value int-int
   // hence the raw tile data vector size should be even

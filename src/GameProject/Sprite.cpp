@@ -9,14 +9,14 @@
 using namespace utils;
 
 Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
-  : m_Position(position), m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({nullptr, 0})
+  : m_Position(position), m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({0, nullptr, 0}), m_Mirror(false)
 {
-  SetResource(AddResource(resource) - 1);
+  SetState(AddResource(resource) - 1, true);
 }
 
 void Sprite::Draw(bool debug) const
 {
-  const Rectf dstRect{
+  Rectf dstRect{
     m_Position.x,
     m_Position.y,
     m_Size.x,
@@ -36,9 +36,23 @@ void Sprite::Draw(bool debug) const
     m_FrameSize.y
   };
 
-  if (m_State.texture != nullptr) {
-    m_State.texture->Draw(dstRect, srcRect);
+  if (m_State.texture == nullptr) {
+    std::cout << "Sprite texture is null" << std::endl;
+    return;
   }
+
+  // For mirroring the sprite
+  glPushMatrix();
+
+  // Apply mirroring transformation
+  glTranslatef(m_Position.x + m_Size.x / 2, m_Position.y + m_Size.y / 2, 0.f);
+  glScalef(m_Mirror ? -1 : 1, 1, 1);
+  glTranslatef(-m_Position.x - m_Size.x / 2, -m_Position.y - m_Size.y / 2, 0.f);
+
+  // Draw the sprite
+  m_State.texture->Draw(dstRect, srcRect);
+
+  glPopMatrix();
 }
 
 void Sprite::Update(float elapsedSec)
@@ -51,8 +65,12 @@ void Sprite::Update(float elapsedSec)
   }
 }
 
-void Sprite::SetResource(int state)
+void Sprite::SetState(int state, bool reset)
 {
+  if (m_State.id == state && !reset) {
+    return;
+  }
+
   m_State = m_States.at(state);
   m_Frame = 0;
   m_Time = 0;
@@ -63,6 +81,7 @@ size_t Sprite::AddResource(const std::string& resource)
   const Texture* texture = TextureManager::Instance()->GetTexture(resource);
 
   const Sprite::StateInfo state{
+    m_States.size(),
     texture,
     int(texture->GetWidth() / m_FrameSize.x)
   };
@@ -89,4 +108,9 @@ void Sprite::SetPosition(const Point2f& position)
 void Sprite::SetSize(const Point2f& size)
 {
   m_Size = size;
+}
+
+void Sprite::SetMirror(bool mirror)
+{
+  m_Mirror = mirror;
 }

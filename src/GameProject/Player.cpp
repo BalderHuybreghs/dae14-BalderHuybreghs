@@ -57,6 +57,19 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec)
 {
+  if (m_Velocity.y < -10) {
+    m_State = State::Falling;
+  } else if (m_Velocity.y > 10) {
+    m_State = State::Idle;
+  } else if (m_Velocity.x > 10 || m_Velocity.x < -10) {
+    m_State = State::Running;
+  } else {
+    m_State = State::Idle;
+  }
+
+  m_Sprite->SetMirror(m_Velocity.x < 0.f);
+  m_Sprite->SetState((int)m_State);
+
   switch (m_State) {
     case Player::State::Idle: {
       m_Dashes = 0;
@@ -103,7 +116,7 @@ void Player::Crouch()
   // TODO: update the player hitbox
   if (m_State == Player::State::Idle) {
     m_State = Player::State::Crouching;
-    m_Sprite->SetResource(int(m_State));
+    m_Sprite->SetState(int(m_State));
   }
 }
 
@@ -111,7 +124,7 @@ void Player::Hold()
 {
   if (m_State == Player::State::Sliding) {
     m_State = Player::State::Holding;
-    m_Sprite->SetResource(int(m_State));
+    m_Sprite->SetState(int(m_State));
   }
 }
 

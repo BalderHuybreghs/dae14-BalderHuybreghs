@@ -58,21 +58,26 @@ void PlayingScreen::Update(float elapsedSec)
   // Collision detection
   bool collided{};
   for (const std::vector<Point2f>& polygon : m_LevelPtr->GetCollisionPolygons()) {
-    collided = ResolveCollision(*m_PlayerPtr, oldPlayerPosition, newPlayerPosition, polygon);
-    if (collided) break;
+    collided = IsOverlapping(polygon, m_PlayerPtr->GetCollisionShape()->GetShape());
+    if (collided) {
+      ResolveCollision(*m_PlayerPtr, oldPlayerPosition, newPlayerPosition, polygon);
+      break;
+    }
   }
 
+  // Apply gravity if not colliding
   if (!collided) {
     m_PlayerPtr->ApplyForce(GRAVITY);
   } else {
-    m_PlayerPtr->SetPosition(oldPlayerPosition);
+    // Stop player's vertical velocity if colliding with a surface
+    m_PlayerPtr->SetPosition(newPlayerPosition);
+    //m_PlayerPtr->SetVelocity(Vector2f(m_PlayerPtr->GetVelocity().x, 0.0f));
   }
 
   //m_PlayerPtr->SetPosition(newPlayerPosition);
 
   m_CameraPtr->SetPosition(m_PlayerPtr->GetPosition());
 }
-
 
 void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
@@ -125,7 +130,13 @@ bool PlayingScreen::ResolveCollision(Player& player, const Point2f& oldPosition,
     // Calculate the amount to move the player out of the collision
     Vector2f correction = direction.Normalized() * (distance - hi.lambda);
     newPosition = oldPosition + correction;
-    player.SetVelocity(player.GetVelocity().Reflect(hi.normal));
+
+    // Reflect player's velocity based on collision normal
+    Vector2f reflectedVelocity = player.GetVelocity().Reflect(hi.normal);
+
+    // Apply velocity dampening factor (e.g., 0.8 for 80% dampening)
+    const float velocityDamping = 0.05f; // Adjust as needed
+    player.SetVelocity(reflectedVelocity * velocityDamping);
   }
 
   return hit;

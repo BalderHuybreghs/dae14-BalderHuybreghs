@@ -11,7 +11,7 @@ using namespace utils;
 Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
   : m_Size(size), m_TileSize(tileSize), m_Resource(resource)
 {
-  SetResource(resource);
+  SetState(resource);
 }
 
 void Tilemap::Draw(bool debug) const
@@ -78,7 +78,7 @@ void Tilemap::RemoveTile(const Point2f& point)
   }
 }
 
-void Tilemap::SetResource(const std::string& resource)
+void Tilemap::SetState(const std::string& resource)
 {
   // Grabs tilemaps from the tilemap folder
   m_TileTexturePtr = TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resource));

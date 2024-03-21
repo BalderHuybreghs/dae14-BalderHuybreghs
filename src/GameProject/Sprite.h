@@ -13,7 +13,7 @@ public:
 
   // Resources are states in this case, since resources will be added 
   // within code, states should remain relatively unchanged
-  void SetResource(int state);
+  void SetState(int state, bool reset = false);
 
   // Adds a resource to this sprite and returns its id
   size_t AddResource(const std::string& resource);
@@ -24,8 +24,11 @@ public:
   void SetPosition(const Point2f& position);
   void SetSize(const Point2f& size);
 
+  void SetMirror(bool mirror);
+
   struct StateInfo
   {
+    int id;
     const Texture* texture;
     int frames;
   };
@@ -34,6 +37,7 @@ protected:
   Point2f m_Size;
   Point2f m_FrameSize;
   float m_MsPerFrame;
+  bool m_Mirror;
 
   // Internal management
   std::vector<StateInfo> m_States;
