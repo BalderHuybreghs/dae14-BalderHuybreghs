@@ -29,4 +29,6 @@ private:
   Camera* m_CameraPtr;
 
   Tilemap* m_TilemapPtr;
+
+  std::vector<std::vector<Point2f>> m_CollisionPolygons;
 };

@@ -1,7 +1,7 @@
 #pragma once
-#include "Shape.h"
 #include "Sprite.h"
 #include "Vector2f.h"
+#include "RectangleShape.h"
 
 class Player
 {
@@ -40,9 +40,10 @@ public:
 
   bool CanMove(const Vector2f& direction) const;
 
-  const Shape* GetCollisionShape() const;
+  const RectangleShape* GetCollisionShape() const;
 
   void SetPosition(const Point2f& position);
+  void SetVelocity(const Vector2f& velocity);
 
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
@@ -58,8 +59,8 @@ private:
   Sprite* m_Particle;
 
   // Colliders
-  Shape* m_Collider;
-  Shape* m_ColliderFeet;
-  Shape* m_ColliderSlideLeft;
-  Shape* m_ColliderSlideRight;
+  RectangleShape* m_Collider;
+  RectangleShape* m_ColliderFeet;
+  RectangleShape* m_ColliderSlideLeft;
+  RectangleShape* m_ColliderSlideRight;
 };

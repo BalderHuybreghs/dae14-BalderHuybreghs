@@ -19,6 +19,15 @@ struct PairHash
 class Tilemap
 {
 public:
+  enum class TileSide
+  {
+    None,
+    Top,
+    Bottom,
+    Left,
+    Right
+  };
+
   // Create a tilemap raw data
   Tilemap(const std::string& resource, const Point2f& size, int tileSize);
 
@@ -31,6 +40,9 @@ public:
   // This function rounds floats to ints to check if they are within a tile. 
   // There is no need for "complex" collision detection when using a tilemap.
   bool IsTile(const Point2f& point) const;
+
+  // Checks for a tile on the grid
+  bool IsTile(int x, int y) const;
 
   // Set a tile at a worldspace
   void SetTile(const Point2f& point, int tileID);
@@ -55,6 +67,9 @@ public:
 
   // Convert the tiles to raw data
   std::vector<int> ToRawTileData() const;
+
+  // Get the total collisionshape of the tilemap
+  std::vector<std::vector<Point2f>> GetCollisionShapes() const;
 private:
   // Header information
   std::string m_Resource;
@@ -72,4 +87,10 @@ private:
   int ValueToY(float val) const;
   std::pair<int, int> PointToKey(const Point2f& point) const;
   Point2f KeyToPoint(std::pair<int, int> key) const;
+
+  // Explores an island of tiles, this is a custom made algorithm
+  // it works by giving it a list of visited tiles, and a x and y start position
+  // it starts from the start position marching out until it finds a corner of the island,
+  // as soon as it found a corner, it will march in 1 direction based on that corner
+  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const;
 };

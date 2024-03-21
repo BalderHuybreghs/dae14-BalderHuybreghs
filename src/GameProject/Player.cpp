@@ -48,6 +48,10 @@ void Player::Draw(bool debug) const
     m_ColliderFeet->Draw();
     m_ColliderSlideLeft->Draw();
     m_ColliderSlideRight->Draw();
+
+    // Draw the circle of the actual player position value
+    utils::SetColor(Color4f{ 1.f, 1.f, 0.f, 1.f });
+    utils::FillEllipse(m_Position, 5.f, 5.f);
   }
 }
 
@@ -135,6 +139,8 @@ void Player::Hold()
 
 void Player::Move(const Vector2f& direction)
 {
+  m_Position.x += direction.x;
+  m_Position.y += direction.y;
 }
 
 void Player::ApplyForce(const Vector2f& force)
@@ -147,7 +153,7 @@ bool Player::CanMove(const Vector2f& direction) const
     return false;
 }
 
-const Shape* Player::GetCollisionShape() const
+const RectangleShape* Player::GetCollisionShape() const
 {
     return m_Collider;
 }
@@ -155,6 +161,11 @@ const Shape* Player::GetCollisionShape() const
 void Player::SetPosition(const Point2f& position)
 {
   m_Position = position;
+}
+
+void Player::SetVelocity(const Vector2f& velocity)
+{
+  m_Velocity = velocity;
 }
 
 Point2f Player::GetPosition() const

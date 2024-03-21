@@ -24,7 +24,8 @@ void Sprite::Draw(bool debug) const
   };
 
   if (debug) {
-    DrawRect(dstRect);
+    SetColor(Color4f{ 1.f, 1.f, 1.f, 0.2f });
+    FillRect(dstRect);
   }
 
   // Every animation is only 1 row

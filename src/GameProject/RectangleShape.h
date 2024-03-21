@@ -12,10 +12,9 @@ public:
 
   virtual void Draw() const override;
 
+  virtual Point2f GetSimpleSize() const override;
+
   Rectf GetShape() const;
 private:
   Point2f m_Size;
-
-  // Inherited via Shape
-  Point2f GetSimpleSize() const override;
 };
