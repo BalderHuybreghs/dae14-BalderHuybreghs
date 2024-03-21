@@ -20,6 +20,7 @@ Player::Player(const Point2f& position)
   m_Sprite->AddResource(PLAYER_EDGE_RESOURCE);
   m_Sprite->AddResource(PLAYER_DUCK_RESOURCE);
   m_Sprite->AddResource(PLAYER_FALL_RESOURCE);
+  m_Sprite->AddResource(PLAYER_JUMP_RESOURCE);
 
   const Color4f debugColor{ 0.f, 5.f, 0.f, 0.5f };
   m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, debugColor, true);
@@ -57,7 +58,9 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec)
 {
-  if (m_Velocity.y < -10) {
+  if (m_Velocity.y > 0) {
+    m_State = State::Jumping;
+  } if (m_Velocity.y < -10) {
     m_State = State::Falling;
   } else if (m_Velocity.y > 10) {
     m_State = State::Idle;

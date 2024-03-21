@@ -33,7 +33,7 @@ static const std::string PLAYER_FALL_RESOURCE{ PLAYER_RESOURCE + FS + "fall" };
 static const std::string PLAYER_EDGE_RESOURCE{ PLAYER_RESOURCE + FS + "edge" };
 static const std::string PLAYER_DANGLING_RESOURCE{ PLAYER_RESOURCE + FS + "dangling" };
 static const std::string PLAYER_DUCK_RESOURCE{ PLAYER_RESOURCE + FS + "duck" };
-static const std::string PLAYER_JUMP_RESOURCE{ PLAYER_RESOURCE + FS + "jump_slow" };
+static const std::string PLAYER_JUMP_RESOURCE{ PLAYER_RESOURCE + FS + "jump_fast" };
 static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_RESOURCE + FS + "climb" };
 static const std::string PLAYER_RUN_RESOURCE{ PLAYER_RESOURCE + FS + "run_slow" };
 static const std::string PLAYER_WALK_RESOURCE{ PLAYER_RESOURCE + FS + "walk" };

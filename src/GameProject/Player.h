@@ -15,7 +15,8 @@ public:
     Dashing,
     Sliding,
     Crouching,
-    Falling
+    Falling,
+    Jumping
   };
 
   Player(const Point2f& position);

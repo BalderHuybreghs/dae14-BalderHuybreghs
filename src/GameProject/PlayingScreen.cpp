@@ -89,7 +89,12 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
     m_PlayerPtr->ApplyForce(Vector2f(200, 0));
     break;
   case SDLK_w:
-    m_PlayerPtr->ApplyForce(Vector2f(0, 500));
+
+    for (const std::vector<Point2f>& polygon : m_LevelPtr->GetCollisionPolygons()) {
+      if (IsOverlapping(polygon, m_PlayerPtr->GetCollisionShape()->GetShape())) {
+        m_PlayerPtr->ApplyForce(Vector2f(0, 1000));
+      }
+    }
     break;
   case SDLK_s:
     m_PlayerPtr->ApplyForce(Vector2f(0, -200));
