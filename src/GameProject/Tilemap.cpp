@@ -189,6 +189,7 @@ Point2f Tilemap::KeyToPoint(std::pair<int, int> key) const
   };
 }
 
+// Coast marching algorithm :) (I made it up)
 void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const
 {
   // Check if the tile is a valid tile and hasn't been visited yet
@@ -245,7 +246,7 @@ void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>
       ExploreIsland(x, y - 1, visitedGrid, shape, 0, - 1); // Go down
       ++cornersFound;
     } else if (IsTile(x + 1, y - 1) && !IsTile(x + 1, y) && !IsTile(x, y - 1)) { // Edge case (diagonal connection)
-      shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height });
+      shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y });
       ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0); // Go down
       ++cornersFound;
     }
