@@ -73,6 +73,16 @@ void EditorScreen::Draw()
 
 void EditorScreen::Update(float elapsedSec)
 {
+  // Do stuff based on the edit mode 
+  switch (m_EditMode) {
+  case Mode::TilesetFront:
+    m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
+    break;
+  case Mode::TilesetBack:
+    m_CurrentTilemapPtr = m_LevelPtr->GetBackTilemap();
+    break;
+  }
+ 
   // The level itself should not be updated in the editor
   m_CameraPtr->Update(elapsedSec);
 
@@ -99,10 +109,10 @@ void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
   switch (key.keysym.sym)
   {
   case SDLK_e:
-    m_CurrentTile = m_CurrentTile < m_CurrentTilemapPtr->GetTileCount() ? m_CurrentTile + 1 : m_CurrentTile;
+    m_EditMode = EditorScreen::Mode((int)m_EditMode + 1 % 4);
     break;
   case SDLK_q:
-    m_CurrentTile = m_CurrentTile > 0 ? m_CurrentTile - 1 : 0;
+    m_EditMode = EditorScreen::Mode((int)m_EditMode - 1 % 4);
     break;
   case SDLK_SPACE:
     m_LevelPtr->Save();
@@ -146,23 +156,11 @@ void EditorScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 
 void EditorScreen::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
 {
-  // To zoom the camera in around the mouse
-  Point2f cameraPos{ m_CameraPtr->GetPosition() };
-  Point2f mouseWorldPos{ m_CameraPtr->GetWorldPosition(m_MousePos) };
-  float cameraZoom{ m_CameraPtr->GetZoom() };
-
   if (e.y > 0) // Scroll up
   {
-    cameraZoom += SCROLL_ZOOM_FACTOR;
+    m_CurrentTile = m_CurrentTile > 0 ? m_CurrentTile - 1 : 0;
   } else if (e.y < 0) // Scroll down
   {
-    cameraZoom -= SCROLL_ZOOM_FACTOR;
+    m_CurrentTile = m_CurrentTile < m_CurrentTilemapPtr->GetTileCount() ? m_CurrentTile + 1 : m_CurrentTile;
   }
-
-  // Lerp towards the mouse
-  cameraPos.x = MathUtils::Lerp(cameraPos.x, mouseWorldPos.x, SCROLL_ZOOM_FACTOR * 2);
-  cameraPos.y = MathUtils::Lerp(cameraPos.y, mouseWorldPos.y, SCROLL_ZOOM_FACTOR * 2);
-
-  m_CameraPtr->SetPosition(cameraPos);
-  m_CameraPtr->SetZoom(cameraZoom);
 }

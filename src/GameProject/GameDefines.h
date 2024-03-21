@@ -35,7 +35,7 @@ static const std::string PLAYER_DANGLING_RESOURCE{ PLAYER_RESOURCE + FS + "dangl
 static const std::string PLAYER_DUCK_RESOURCE{ PLAYER_RESOURCE + FS + "duck" };
 static const std::string PLAYER_JUMP_RESOURCE{ PLAYER_RESOURCE + FS + "jump_fast" };
 static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_RESOURCE + FS + "climb" };
-static const std::string PLAYER_RUN_RESOURCE{ PLAYER_RESOURCE + FS + "run_slow" };
+static const std::string PLAYER_RUN_RESOURCE{ PLAYER_RESOURCE + FS + "run_fast" };
 static const std::string PLAYER_WALK_RESOURCE{ PLAYER_RESOURCE + FS + "walk" };
 
 static const std::string LOADING_RESOURCE{ "loading" };
@@ -61,4 +61,4 @@ static const int FRAME_SIZE{ 32 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
 
 // Playing information
-static const Vector2f GRAVITY{0.f, -10.f};
+static const Vector2f GRAVITY{0.f, -40.f};

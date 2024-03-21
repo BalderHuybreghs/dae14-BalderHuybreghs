@@ -4,6 +4,7 @@
 #include "GameDefines.h"
 #include "RectangleShape.h"
 #include "utils.h"
+#include "MathUtils.h"
 
 Player::Player(const Point2f& position)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Dashes(1), m_Collider(nullptr), m_ColliderSlideLeft(nullptr),
@@ -58,13 +59,19 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec)
 {
+  // Update velocity
+  m_Velocity = Vector2f{
+    MathUtils::Lerp(m_Velocity.x, 0.f, 0.1),
+    MathUtils::Lerp(m_Velocity.y, 0.f, 0.1),
+  };
+
   if (m_Velocity.y > 0) {
     m_State = State::Jumping;
   } if (m_Velocity.y < -10) {
     m_State = State::Falling;
   } else if (m_Velocity.y > 10) {
     m_State = State::Idle;
-  } else if (m_Velocity.x > 10 || m_Velocity.x < -10) {
+  } else if (m_Velocity.x > 1 || m_Velocity.x < -1) {
     m_State = State::Running;
   } else {
     m_State = State::Idle;
@@ -119,6 +126,11 @@ void Player::Crouch()
   // TODO: update the player hitbox
   if (m_State == Player::State::Idle) {
     m_State = Player::State::Crouching;
+    m_Sprite->SetState(int(m_State));
+  }
+
+  if (m_State == Player::State::Crouching) {
+    m_State = Player::State::Idle;
     m_Sprite->SetState(int(m_State));
   }
 }

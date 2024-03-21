@@ -79,8 +79,12 @@ void Level::Draw(bool debug) const
       }
     }
 
-    utils::SetColor(Color4f{ 1.f, 0.f, 0.f, 1.f });
-    utils::DrawEllipse(m_PlayerSpawn, 20.f, 20.f);
+    // Draw the player spawn
+    utils::SetColor(Color4f{ .8f, 0.2f, 0.2f, 0.8f });
+    utils::FillRect(Point2f{
+        m_PlayerSpawn.x - 70.f / 2.f,
+        m_PlayerSpawn.y
+    }, 70.f, 70.f);
   }
 }
 

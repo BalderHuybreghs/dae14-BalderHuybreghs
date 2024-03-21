@@ -53,51 +53,89 @@ void PlayingScreen::Update(float elapsedSec)
   m_LevelPtr->Update(*m_PlayerPtr, elapsedSec);
   m_PlayerPtr->Update(elapsedSec);
 
-  Point2f newPlayerPosition{ m_PlayerPtr->GetPosition() };
+  Point2f playerPosition{ m_PlayerPtr->GetPosition() };
+  Vector2f playerVelocity{ m_PlayerPtr->GetVelocity() };
 
   // Collision detection
-  bool collided{};
+  bool isOnFloor = false;
+  bool isOnLeftWall = false;
+  bool isOnRightWall = false;
+  bool isOnCeiling = false;
+
+  Rectf playerShape{ m_PlayerPtr->GetCollisionShape()->GetShape() };
   for (const std::vector<Point2f>& polygon : m_LevelPtr->GetCollisionPolygons()) {
-    collided = IsOverlapping(polygon, m_PlayerPtr->GetCollisionShape()->GetShape());
-    if (collided) {
-      ResolveCollision(*m_PlayerPtr, oldPlayerPosition, newPlayerPosition, polygon);
-      break;
+    if (IsOverlapping(polygon, playerShape)) {
+      HitInfo hi{};
+      bool hit{ Raycast(polygon, playerPosition, oldPlayerPosition, hi) };
+
+      if (hit) {
+        if (hi.normal.y > 0.f) {
+          isOnFloor = true;
+        } else if (hi.normal.y < 0.f) {
+          isOnCeiling = true;
+        }
+        if (hi.normal.x > 0.f) {
+          isOnRightWall = true;
+        } else if (hi.normal.x < 0.f) {
+          isOnLeftWall = true;
+        }
+        m_PlayerPtr->ApplyForce(playerVelocity * hi.normal);
+        m_PlayerPtr->SetPosition(oldPlayerPosition);
+      }
+
+      // Break the loop only if a collision is detected, not necessarily after the first one
+      // This allows handling multiple collisions
+      // break;
     }
   }
 
-  // Apply gravity if not colliding
-  if (!collided) {
-    m_PlayerPtr->ApplyForce(GRAVITY);
+  // Apply appropriate actions based on collision flags
+
+  if (!isOnFloor) {
+    m_PlayerPtr->ApplyForce(GRAVITY); // Apply gravity if not colliding with floor
   } else {
-    // Stop player's vertical velocity if colliding with a surface
-    m_PlayerPtr->SetPosition(newPlayerPosition);
-    //m_PlayerPtr->SetVelocity(Vector2f(m_PlayerPtr->GetVelocity().x, 0.0f));
+    m_PlayerPtr->SetVelocity(Vector2f{ playerVelocity.x, 0.f });
   }
 
-  //m_PlayerPtr->SetPosition(newPlayerPosition);
+  if (isOnLeftWall && playerVelocity.x < 0) {
+    m_PlayerPtr->SetVelocity(Vector2f{ 0.f, playerVelocity.y });
+  }
+
+  if (isOnRightWall && playerVelocity.x > 0) {
+    m_PlayerPtr->SetVelocity(Vector2f{ 0.f, playerVelocity.y });
+  }
+
+  if (isOnCeiling && playerVelocity.y > 0) {
+    m_PlayerPtr->SetVelocity(Vector2f{ playerVelocity.x, 0.f });
+  }
+
+  // Handle other collision flags here if needed
 
   m_CameraPtr->SetPosition(m_PlayerPtr->GetPosition());
 }
 
+
 void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
+  const Vector2f playerVel{ m_PlayerPtr->GetVelocity() };
+
   switch (key.keysym.sym) {
   case SDLK_a:
-    m_PlayerPtr->ApplyForce(Vector2f(-200, 0));
+    m_PlayerPtr->SetVelocity(Vector2f(-500, playerVel.y));
     break;
   case SDLK_d:
-    m_PlayerPtr->ApplyForce(Vector2f(200, 0));
+    m_PlayerPtr->SetVelocity(Vector2f(500, playerVel.y));
     break;
   case SDLK_w:
 
-    for (const std::vector<Point2f>& polygon : m_LevelPtr->GetCollisionPolygons()) {
-      if (IsOverlapping(polygon, m_PlayerPtr->GetCollisionShape()->GetShape())) {
-        m_PlayerPtr->ApplyForce(Vector2f(0, 1000));
-      }
-    }
+    //for (const std::vector<Point2f>& polygon : m_LevelPtr->GetCollisionPolygons()) {
+    //  if (IsOverlapping(polygon, m_PlayerPtr->GetCollisionShape()->GetShape())) {
+        m_PlayerPtr->ApplyForce(Vector2f(0.f, 2000));
+    //  }
+    //}
     break;
   case SDLK_s:
-    m_PlayerPtr->ApplyForce(Vector2f(0, -200));
+    m_PlayerPtr->Crouch();
     break;
   
   // Switch to level editor
@@ -123,26 +161,18 @@ void PlayingScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 {
 }
 
-bool PlayingScreen::ResolveCollision(Player& player, const Point2f& oldPosition, Point2f& newPosition, const std::vector<Point2f>& collisionPolygon)
+bool PlayingScreen::ResolveCollision(Player& player, const Point2f& oldPosition, const std::vector<Point2f>& collisionPolygon)
 {
-  Vector2f direction{ Vector2f(newPosition.x - oldPosition.x, newPosition.y - oldPosition.y) };
-  float distance = direction.Length();
+  const Point2f playerPos{ player.GetPosition() };
 
   HitInfo hi{};
-  bool hit{ Raycast(collisionPolygon, oldPosition, newPosition, hi) };
+  bool hit{ Raycast(collisionPolygon, playerPos, oldPosition, hi) };
 
   if (hit) {
-    // Calculate the amount to move the player out of the collision
-    Vector2f correction = direction.Normalized() * (distance - hi.lambda);
-    newPosition = oldPosition + correction;
-
-    // Reflect player's velocity based on collision normal
-    Vector2f reflectedVelocity = player.GetVelocity().Reflect(hi.normal);
-
-    // Apply velocity dampening factor (e.g., 0.8 for 80% dampening)
-    const float velocityDamping = 0.05f; // Adjust as needed
-    player.SetVelocity(reflectedVelocity * velocityDamping);
+    const Vector2f playerVel{ player.GetVelocity() };
+    m_PlayerPtr->ApplyForce((playerVel * hi.normal));
   }
 
+  m_PlayerPtr->SetPosition(hi.intersectPoint);
   return hit;
 }

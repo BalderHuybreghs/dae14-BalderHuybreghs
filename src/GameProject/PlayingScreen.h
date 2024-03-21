@@ -31,5 +31,5 @@ private:
 
   Tilemap* m_TilemapPtr;
 
-  bool ResolveCollision(Player& player, const Point2f& oldPosition, Point2f& newPosition, const std::vector<Point2f>& collisionPolygon);
+  bool ResolveCollision(Player& player, const Point2f& oldPosition, const std::vector<Point2f>& collisionPolygon);
 };
