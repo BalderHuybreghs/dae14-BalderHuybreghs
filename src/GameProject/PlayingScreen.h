@@ -22,7 +22,6 @@ public:
   void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) override;
   void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
-
 private:
   std::string m_LevelName;
 
@@ -31,4 +30,6 @@ private:
   Camera* m_CameraPtr;
 
   Tilemap* m_TilemapPtr;
+
+  bool ResolveCollision(Player& player, const Point2f& oldPosition, Point2f& newPosition, const std::vector<Point2f>& collisionPolygon);
 };

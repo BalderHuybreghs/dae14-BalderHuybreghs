@@ -64,32 +64,10 @@ void Player::Update(float elapsedSec)
     }
   }
 
-  m_Position = Point2f{
+  SetPosition(Point2f{
     m_Position.x + m_Velocity.x * elapsedSec,
     m_Position.y + m_Velocity.y * elapsedSec
-  };
-
-  // Update the component positions
-  //m_JumpParticle->SetPosition(m_Position);\
-  
-  const Point2f spriteSize{ m_Sprite->GetSize() };
-  const Point2f colliderSide{ m_Collider->GetSimpleSize() };
-
-  m_Sprite->SetPosition(Point2f{
-      m_Position.x - spriteSize.x / 2.f,
-      m_Position.y
   });
-
-  //m_Particle->SetPosition(m_Position);
-  m_Collider->SetPosition(Point2f{
-    m_Position.x - colliderSide.x / 2.f,
-    m_Position.y
-  });
-
-
-  m_ColliderSlideLeft->SetPosition(Point2f{ m_Position.x - 5.f, m_Position.y });
-  m_ColliderSlideRight->SetPosition(Point2f{ m_Position.x + 5.f, m_Position.y });
-  m_ColliderFeet->SetPosition(Point2f{ m_Position.x, m_Position.y + 5.f });
 
   // Update the components
   //m_JumpParticle->Update(elapsedSec);
@@ -161,6 +139,24 @@ const RectangleShape* Player::GetCollisionShape() const
 void Player::SetPosition(const Point2f& position)
 {
   m_Position = position;
+  
+  const Point2f spriteSize{ m_Sprite->GetSize() };
+  const Point2f colliderSide{ m_Collider->GetSimpleSize() };
+
+  m_Sprite->SetPosition(Point2f{
+      m_Position.x - spriteSize.x / 2.f,
+      m_Position.y
+                        });
+
+  m_Collider->SetPosition(Point2f{
+    m_Position.x - colliderSide.x / 2.f,
+    m_Position.y
+                          });
+
+
+  m_ColliderSlideLeft->SetPosition(Point2f{ m_Position.x - 5.f, m_Position.y });
+  m_ColliderSlideRight->SetPosition(Point2f{ m_Position.x + 5.f, m_Position.y });
+  m_ColliderFeet->SetPosition(Point2f{ m_Position.x, m_Position.y + 5.f });
 }
 
 void Player::SetVelocity(const Vector2f& velocity)
