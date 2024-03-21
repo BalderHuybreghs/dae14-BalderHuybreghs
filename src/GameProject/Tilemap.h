@@ -69,7 +69,7 @@ public:
   std::vector<int> ToRawTileData() const;
 
   // Get the total collisionshape of the tilemap
-  std::vector<std::vector<Point2f>> GetCollisionShapes() const;
+  std::vector<std::vector<Point2f>> GenCollisionShapes() const;
 private:
   // Header information
   std::string m_Resource;

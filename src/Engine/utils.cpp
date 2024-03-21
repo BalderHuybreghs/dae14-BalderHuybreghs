@@ -385,6 +385,50 @@ bool utils::IsOverlapping( const std::vector<Point2f>& vertices, const Circlef& 
 	return IsOverlapping( vertices.data( ), vertices.size( ), c );
 }
 
+bool utils::IsOverlapping(const std::vector<Point2f>& vertices, const Rectf& rect)
+{
+  // Check if any vertex of the polygon is inside the rectangle
+  for (const Point2f& vertex : vertices) {
+    if (IsPointInRect(vertex, rect)) {
+      return true;
+    }
+  }
+  // Check if any edge of the polygon intersects with the rectangle
+  size_t numVertices = vertices.size();
+  for (size_t i = 0; i < numVertices; ++i) {
+    size_t nextIndex = (i + 1) % numVertices;
+    Point2f edgeStart = vertices[i];
+    Point2f edgeEnd = vertices[nextIndex];
+    // Check if the edge intersects any side of the rectangle
+    if (std::max(edgeStart.x, edgeEnd.x) < rect.left ||
+        std::min(edgeStart.x, edgeEnd.x) > rect.left + rect.width ||
+        std::max(edgeStart.y, edgeEnd.y) < rect.bottom || // Corrected to use bottom
+        std::min(edgeStart.y, edgeEnd.y) > rect.bottom + rect.height) { // Corrected to use bottom
+      continue;  // No intersection with this edge
+    }
+    // Calculate edge equation (y = mx + b) and check intersection with each side of the rectangle
+    float m = (edgeEnd.y - edgeStart.y) / (edgeEnd.x - edgeStart.x);
+    float b = edgeStart.y - m * edgeStart.x;
+    // Check intersection with left side of rectangle
+    if (IsPointInRect(Point2f{ rect.left, m * rect.left + b }, rect)) {
+      return true;
+    }
+    // Check intersection with right side of rectangle
+    if (IsPointInRect(Point2f{ rect.left + rect.width, m * (rect.left + rect.width) + b }, rect)) {
+      return true;
+    }
+    // Check intersection with top side of rectangle
+    if (rect.bottom <= m * edgeStart.x + b && m * edgeStart.x + b <= rect.bottom + rect.height) { // Corrected to use bottom
+      return true;
+    }
+    // Check intersection with bottom side of rectangle
+    if (rect.bottom <= m * edgeEnd.x + b && m * edgeEnd.x + b <= rect.bottom + rect.height) { // Corrected to use bottom
+      return true;
+    }
+  }
+  return false;
+}
+
 bool utils::IsOverlapping( const Point2f* vertices, size_t nrVertices, const Circlef& c )
 {
 	// Verify whether one of vertices is in circle

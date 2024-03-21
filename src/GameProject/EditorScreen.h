@@ -22,7 +22,8 @@ public:
     Decal
   };
 
-  EditorScreen();
+  EditorScreen(const std::string& levelName, Point2f cameraPos);
+  EditorScreen(const std::string& levelName);
 
   void Initialize() override;
 
@@ -40,6 +41,8 @@ public:
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
   void OnMouseWheelEvent(const SDL_MouseWheelEvent& e) override;
 private:
+  std::string m_LevelName;
+
   Mode m_EditMode;
   Point2f m_MousePos;
 

@@ -4,11 +4,12 @@
 #include "utils.h"
 #include "RectangleShape.h"
 #include <vector>
+#include "EditorScreen.h"
 
 using namespace utils;
 
-PlayingScreen::PlayingScreen()
-  : m_LevelPtr(nullptr), m_PlayerPtr(nullptr), m_CameraPtr(nullptr), m_TilemapPtr(nullptr)
+PlayingScreen::PlayingScreen(const std::string& levelName)
+  : m_LevelName(levelName), m_LevelPtr(nullptr), m_PlayerPtr(nullptr), m_CameraPtr(nullptr), m_TilemapPtr(nullptr)
 {
   
 }
@@ -22,7 +23,7 @@ PlayingScreen::~PlayingScreen()
 
 void PlayingScreen::Initialize()
 {
-  m_LevelPtr = new Level(LEVEL1_NAME, "snow", TILEMAP_BG_PREFIX + "dirt");
+  m_LevelPtr = new Level(m_LevelName, "snow", TILEMAP_BG_PREFIX + "dirt");
 
   // Load the level from disk
   m_LevelPtr->Load();
@@ -32,8 +33,6 @@ void PlayingScreen::Initialize()
   const Point2f playerPos{ m_PlayerPtr->GetPosition() };
   m_CameraPtr = new Camera(m_PlayerPtr->GetPosition());
   m_TilemapPtr = m_LevelPtr->GetFrontTilemap();
-
-  m_CollisionPolygons = m_TilemapPtr->GetCollisionShapes();
 
   // Build the level at the end of creation
   m_LevelPtr->Build();
@@ -49,21 +48,21 @@ void PlayingScreen::Draw()
   const Rectf tileRect{ m_TilemapPtr->GetTileRect(m_PlayerPtr->GetPosition()) };
 
   utils::SetColor(Color4f{ 0.f, 0.f, 1.f, 0.5f });
-  if (m_TilemapPtr->IsTile(m_PlayerPtr->GetPosition())) {
+
+  // Collides
+  bool collides{};
+  for (const std::vector<Point2f> polygons : m_LevelPtr->GetCollisionPolygons()) {
+    collides = IsOverlapping(polygons, m_PlayerPtr->GetCollisionShape()->GetShape());
+
+    if (collides) {
+      break;
+    }
+  }
+
+  if (collides) {
     utils::FillRect(tileRect);
   } else {
     utils::DrawRect(tileRect, 2.f);
-  }
-
-  for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
-    utils::SetColor(Color4f{ 0.8f, 0.2f, 0.2f, 0.3f });
-    utils::FillPolygon(polygon);
-
-    // Draw the points
-    for (const Point2f& point : polygon) {
-      utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
-      utils::FillEllipse(point, 5.f, 5.f);
-    }
   }
 
   m_CameraPtr->PopMatrix();
@@ -126,6 +125,11 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
     break;
   case SDLK_s:
     m_PlayerPtr->ApplyForce(Vector2f(0, -200));
+    break;
+  
+  // Switch to level editor
+  case SDLK_TAB:
+    m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, m_PlayerPtr->GetPosition()));
     break;
   }
 }

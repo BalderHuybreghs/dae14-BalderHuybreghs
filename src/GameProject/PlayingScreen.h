@@ -7,7 +7,7 @@
 class PlayingScreen : public GameScreen
 {
 public:
-  PlayingScreen();
+  PlayingScreen(const std::string& levelName);
   ~PlayingScreen();
 
   void Initialize() override;
@@ -24,11 +24,11 @@ public:
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
 
 private:
+  std::string m_LevelName;
+
   Level* m_LevelPtr;
   Player* m_PlayerPtr;
   Camera* m_CameraPtr;
 
   Tilemap* m_TilemapPtr;
-
-  std::vector<std::vector<Point2f>> m_CollisionPolygons;
 };

@@ -5,29 +5,30 @@
 #include "utils.h"
 #include "RectangleShape.h"
 #include "MathUtils.h"
+#include "PlayingScreen.h"
 
 using namespace utils;
 
-EditorScreen::EditorScreen()
-  : GameScreen(), m_LevelPtr(nullptr), m_CurrentTilemapPtr(nullptr), 
-  m_EditMode(Mode::TilesetFront), m_CurrentTile(0), 
-  m_MousePos(Point2f()), m_CameraPtr(nullptr), m_MouseDragBorder(nullptr)
+EditorScreen::EditorScreen(const std::string& levelName, Point2f cameraPos)
+  : GameScreen(), m_LevelPtr(nullptr), m_CurrentTilemapPtr(nullptr),
+  m_EditMode(Mode::TilesetFront), m_CurrentTile(0),
+  m_MousePos(Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f }), m_CameraPtr(new Camera(cameraPos)),
+  m_MouseDragBorder(new RectangleShape(Point2f{ WINDOW_WIDTH - MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL * 2, WINDOW_HEIGHT - MOUSE_DRAG_BORDER_MARGIN_VERTICAL * 2 }, Point2f{ MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL, MOUSE_DRAG_BORDER_MARGIN_VERTICAL })), 
+  m_LevelName(levelName)
+{
+}
+
+EditorScreen::EditorScreen(const std::string& levelName)
+  : EditorScreen(levelName, Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f })
 {
   
 }
 
 void EditorScreen::Initialize()
 {
-  m_LevelPtr = new Level(LEVEL1_NAME, "snow", TILEMAP_BG_PREFIX + "dirt");
-
-  m_EditMode = Mode::TilesetFront;
+  m_LevelPtr = new Level(m_LevelName, "snow", TILEMAP_BG_PREFIX + "dirt");
   m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
-  m_CurrentTile = 0;
-
   m_LevelPtr->Load();
-
-  m_CameraPtr = new Camera(Point2f{ 0, 0 });
-  m_MouseDragBorder = new RectangleShape(Point2f{ WINDOW_WIDTH - MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL * 2, WINDOW_HEIGHT - MOUSE_DRAG_BORDER_MARGIN_VERTICAL * 2 }, Point2f{ MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL, MOUSE_DRAG_BORDER_MARGIN_VERTICAL });
 }
 
 EditorScreen::~EditorScreen()
@@ -105,6 +106,11 @@ void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
   	break;
   case SDLK_g:
     m_LevelPtr->SetPlayerSpawn(m_CameraPtr->GetWorldPosition(m_MousePos));
+    break;
+
+  // Switch to playmode
+  case SDLK_TAB:
+    m_ScreenManagerPtr->SetScreen(new PlayingScreen(m_LevelName));
     break;
   }
 }

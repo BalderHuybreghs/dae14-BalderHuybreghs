@@ -33,6 +33,10 @@ void Level::Build()
 {
   std::cout << "Building level '" << m_Name << "'" << std::endl;
 
+  // Clear polys
+  m_CollisionPolygons.clear();
+  m_CollisionPolygons = m_ForegroundTilemapPtr->GenCollisionShapes();
+
   // Destroy any possible game objects
   for (const GameObject* object : m_Objects) {
     delete object;
@@ -65,6 +69,16 @@ void Level::Draw(bool debug) const
 
   // Draw the player spawn position on top of everything in debug mode
   if (debug) {
+    // Draw the collision shapes
+    for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
+      utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
+
+      // Draw the points, OpenGL does NOT like concave ngons
+      for (const Point2f& point : polygon) {
+        utils::FillEllipse(point, 5.f, 5.f);
+      }
+    }
+
     utils::SetColor(Color4f{ 1.f, 0.f, 0.f, 1.f });
     utils::DrawEllipse(m_PlayerSpawn, 20.f, 20.f);
   }
@@ -101,6 +115,11 @@ void Level::SetPlayerSpawn(const Point2f& position)
 Point2f Level::GetPlayerSpawn() const
 {
   return m_PlayerSpawn;
+}
+
+const std::vector<std::vector<Point2f>> Level::GetCollisionPolygons()
+{
+  return m_CollisionPolygons;
 }
 
 // Check https://cplusplus.com/doc/tutorial/files/ to see where I found how to implement these
