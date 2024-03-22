@@ -5,10 +5,13 @@
 #include "RectangleShape.h"
 #include "utils.h"
 #include "MathUtils.h"
+#include "structs.h"
+
+using namespace utils;
 
 Player::Player(const Point2f& position)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Dashes(1), m_Collider(nullptr), m_ColliderSlideLeft(nullptr),
-  m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr)
+  m_ColliderSlideRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr), m_IsGrounded(false)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
@@ -52,18 +55,16 @@ void Player::Draw(bool debug) const
     m_ColliderSlideRight->Draw();
 
     // Draw the circle of the actual player position value
-    utils::SetColor(Color4f{ 1.f, 1.f, 0.f, 1.f });
-    utils::FillEllipse(m_Position, 5.f, 5.f);
+    SetColor(Color4f{ 1.f, 1.f, 0.f, 1.f });
+    FillEllipse(m_Position, 5.f, 5.f);
   }
 }
 
-void Player::Update(float elapsedSec)
+void Player::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons)
 {
-  // Update velocity
-  m_Velocity = Vector2f{
-    MathUtils::Lerp(m_Velocity.x, 0.f, 0.1),
-    MathUtils::Lerp(m_Velocity.y, 0.f, 0.1),
-  };
+  // Test for player collision in 2 iterations
+  HandleCollision(elapsedSec, collisionPolygons, true);
+  HandleCollision(elapsedSec, collisionPolygons);
 
   if (m_Velocity.y > 0) {
     m_State = State::Jumping;
@@ -96,6 +97,12 @@ void Player::Update(float elapsedSec)
   //m_JumpParticle->Update(elapsedSec);
   m_Sprite->Update(elapsedSec);
   //m_Particle->Update(elapsedSec);
+
+  // Update velocity
+  m_Velocity = Vector2f{
+    MathUtils::Lerp(m_Velocity.x, 0.f, 0.3),
+    m_Velocity.y,
+  };
 }
 
 void Player::RefillDashes(int amount)
@@ -110,6 +117,9 @@ void Player::RefillDashes(int amount)
 
 void Player::Jump()
 {
+  if (m_IsGrounded) {
+    m_Velocity.y = 500;
+  }
 }
 
 void Player::Dash(const Vector2f& direction)
@@ -205,4 +215,70 @@ Vector2f Player::GetVelocity() const
 Player::State Player::GetState() const
 {
     return m_State;
+}
+
+bool Player::IsGrounded() const
+{
+  return m_IsGrounded;
+}
+
+void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& polygons, bool testGrounded)
+{
+  // TODO: handle collision logic here
+  const Point2f nextPlayerPos{
+    m_Position.x + m_Velocity.x * elapsedSec,
+    m_Position.y + m_Velocity.y * elapsedSec
+  };
+
+  const Rectf collisionRect{
+    m_Collider->GetShape()
+  };
+
+  const Rectf nextCollisionRect{
+    nextPlayerPos.x - collisionRect.width / 2.f,
+    nextPlayerPos.y,
+    collisionRect.width,
+    collisionRect.height
+  };
+
+  // The points of the collision rectangle
+  const Point2f bottomLeft{ collisionRect.left, collisionRect.bottom };
+  const Point2f topLeft{ collisionRect.left, collisionRect.bottom + collisionRect.height };
+  const Point2f topRight{ collisionRect.left + collisionRect.width, collisionRect.bottom + collisionRect.height };
+  const Point2f bottomRight{ collisionRect.left + collisionRect.width, collisionRect.bottom };
+
+  const Point2f nextBottomLeft{ nextCollisionRect.left, nextCollisionRect.bottom };
+  const Point2f nextTopLeft{ nextCollisionRect.left, nextCollisionRect.bottom + nextCollisionRect.height };
+  const Point2f nextTopRight{ nextCollisionRect.left + nextCollisionRect.width, nextCollisionRect.bottom + nextCollisionRect.height };
+  const Point2f nextBottomRight{ nextCollisionRect.left + nextCollisionRect.width, nextCollisionRect.bottom };
+
+  HitInfo infoBottomLeft{};
+  HitInfo infoBottomRight{};
+  HitInfo infoTopLeft{};
+  HitInfo infoTopRight{};
+
+  // Grounded is false unless we found a collision
+  if (testGrounded) {
+    m_IsGrounded = false;
+  }
+
+  // Check collision for each polygon
+  for (const std::vector<Point2f> polygon : polygons) {
+    const bool hitBottomLeft{ Raycast(polygon, bottomLeft, nextBottomLeft, infoBottomLeft) };
+    const bool hitBottomRight{ Raycast(polygon, bottomRight, nextBottomRight, infoBottomRight) };
+    const bool hitTopLeft{ Raycast(polygon, topLeft, nextTopLeft, infoTopLeft) };
+    const bool hitTopRight{ Raycast(polygon, topRight, nextTopRight, infoTopRight) };
+
+    if (testGrounded) {
+      m_IsGrounded = infoBottomLeft.normal.y > 0.f || infoBottomRight.normal.y > 0.f;
+    }
+
+    if (infoBottomLeft.normal.y != 0.f || infoBottomRight.normal.y != 0.f || infoTopLeft.normal.y != 0.f || infoTopRight.normal.y != 0.f) {
+      m_Velocity.y = 0.f;
+    }
+
+    if (infoBottomLeft.normal.x != 0.f || infoBottomRight.normal.x != 0.f || infoTopLeft.normal.x != 0.f || infoTopRight.normal.x != 0.f) {
+      m_Velocity.x = 0.f;
+    }
+  }
 }

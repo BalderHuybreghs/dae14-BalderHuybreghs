@@ -68,7 +68,7 @@ void EditorScreen::Draw()
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
   FillEllipse(m_MousePos, 7.f, 7.f);
 
-  m_MouseDragBorder->Draw();
+  //m_MouseDragBorder->Draw();
 }
 
 void EditorScreen::Update(float elapsedSec)

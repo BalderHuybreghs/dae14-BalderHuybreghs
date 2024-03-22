@@ -23,7 +23,9 @@ public:
   ~Player();
 
   void Draw(bool debug = false) const;
-  void Update(float elapsedSec);
+
+  // We may pass a list of collision objects to the players update function
+  void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons);
 
   void RefillDashes(int amount);
 
@@ -49,6 +51,8 @@ public:
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
   State GetState() const;
+
+  bool IsGrounded() const;
 private:
   Vector2f m_Velocity;
   Point2f m_Position;
@@ -64,4 +68,9 @@ private:
   RectangleShape* m_ColliderFeet;
   RectangleShape* m_ColliderSlideLeft;
   RectangleShape* m_ColliderSlideRight;
+
+  bool m_IsGrounded;
+
+  // Collision handling stuff
+  void HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons, bool testGrounded = false);
 };

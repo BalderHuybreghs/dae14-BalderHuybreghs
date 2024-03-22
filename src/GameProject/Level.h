@@ -27,7 +27,7 @@ public:
   void SetPlayerSpawn(const Point2f& position);
   Point2f GetPlayerSpawn() const;
 
-  const std::vector<std::vector<Point2f>> GetCollisionPolygons();
+  const std::vector<std::vector<Point2f>>& GetCollisionPolygons() const;
 
   // Save and load the level from and to a file
   void Load();

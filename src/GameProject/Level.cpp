@@ -94,6 +94,9 @@ void Level::Update(Player& player, float elapsedSec)
   for (GameObject* object : m_Objects) {
     object->Update(player, elapsedSec);
   }
+
+  // Apply gravity to the player
+  (&player)->ApplyForce(GRAVITY * elapsedSec);
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)
@@ -121,7 +124,7 @@ Point2f Level::GetPlayerSpawn() const
   return m_PlayerSpawn;
 }
 
-const std::vector<std::vector<Point2f>> Level::GetCollisionPolygons()
+const std::vector<std::vector<Point2f>>& Level::GetCollisionPolygons() const
 {
   return m_CollisionPolygons;
 }

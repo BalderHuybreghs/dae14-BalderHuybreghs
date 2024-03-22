@@ -30,6 +30,4 @@ private:
   Camera* m_CameraPtr;
 
   Tilemap* m_TilemapPtr;
-
-  bool ResolveCollision(Player& player, const Point2f& oldPosition, const std::vector<Point2f>& collisionPolygon);
 };
