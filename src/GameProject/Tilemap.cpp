@@ -3,25 +3,26 @@
 #include "TextureManager.h"
 #include <iostream>
 #include "ResourceUtils.h"
+#include "GameDefines.h"
 #include "utils.h"
 #include <queue>
 
 using namespace utils;
 
-Tilemap::Tilemap(const std::string& resource, const Point2f& size, int tileSize)
-  : m_Size(size), m_TileSize(tileSize), m_Resource(resource)
+Tilemap::Tilemap(const std::vector<std::string>& resources, const Point2f& size, int tileSize)
+  : m_Size(size), m_TileSize(tileSize)
 {
-  SetState(resource);
+  SetTiles(resources);
 }
 
 void Tilemap::Draw(bool debug) const
 {
   for (const std::pair<std::pair<int, int>, int>& tileInfo : m_Tiles) {
-    DrawSingleTile(KeyToPoint(tileInfo.first), tileInfo.second);
+    DrawSingleTile(tileInfo.first, tileInfo.second);
   }
 }
 
-void Tilemap::DrawSingleTile(const Point2f& position, int tileId) const
+void Tilemap::DrawSingleTile(Point2f position, int tileId, int x, int y) const
 {
   // Calculate rects
   const Rectf dstRect{
@@ -31,16 +32,15 @@ void Tilemap::DrawSingleTile(const Point2f& position, int tileId) const
     m_TileSize * m_Size.y
   };
 
-  int gridWidth = int(m_TileTexturePtr->GetWidth() / m_TileSize);
+  // Draw a tile with the calculated sourcerect
+  m_TileTexturePtrs[tileId]->Draw(dstRect, GetSourceRect(x, y));
+}
 
-  const Rectf srcRect{
-    float(tileId % gridWidth) * m_TileSize,
-    float(tileId / gridWidth) * m_TileSize,
-    float(m_TileSize),
-    float(m_TileSize)
-  };
-
-  m_TileTexturePtr->Draw(dstRect, srcRect);
+// To draw a tile, we check the neighbouring tiles to draw the corerct one
+void Tilemap::DrawSingleTile(std::pair<int, int> tile, int tileId) const
+{
+  const Point2f position{ KeyToPoint(tile) };
+  DrawSingleTile(position, tileId, tile.first, tile.second);
 }
 
 bool Tilemap::IsTile(const Point2f& point) const
@@ -78,24 +78,33 @@ void Tilemap::RemoveTile(const Point2f& point)
   }
 }
 
-void Tilemap::SetState(const std::string& resource)
+void Tilemap::SetTiles(const std::vector<std::string>& resources)
 {
-  // Grabs tilemaps from the tilemap folder
-  m_TileTexturePtr = TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resource));
+  // Clear the exising textures, they don't have to be deleted because the manager takes care of that
 
-  // The texture is invalid if it is not divisible by the size of each tile
-  if ((int)m_TileTexturePtr->GetWidth() % m_TileSize != 0 || (int)m_TileTexturePtr->GetHeight() % m_TileSize != 0) {
-    std::cerr << "Tilemap texture is non-divisible by: " << m_TileSize << std::endl;
-    exit(-1);
+  m_TileTexturePtrs.clear();
+  // For each resource, we load in the texture
+  
+  for (const std::string& resource : resources) {
+    // Grabs the tile from the tilemap folder
+    const Texture* texturePtr{ TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resource)) };
+
+    // The texture is invalid if it is not divisible by the size of each tile
+    if ((int)texturePtr->GetWidth() % m_TileSize != 0 || (int)texturePtr->GetHeight() % m_TileSize != 0) {
+      std::cerr << "Tilemap texture '" << resource << "' is non-divisible by " << m_TileSize << std::endl;
+      exit(-1);
+    }
+
+    m_TileTexturePtrs.push_back(texturePtr);
   }
 }
 
 void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 {
-  std::cout << "Loading raw tilemap data for '" << m_Resource << "'" << std::endl;
+  std::cout << "Loading raw tilemap data for tilemap" << std::endl;
 
   if (rawTileData.size() % 3 != 0) {
-    std::cerr << "Tile data for '" << m_Resource <<"' is not divisible by 3, concluded that data must be corrupt" << std::endl;
+    std::cerr << "Tilemap data is not divisible by 3, concluded that data must be corrupt" << std::endl;
     return;
   }
 
@@ -116,17 +125,12 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 
 int Tilemap::GetTileCount() const
 {
-  return int(m_TileTexturePtr->GetWidth() / m_TileSize) * int(m_TileTexturePtr->GetHeight() / m_TileSize);
+  return m_TileTexturePtrs.size();
 }
 
 int Tilemap::GetTileSize() const
 {
   return m_TileSize;
-}
-
-std::string Tilemap::GetResource() const
-{
-  return m_Resource;
 }
 
 Point2f Tilemap::GetSize() const
@@ -150,7 +154,7 @@ Rectf Tilemap::GetTileRect(const Point2f& position) const
 
 std::vector<int> Tilemap::ToRawTileData() const
 {
-  std::cout << "Fetching raw tilemap data for '" << m_Resource << "'" << std::endl;
+  std::cout << "Fetching raw tilemap data " << std::endl;
 
   std::vector<int> rawTileData;
 
@@ -168,7 +172,7 @@ std::vector<int> Tilemap::ToRawTileData() const
 
 std::vector<std::vector<Point2f>> Tilemap::GenCollisionShapes() const
 {
-  std::cout << "Generating collision shape for tilemap '" << m_Resource << "'" << std::endl;
+  std::cout << "Generating collision shape for tilemap" << std::endl;
 
   std::vector<std::vector<Point2f>> collisionShapes;
 
@@ -223,6 +227,85 @@ Point2f Tilemap::KeyToPoint(std::pair<int, int> key) const
     key.second * m_TileSize * m_Size.y
   };
 }
+
+Rectf Tilemap::GetSourceRect(int x, int y) const
+{
+  // Check all the sides
+  const bool topTile{ !IsTile(x, y + 1) };
+  const bool leftTile{ !IsTile(x - 1, y) };
+  const bool rightTile{ !IsTile(x + 1, y) };
+  const bool bottomTile{ !IsTile(x, y - 1) };
+
+  // Convert adjacent tile states to a unique number
+  int tileNumber = 0;
+  if (topTile) tileNumber |= 1 << 0;
+  if (bottomTile) tileNumber |= 1 << 1;
+  if (leftTile) tileNumber |= 1 << 2;
+  if (rightTile) tileNumber |= 1 << 3;
+
+  // Adjust tile number based on Celeste's tileset format
+  switch (tileNumber) {
+  case 0b0001:
+    tileNumber = 0;
+    break;
+  case 0b0010:
+    tileNumber = 1;
+    break;
+  case 0b0100:
+    tileNumber = 2;
+    break;
+  case 0b1000:
+    tileNumber = 3;
+    break;
+  case 0b0011:
+    tileNumber = 4;
+    break;
+  case 0b1100:
+    tileNumber = 5;
+    break;
+  case 0b1101:
+    tileNumber = 6;
+    break;
+  case 0b1110:
+    tileNumber = 7;
+    break;
+  case 0b0111:
+    tileNumber = 8;
+    break;
+  case 0b1011:
+    tileNumber = 9;
+    break;
+  case 0b1111:
+    tileNumber = 10;
+    break;
+  case 0b0101:
+    tileNumber = 11;
+    break;
+  case 0b1001:
+    tileNumber = 12;
+    break;
+  case 0b0110:
+    tileNumber = 13;
+    break;
+  case 0b1010:
+    tileNumber = 14;
+    break;
+  case 0b0000:
+    tileNumber = 15;
+    break;
+  }
+
+  // Calculate the source rectangle for the tile based on tileNumber
+  Rectf sourceRect{
+      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : 0.f,          
+      tileNumber == 15 ? 0.f: float(m_TileSize * tileNumber),
+      float(m_TileSize),               // width
+      float(m_TileSize)                // height
+  };
+
+  return sourceRect;
+}
+
 
 void Tilemap::SearchTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const
 {

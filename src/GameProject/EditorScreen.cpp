@@ -62,6 +62,7 @@ void EditorScreen::Draw()
 
   m_CameraPtr->PopMatrix();
 
+  // Draw a preview tile
   m_CurrentTilemapPtr->DrawSingleTile(Point2f{ m_MousePos.x + 10, m_MousePos.y - 60 }, m_CurrentTile);
 
   // Since finding the mouse with a white background might not always be obvious
@@ -161,6 +162,6 @@ void EditorScreen::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
     m_CurrentTile = m_CurrentTile > 0 ? m_CurrentTile - 1 : 0;
   } else if (e.y < 0) // Scroll down
   {
-    m_CurrentTile = m_CurrentTile < m_CurrentTilemapPtr->GetTileCount() ? m_CurrentTile + 1 : m_CurrentTile;
+    m_CurrentTile = m_CurrentTile < m_CurrentTilemapPtr->GetTileCount() -1 ? m_CurrentTile + 1 : m_CurrentTile;
   }
 }

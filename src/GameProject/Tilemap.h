@@ -28,15 +28,17 @@ public:
     Right
   };
 
-  // Create a tilemap raw data
-  Tilemap(const std::string& resource, const Point2f& size, int tileSize);
+  // Create a tilemap raw data, a tilemap exists of multiple tilemap images, each representing 1 tile that
+  // is automatically rotated based on the placement and neighbours
+  Tilemap(const std::vector<std::string>& resources, const Point2f& size, int tileSize);
 
   // Inherited via GameObject
   void Draw(bool debug = false) const;
 
-  // Draws a single tile at a given position
-  void DrawSingleTile(const Point2f& position, int tileId) const;
-  
+  // Draw a tile at a given tile position, this function accounts for adjacent tiles
+  // the x and y coordinates are to determine the type of type, they are optional
+  void DrawSingleTile(Point2f position, int tileId, int x = 0, int y = 0) const;
+
   // This function rounds floats to ints to check if they are within a tile. 
   // There is no need for "complex" collision detection when using a tilemap.
   bool IsTile(const Point2f& point) const;
@@ -50,7 +52,8 @@ public:
   // Remove a tile from the tilemap
   void RemoveTile(const Point2f& point);
 
-  void SetState(const std::string& resource);
+  // Set the tiles for the tilemap
+  void SetTiles(const std::vector<std::string>& resource);
 
   // Made to load in raw tile data from a binary file, the formay is just key-value int-int
   // hence the raw tile data vector size should be even
@@ -59,7 +62,6 @@ public:
   // Gives the amount of tiles the texture has
   int GetTileCount() const;
   int GetTileSize() const;
-  std::string GetResource() const;
   Point2f GetSize() const;
 
   // Gives the rect of the tile in worldspace
@@ -72,12 +74,11 @@ public:
   std::vector<std::vector<Point2f>> GenCollisionShapes() const;
 private:
   // Header information
-  std::string m_Resource;
   Point2f m_Size;
   int m_TileSize;
 
-  // Internal management
-  const Texture* m_TileTexturePtr;
+  // Internal management of the textures
+  std::vector<const Texture*> m_TileTexturePtrs;
 
   // A mapping of each coordinate and their texture coordinate.
   std::unordered_map<std::pair<int, int>, int, PairHash> m_Tiles;
@@ -87,6 +88,12 @@ private:
   int ValueToY(float val) const;
   std::pair<int, int> PointToKey(const Point2f& point) const;
   Point2f KeyToPoint(std::pair<int, int> key) const;
+
+  // Gets a tile source rect for the tilemap based on a tile position
+  // it does this by checking the adjacent tiles
+  Rectf GetSourceRect(int x, int y) const;
+
+  void DrawSingleTile(std::pair<int, int> position, int tileId) const;
 
   // COAST MARCHING ALGORITHM STUFF
   enum class LastCorner

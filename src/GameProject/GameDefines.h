@@ -47,9 +47,6 @@ static const std::string LEVEL1_NAME{ "forsaken_city" };
 static const float WINDOW_WIDTH{ 1280.f };
 static const float WINDOW_HEIGHT{ 800.f };
 
-// Texture information
-static const int TILE_SIZE{ 8 };
-
 // Editor related settings
 static const float MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL{ WINDOW_WIDTH * 0.2f };
 static const float MOUSE_DRAG_BORDER_MARGIN_VERTICAL{ WINDOW_HEIGHT * 0.2f };
@@ -57,27 +54,13 @@ static const float SCROLL_ZOOM_FACTOR{ 0.05f };
 static const float CAMERA_DRAG_SPEED{ 1000 };
 
 // Tilemap information
+// How big a single tile is
+static const int TILE_SIZE{ 8 };
+
 // How many side tiles per row
 static const int TILE_SIDE_SIZE{ 4 };
+static const int TILE_COLUMN_SIZE{ 6 };
 
-// How many inside tiles per row
-static const int TILE_INSIDE_SIZE{ 2 };
-
-// The rows for each side of the tile
-static const int TILE_TOP_ROW{ 0 };
-static const int TLE_BOTTOM_ROW{ 1 };
-static const int TILE_LEFT_ROW{ 2 };
-static const int TILE_RIGHT_ROW{ 3 };
-static const int TILE_TOP_BOTTOM_ROW{ 4 };
-static const int TILE_LEFT_RIGHT_ROW{ 5 };
-static const int TILE_LEFT_TOP_RIGHT_ROW{ 6 };
-static const int TILE_LEFT_BOTTOM_RIGHT_ROW{ 7 };
-static const int TILE_TOP_LEFT_BOTTOM_ROW{ 8 };
-static const int TILE_TOP_RIGHT_BOTTOM_ROW{ 9 };
-static const int TILE_CENTER{ 10 };
-static const int TILE_TOP_CORNER_LEFT{ 11 };
-static const int TILE_TOP_CORNER_RIGHT{ 11 };
-static const int TILE_BOTTOM_CORNER_LEFT{ 13 };
 static const int TILE_BOTTOM_CORNER_RIGHT{ 14 };
 
 // Animation information

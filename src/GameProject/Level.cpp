@@ -12,8 +12,8 @@ Level::Level(const std::string& name, const std::string& foregroundTileResource,
   : m_Name(name)
 {
   // Load both the foreground and background tilemaps
-  m_ForegroundTilemapPtr = new Tilemap(foregroundTileResource, Point2f{8.f, 8.f}, TILE_SIZE);
-  m_BackgroundTilemapPtr = new Tilemap(backgroundTileResource, Point2f{8.f, 8.f}, TILE_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(std::vector<std::string>{foregroundTileResource, "girder"}, Point2f{8.f, 8.f}, TILE_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(std::vector<std::string>{backgroundTileResource}, Point2f{8.f, 8.f}, TILE_SIZE);
 }
 
 Level::~Level()
