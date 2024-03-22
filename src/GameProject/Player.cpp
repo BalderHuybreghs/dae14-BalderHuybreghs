@@ -26,11 +26,13 @@ Player::Player(const Point2f& position)
   m_Sprite->AddResource(PLAYER_FALL_RESOURCE);
   m_Sprite->AddResource(PLAYER_JUMP_RESOURCE);
 
-  const Color4f debugColor{ 0.f, 5.f, 0.f, 0.5f };
-  m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, debugColor, true);
-  m_ColliderSlideLeft = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, debugColor, true);
-  m_ColliderSlideRight = new RectangleShape(Point2f{ 3.f, 10.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, debugColor, true);
-  m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f }, debugColor, true);
+  const Color4f colliderColor{ 0.f, 5.f, 0.f, 0.5f };
+  const Color4f colliderSideColor{ 0.f, 0.f, .5f, 0.5f };
+
+  m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, colliderColor, true);
+  m_ColliderSlideLeft = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, colliderSideColor, true);
+  m_ColliderSlideRight = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, colliderSideColor, true);
+  m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f }, colliderColor, true);
 }
 
 Player::~Player()
@@ -62,8 +64,13 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons)
 {
-  // Test for player collision in 2 iterations
-  HandleCollision(elapsedSec, collisionPolygons, true);
+  // Reset grounded, the collision handling will check if the player is grounded
+  m_IsGrounded = false;
+
+  // Multiple iteration collision handling
+  HandleCollision(elapsedSec, collisionPolygons);
+  HandleCollision(elapsedSec, collisionPolygons);
+  HandleCollision(elapsedSec, collisionPolygons);
   HandleCollision(elapsedSec, collisionPolygons);
 
   if (m_Velocity.y > 0) {
@@ -78,7 +85,11 @@ void Player::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& c
     m_State = State::Idle;
   }
 
-  m_Sprite->SetMirror(m_Velocity.x < 0.f);
+  // When the velocity is 0, the player should remain in the given mirror state
+  if (m_Velocity.x != 0.f) {
+    m_Sprite->SetMirror(m_Velocity.x < 0.f);
+  }
+
   m_Sprite->SetState((int)m_State);
 
   switch (m_State) {
@@ -179,21 +190,29 @@ void Player::SetPosition(const Point2f& position)
   m_Position = position;
   
   const Point2f spriteSize{ m_Sprite->GetSize() };
-  const Point2f colliderSide{ m_Collider->GetSimpleSize() };
+  const Point2f colliderSize{ m_Collider->GetSimpleSize() };
 
   m_Sprite->SetPosition(Point2f{
       m_Position.x - spriteSize.x / 2.f,
       m_Position.y
-                        });
+  });
 
   m_Collider->SetPosition(Point2f{
-    m_Position.x - colliderSide.x / 2.f,
+    m_Position.x - colliderSize.x / 2.f,
     m_Position.y
-                          });
+  });
 
+  // Side colliders for hold detection
+  m_ColliderSlideLeft->SetPosition(Point2f{ 
+    m_Position.x - colliderSize.x / 2.f - m_ColliderSlideRight->GetSimpleSize().x,
+    m_Position.y + (colliderSize.y - m_ColliderSlideLeft->GetSimpleSize().y) / 2.f
+  });
 
-  m_ColliderSlideLeft->SetPosition(Point2f{ m_Position.x - 5.f, m_Position.y });
-  m_ColliderSlideRight->SetPosition(Point2f{ m_Position.x + 5.f, m_Position.y });
+  m_ColliderSlideRight->SetPosition(Point2f{ 
+    m_Position.x + colliderSize.x / 2.f,
+    m_Position.y + (colliderSize.y - m_ColliderSlideRight->GetSimpleSize().y) / 2.f
+  });
+
   m_ColliderFeet->SetPosition(Point2f{ m_Position.x, m_Position.y + 5.f });
 }
 
@@ -222,7 +241,7 @@ bool Player::IsGrounded() const
   return m_IsGrounded;
 }
 
-void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& polygons, bool testGrounded)
+void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& polygons)
 {
   // TODO: handle collision logic here
   const Point2f nextPlayerPos{
@@ -257,11 +276,6 @@ void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Poi
   HitInfo infoTopLeft{};
   HitInfo infoTopRight{};
 
-  // Grounded is false unless we found a collision
-  if (testGrounded) {
-    m_IsGrounded = false;
-  }
-
   // Check collision for each polygon
   for (const std::vector<Point2f> polygon : polygons) {
     const bool hitBottomLeft{ Raycast(polygon, bottomLeft, nextBottomLeft, infoBottomLeft) };
@@ -269,16 +283,16 @@ void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Poi
     const bool hitTopLeft{ Raycast(polygon, topLeft, nextTopLeft, infoTopLeft) };
     const bool hitTopRight{ Raycast(polygon, topRight, nextTopRight, infoTopRight) };
 
-    if (testGrounded) {
-      m_IsGrounded = infoBottomLeft.normal.y > 0.f || infoBottomRight.normal.y > 0.f;
-    }
+    m_IsGrounded = m_IsGrounded || infoBottomLeft.normal.y > 0.f || infoBottomRight.normal.y > 0.f;
 
     if (infoBottomLeft.normal.y != 0.f || infoBottomRight.normal.y != 0.f || infoTopLeft.normal.y != 0.f || infoTopRight.normal.y != 0.f) {
       m_Velocity.y = 0.f;
+      //m_Position.x = (infoBottomLeft.intersectPoint.x + infoBottomRight.intersectPoint.x + infoTopLeft.intersectPoint.x + infoTopRight.intersectPoint.x) / ((float)hitBottomLeft + (float)hitBottomRight + (float)hitTopLeft + (float)hitTopRight) - m_Collider->GetShape().height;
     }
 
     if (infoBottomLeft.normal.x != 0.f || infoBottomRight.normal.x != 0.f || infoTopLeft.normal.x != 0.f || infoTopRight.normal.x != 0.f) {
       m_Velocity.x = 0.f;
+      //m_Position.y = (infoBottomLeft.intersectPoint.y + infoBottomRight.intersectPoint.y + infoTopLeft.intersectPoint.y + infoTopRight.intersectPoint.y) / ((float)hitBottomLeft + (float)hitBottomRight + (float)hitTopLeft + (float)hitTopRight);
     }
   }
 }

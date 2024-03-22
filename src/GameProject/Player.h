@@ -72,5 +72,5 @@ private:
   bool m_IsGrounded;
 
   // Collision handling stuff
-  void HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons, bool testGrounded = false);
+  void HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons);
 };

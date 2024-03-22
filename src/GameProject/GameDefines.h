@@ -56,6 +56,30 @@ static const float MOUSE_DRAG_BORDER_MARGIN_VERTICAL{ WINDOW_HEIGHT * 0.2f };
 static const float SCROLL_ZOOM_FACTOR{ 0.05f };
 static const float CAMERA_DRAG_SPEED{ 1000 };
 
+// Tilemap information
+// How many side tiles per row
+static const int TILE_SIDE_SIZE{ 4 };
+
+// How many inside tiles per row
+static const int TILE_INSIDE_SIZE{ 2 };
+
+// The rows for each side of the tile
+static const int TILE_TOP_ROW{ 0 };
+static const int TLE_BOTTOM_ROW{ 1 };
+static const int TILE_LEFT_ROW{ 2 };
+static const int TILE_RIGHT_ROW{ 3 };
+static const int TILE_TOP_BOTTOM_ROW{ 4 };
+static const int TILE_LEFT_RIGHT_ROW{ 5 };
+static const int TILE_LEFT_TOP_RIGHT_ROW{ 6 };
+static const int TILE_LEFT_BOTTOM_RIGHT_ROW{ 7 };
+static const int TILE_TOP_LEFT_BOTTOM_ROW{ 8 };
+static const int TILE_TOP_RIGHT_BOTTOM_ROW{ 9 };
+static const int TILE_CENTER{ 10 };
+static const int TILE_TOP_CORNER_LEFT{ 11 };
+static const int TILE_TOP_CORNER_RIGHT{ 11 };
+static const int TILE_BOTTOM_CORNER_LEFT{ 13 };
+static const int TILE_BOTTOM_CORNER_RIGHT{ 14 };
+
 // Animation information
 static const int FRAME_SIZE{ 32 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };

@@ -72,8 +72,9 @@ void Level::Draw(bool debug) const
     // Draw the collision shapes
     for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
       utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
+      utils::FillPolygon(polygon);
 
-      // Draw the points, OpenGL does NOT like concave ngons
+      // Draw the points, OpenGL does NOT like concave polygons
       for (const Point2f& point : polygon) {
         utils::FillEllipse(point, 5.f, 5.f);
       }
@@ -96,7 +97,9 @@ void Level::Update(Player& player, float elapsedSec)
   }
 
   // Apply gravity to the player
-  (&player)->ApplyForce(GRAVITY * elapsedSec);
+  if (!player.IsGrounded()) {
+    (&player)->ApplyForce(GRAVITY * elapsedSec);
+  }
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)

@@ -88,9 +88,30 @@ private:
   std::pair<int, int> PointToKey(const Point2f& point) const;
   Point2f KeyToPoint(std::pair<int, int> key) const;
 
+  // COAST MARCHING ALGORITHM STUFF
+  enum class LastCorner
+  {
+    None,
+    TopLeft,
+    TopRight,
+    BottomRight,
+    BottomLeft
+  };
+
+  // Part of the coast marching algorithm, to pick the right corner to start from
+  void SearchTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void SearchTopRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void SearchBottomRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void SearchBottomLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+
+  void FindCornersFromTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void FindCornersFromTopRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void FindCornersFromBottomRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+  void FindCornersFromBottomLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
+
   // Explores an island of tiles, this is a custom made algorithm
   // it works by giving it a list of visited tiles, and a x and y start position
   // it starts from the start position marching out until it finds a corner of the island,
   // as soon as it found a corner, it will march in 1 direction based on that corner
-  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const;
+  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, LastCorner lastCorner = LastCorner::None) const;
 };
