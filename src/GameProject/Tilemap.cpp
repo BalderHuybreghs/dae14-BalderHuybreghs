@@ -6,6 +6,7 @@
 #include "GameDefines.h"
 #include "utils.h"
 #include <queue>
+#include <random>
 
 using namespace utils;
 
@@ -189,15 +190,43 @@ std::vector<std::vector<Point2f>> Tilemap::GenCollisionShapes() const
       std::vector<Point2f> shape; // Initialize a new shape
 
       // Explore the island using DFS
-      ExploreIsland(x, y, visitedGrid, shape, 0, 0);
+      //ExploreIsland(x, y, visitedGrid, shape, 0, 0);
+      int adjTiles{ 0 };
+      if (IsTile(x - 1, y)) {
+        adjTiles++;
+      }
 
-      // Sort the points of the shape in clockwise order
-      // SortPointsClockwise(shape);
+      if (IsTile(x, y - 1)) {
+        adjTiles++;
+      }
 
-      // Add the shape to the list of collision shapes
-      if (!shape.empty()) {
+      if (IsTile(x, y + 1)) {
+        adjTiles++;
+      }
+
+      if (IsTile(x + 1, y)) {
+        adjTiles++;
+      }
+
+      if (adjTiles < 4) {
+        // Get the rectangle representing the tile
+        Rectf tileRect = GetTileRect(KeyToPoint({ x, y }));
+
+        // Create the rectangle polygon for the tile
+        std::vector<Point2f> shape;
+        shape.emplace_back(tileRect.left, tileRect.bottom);
+        shape.emplace_back(tileRect.left + tileRect.width, tileRect.bottom);
+        shape.emplace_back(tileRect.left + tileRect.width, tileRect.bottom + tileRect.height);
+        shape.emplace_back(tileRect.left, tileRect.bottom + tileRect.height);
+
+        // Add the shape to the list of collision shapes
         collisionShapes.push_back(shape);
       }
+
+      // Add the shape to the list of collision shapes
+      //if (!shape.empty()) {
+      //  collisionShapes.push_back(shape);
+      //}
     }
   }
 
@@ -295,10 +324,14 @@ Rectf Tilemap::GetSourceRect(int x, int y) const
     break;
   }
 
-  // Calculate the source rectangle for the tile based on tileNumber
+  // To not affect the global random, we create our own random with the x y seed to get consistent "random" values
+  std::seed_seq seed{ x, y };
+  std::mt19937 rng(seed);
+
+  // Calculate the source rectangle for the tile
   Rectf sourceRect{
-      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : 0.f,          
-      tileNumber == 15 ? 0.f: float(m_TileSize * tileNumber),
+      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : float(rng() % 4) * m_TileSize ,
+      tileNumber == 15 ? float(rng() % 12) * m_TileSize : float(m_TileSize * tileNumber),
       float(m_TileSize),               // width
       float(m_TileSize)                // height
   };
@@ -306,24 +339,42 @@ Rectf Tilemap::GetSourceRect(int x, int y) const
   return sourceRect;
 }
 
+Tilemap::CornerType Tilemap::FindStartingCorner(int x, int y, const Point2f& previousPoint) const
+{
+  const Rectf tile{ GetTileRect(KeyToPoint({ x, y })) };
+  const Point2f bottomLeft{ tile.left, tile.bottom };
+  const Point2f topLeft{ tile.left, tile.bottom + tile.height };
+  const Point2f topRight{ tile.left + tile.width, tile.bottom + tile.height };
+  const Point2f bottomRight{ tile.left + tile.width, tile.bottom };
+
+  if (bottomLeft.x == previousPoint.x || bottomLeft.y == previousPoint.y)
+    return CornerType::BottomLeft;
+  else if (topLeft.x == previousPoint.x || topLeft.y == previousPoint.y)
+    return CornerType::TopLeft;
+  else if (topRight.x == previousPoint.x || topRight.y == previousPoint.y)
+    return CornerType::TopRight;
+  else if (bottomRight.x == previousPoint.x || bottomRight.y == previousPoint.y)
+    return CornerType::BottomRight;
+
+  return CornerType::Any;
+}
 
 void Tilemap::SearchTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const
 {
   const Rectf tile{ GetTileRect(KeyToPoint({ x, y })) };
   const Point2f bottomLeft{ tile.left, tile.bottom };
-  const LastCorner last{ LastCorner::TopLeft };
   
   if (!IsTile(x - 1, y) && !IsTile(x, y + 1) && !IsTile(x - 1, y + 1)) { // Outside corner
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height });
-    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0, last); // Go right
+    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0); // Go right
     ++cornersFound;
   } else if (!IsTile(x - 1, y + 1) && IsTile(x, y + 1) && IsTile(x - 1, y)) { // Inside corner
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height });
-    ExploreIsland(x, y + 1, visitedGrid, shape, 0, 1, last); // Go up
+    ExploreIsland(x, y + 1, visitedGrid, shape, 0, 1); // Go up
     ++cornersFound;
   } else if (IsTile(x - 1, y + 1) && !IsTile(x, y + 1) && !IsTile(x - 1, y)) { // Edge case (diagonal connection)
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y + tile.height });
-    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0, last); // Go right
+    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0); // Go right
     ++cornersFound;
   }
 }
@@ -332,19 +383,18 @@ void Tilemap::SearchTopRight(int x, int y, std::unordered_map<std::pair<int, int
 {
   const Rectf tile{ GetTileRect(KeyToPoint({ x, y })) };
   const Point2f bottomLeft{ tile.left, tile.bottom };
-  const LastCorner last{ LastCorner::TopRight };
 
   if (!IsTile(x + 1, y) && !IsTile(x, y + 1) && !IsTile(x + 1, y + 1)) { // Outside corner
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y + tile.height });
-    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1, last); // Go down
+    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1); // Go down
     ++cornersFound;
   } else if (!IsTile(x + 1, y + 1) && IsTile(x + 1, y) && IsTile(x, y + 1)) { // Inside corner
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y + tile.height });
-    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0, last);  // Go right
+    ExploreIsland(x + 1, y, visitedGrid, shape, 1, 0);  // Go right
     ++cornersFound;
   } else if (IsTile(x + 1, y + 1) && !IsTile(x + 1, y) && !IsTile(x, y + 1)) { // Edge case (diagonal connection)
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y + tile.height });
-    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1, last); // Go down
+    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1); // Go down
     ++cornersFound;
   }
 }
@@ -353,19 +403,18 @@ void Tilemap::SearchBottomRight(int x, int y, std::unordered_map<std::pair<int, 
 {
   const Rectf tile{ GetTileRect(KeyToPoint({ x, y })) };
   const Point2f bottomLeft{ tile.left, tile.bottom };
-  const LastCorner last{ LastCorner::BottomRight };
 
   if (!IsTile(x + 1, y) && !IsTile(x, y - 1) && !IsTile(x + 1, y - 1)) { // Outside corner
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y });
-    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0, last); // Go left
+    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0); // Go left
     ++cornersFound;
   } else if (!IsTile(x + 1, y - 1) && IsTile(x + 1, y) && IsTile(x, y - 1)) { // Inside corner
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y });
-    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1, last); // Go down
+    ExploreIsland(x, y - 1, visitedGrid, shape, 0, -1); // Go down
     ++cornersFound;
   } else if (IsTile(x + 1, y - 1) && !IsTile(x + 1, y) && !IsTile(x, y - 1)) { // Edge case (diagonal connection)
     shape.push_back(Point2f{ bottomLeft.x + tile.width, bottomLeft.y });
-    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0, last); // Go down
+    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0); // Go down
     ++cornersFound;
   }
 }
@@ -374,19 +423,18 @@ void Tilemap::SearchBottomLeft(int x, int y, std::unordered_map<std::pair<int, i
 {
   const Rectf tile{ GetTileRect(KeyToPoint({ x, y })) };
   const Point2f bottomLeft{ tile.left, tile.bottom };
-  const LastCorner last{LastCorner::BottomLeft};
 
   if (!IsTile(x, y - 1) && !IsTile(x - 1, y) && !IsTile(x - 1, y - 1)) { // Outside corner
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y });
-    ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1, last); // Go up
+    ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1); // Go up
     ++cornersFound;
   } else if (!IsTile(x - 1, y - 1) && IsTile(x, y - 1) && IsTile(x - 1, y)) { // Inside corner
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y });
-    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0, last); // Go left
+    ExploreIsland(x - 1, y, visitedGrid, shape, -1, 0); // Go left
     ++cornersFound;
   } else if (IsTile(x - 1, y - 1) && !IsTile(x, y - 1) && !IsTile(x - 1, y)) { // Edge case (diagonal connection)
     shape.push_back(Point2f{ bottomLeft.x, bottomLeft.y });
-    ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1, last); // Go up
+    ExploreIsland(x, y + 1, visitedGrid, shape, 0, +1); // Go up
     ++cornersFound;
   }
 }
@@ -426,51 +474,37 @@ void Tilemap::FindCornersFromBottomLeft(int x, int y, std::unordered_map<std::pa
 
 // TODO: fix the fact that in some shapes, when marching the coast, coming from a bottom right corner, moving to the left, will
 // result in starting from the top left corner, causing the polygon to be misshapen (suggest: use an enun to indicate the last corner traversed, start from that corner)
-void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, LastCorner lastCorner) const
+void Tilemap::ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const
 {
   if (visitedGrid.find(std::make_pair(x, y)) == visitedGrid.end() && IsTile(x, y)) {
     visitedGrid.insert({ std::make_pair(x, y), true });
     int cornersFound{};
 
-    switch (lastCorner) {
-    case LastCorner::None:
-    case LastCorner::TopLeft:
-      // If coming from the bottom, go to the bottom left
-      if (dx == 0 && dy == -1) {
-        FindCornersFromBottomLeft(x, y, visitedGrid, shape, dx, dy, cornersFound);
-        break;
-      }
-      FindCornersFromTopRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
-      break;
-    case LastCorner::TopRight:
-      // If coming from the left, go to the top left
-      if (dx == -1 && dy == 0) {
-        FindCornersFromTopLeft(x, y, visitedGrid, shape, dx, dy, cornersFound);
-        break;
-      }
-      FindCornersFromBottomRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
-      break;
-    case LastCorner::BottomRight:
-      // If coming from the top, go to the top right
-      if (dx == 0 && dy == 1) {
-        FindCornersFromTopRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
-        break;
-      }
+    const CornerType startingCorner{ CornerType::Any };
+
+    if (!shape.empty()) {
+      const CornerType startingCorner{ FindStartingCorner(x + dx, y + dy, shape[shape.size() - 1]) };
+    }
+    
+    switch (startingCorner) {
+    case CornerType::Any:
+    case CornerType::BottomLeft:
       FindCornersFromBottomLeft(x, y, visitedGrid, shape, dx, dy, cornersFound);
       break;
-    case LastCorner::BottomLeft:
-      // If coming from the right, go to the bottom right
-      if (dx == 1 && dy == 0) {
-        FindCornersFromBottomRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
-        break;
-      }
+    case CornerType::BottomRight:
+      FindCornersFromBottomRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
+      break;
+    case CornerType::TopLeft:
       FindCornersFromTopLeft(x, y, visitedGrid, shape, dx, dy, cornersFound);
+      break;
+    case CornerType::TopRight:
+      FindCornersFromTopRight(x, y, visitedGrid, shape, dx, dy, cornersFound);
       break;
     }
 
     if (cornersFound < 1) {
       // If no corners found in the current direction, continue exploration in the same direction
-      ExploreIsland(x + dx, y + dy, visitedGrid, shape, dx, dy, lastCorner);
+      ExploreIsland(x + dx, y + dy, visitedGrid, shape, dx, dy);
     }
   }
 }

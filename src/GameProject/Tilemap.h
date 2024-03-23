@@ -96,15 +96,18 @@ private:
   void DrawSingleTile(std::pair<int, int> position, int tileId) const;
 
   // COAST MARCHING ALGORITHM STUFF
-  enum class LastCorner
+  enum class CornerType
   {
-    None,
+    Any,
+    BottomLeft,
     TopLeft,
     TopRight,
-    BottomRight,
-    BottomLeft
+    BottomRight
   };
 
+  
+  CornerType FindStartingCorner(int x, int y, const Point2f& previousPoint) const;
+   
   // Part of the coast marching algorithm, to pick the right corner to start from
   void SearchTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
   void SearchTopRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
@@ -120,5 +123,5 @@ private:
   // it works by giving it a list of visited tiles, and a x and y start position
   // it starts from the start position marching out until it finds a corner of the island,
   // as soon as it found a corner, it will march in 1 direction based on that corner
-  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, LastCorner lastCorner = LastCorner::None) const;
+  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const;
 };

@@ -12,8 +12,8 @@ Level::Level(const std::string& name, const std::string& foregroundTileResource,
   : m_Name(name)
 {
   // Load both the foreground and background tilemaps
-  m_ForegroundTilemapPtr = new Tilemap(std::vector<std::string>{foregroundTileResource, "girder"}, Point2f{8.f, 8.f}, TILE_SIZE);
-  m_BackgroundTilemapPtr = new Tilemap(std::vector<std::string>{backgroundTileResource}, Point2f{8.f, 8.f}, TILE_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(std::vector<std::string>{foregroundTileResource, "girder", "dirt"}, Point2f{7.f, 7.f}, TILE_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(std::vector<std::string>{backgroundTileResource}, Point2f{7.f, 7.f}, TILE_SIZE);
 }
 
 Level::~Level()
@@ -75,8 +75,15 @@ void Level::Draw(bool debug) const
       utils::FillPolygon(polygon);
 
       // Draw the points, OpenGL does NOT like concave polygons
+      int count{ 0 };
       for (const Point2f& point : polygon) {
         utils::FillEllipse(point, 5.f, 5.f);
+        // Draw count as text
+        //Texture* text{ new Texture(std::to_string(count), FONT_FOLDER + FS + SYNE_FONT + FONT_EXTENSION, 20, Color4f(1.f, 0.f, 0.f, 1.f))};
+        //text->Draw(point);
+        //delete text;
+
+        ++count;
       }
     }
 
