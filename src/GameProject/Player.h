@@ -35,6 +35,7 @@ public:
   void Dash(const Vector2f& direction);
   void Crouch();
   void Hold();
+  void LetGo();
   
   // Will move the player in a direction
   void Move(const Vector2f& direction);

@@ -26,9 +26,10 @@ EditorScreen::EditorScreen(const std::string& levelName)
 
 void EditorScreen::Initialize()
 {
-  m_LevelPtr = new Level(m_LevelName, "snow", TILEMAP_BG_PREFIX + "dirt");
+  m_LevelPtr = new Level(m_LevelName);
   m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
   m_LevelPtr->Load();
+  m_CameraPtr->SetPosition(m_LevelPtr->GetPlayerSpawn());
 }
 
 EditorScreen::~EditorScreen()
@@ -111,9 +112,11 @@ void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
   {
   case SDLK_e:
     m_EditMode = EditorScreen::Mode((int)m_EditMode + 1 % 4);
+    m_CurrentTile = 0;
     break;
   case SDLK_q:
     m_EditMode = EditorScreen::Mode((int)m_EditMode - 1 % 4);
+    m_CurrentTile = 0;
     break;
   case SDLK_SPACE:
     m_LevelPtr->Save();
@@ -141,7 +144,7 @@ void EditorScreen::OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
     case SDL_BUTTON_LEFT:
       m_CurrentTilemapPtr->SetTile(m_CameraPtr->GetWorldPosition(m_MousePos), m_CurrentTile);
       break;
-    case SDL_BUTTON_MIDDLE:
+    case SDL_BUTTON_RIGHT:
       m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(m_MousePos));
       break;
   }

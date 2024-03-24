@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseGame.h"
+#include "InputManager.h"
 #include "ScreenManager.h"
 
 class Game : public BaseGame
@@ -17,6 +18,7 @@ public:
 	void Draw() const override;
 
 	// Event handling
+  void ProcessInputEvent(const SDL_Event& e) override;
 	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
 	void ProcessKeyUpEvent( const SDL_KeyboardEvent& e ) override;
 	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
@@ -31,5 +33,5 @@ private:
 	// FUNCTIONS
 	void Initialize(GameScreen* initialScreenPtr);
 	void Cleanup( );
-	void ClearBackground( ) const;
+  void ClearBackground(Color4f color = Color4f{ 0.f, 0.f, 0.f, 1.f}) const;
 };

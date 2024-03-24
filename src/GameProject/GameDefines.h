@@ -68,6 +68,51 @@ static const int TILE_COLUMN_SIZE{ 6 };
 
 static const int TILE_BOTTOM_CORNER_RIGHT{ 14 };
 
+static const int BACKGROUND_TILES_SIZE{ 12 };
+static const int FOREGROUND_TILES_SIZE{ 23 };
+
+static const std::string BACKGROUND_TILES[]{ 
+  "bg_brick", 
+  "bg_brick_ruined", 
+  "bg_cliffside", 
+  "bg_core", 
+  "bg_dirt", 
+  "bg_lost_levels", 
+  "bg_reflection", 
+  "bg_snow", 
+  "bg_summit", 
+  "bg_temple_a", 
+  "bg_temple", 
+  "bg_wood"
+};
+
+static const std::string FOREGROUND_TILES[]{
+  "cement",
+  "cliffside",
+  "core",
+  "deadgrass",
+  "dirt",
+  "girder",
+  "grass",
+  "lostlevels",
+  "pool_edges",
+  "reflection",
+  "reflection_alt",
+  "rock",
+  "scifi",
+  "snow",
+  "star_jump",
+  "stone",
+  "summit",
+  "summit_no_snow"
+  "template",
+  "temple_a",
+  "temple_b",
+  "tower",
+  "wood",
+  "wood_stone_edges"
+};
+
 // Animation information
 static const int FRAME_SIZE{ 32 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
@@ -75,3 +120,4 @@ static const float FRAMES_PER_SECOND{ 1 / 8.f };
 // Playing information
 static const Vector2f GRAVITY{0.f, -2000.f};
 static const Vector2f TERMINAL_VELOCITY{ 0.f, 0.f }; // TODO: Determine terminal velocity
+static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }; // The absolute background color is always the same single color in Celeste

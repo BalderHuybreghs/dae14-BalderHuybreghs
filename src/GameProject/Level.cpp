@@ -8,12 +8,12 @@
 #include <fstream>
 #include <climits>
 
-Level::Level(const std::string& name, const std::string& foregroundTileResource, const std::string& backgroundTileResource)
-  : m_Name(name)
+Level::Level(const std::string& name)
+  : m_Name(name), m_PlayerSpawn(Point2f())
 {
   // Load both the foreground and background tilemaps
-  m_ForegroundTilemapPtr = new Tilemap(std::vector<std::string>{foregroundTileResource, "girder", "dirt"}, Point2f{7.f, 7.f}, TILE_SIZE);
-  m_BackgroundTilemapPtr = new Tilemap(std::vector<std::string>{backgroundTileResource}, Point2f{7.f, 7.f}, TILE_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(Point2f{7.f, 7.f}, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(Point2f{7.f, 7.f}, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
 }
 
 Level::~Level()

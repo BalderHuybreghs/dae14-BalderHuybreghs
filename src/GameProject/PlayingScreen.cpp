@@ -23,7 +23,7 @@ PlayingScreen::~PlayingScreen()
 
 void PlayingScreen::Initialize()
 {
-  m_LevelPtr = new Level(m_LevelName, "snow", TILEMAP_BG_PREFIX + "dirt");
+  m_LevelPtr = new Level(m_LevelName);
 
   // Load the level from disk
   m_LevelPtr->Load();
@@ -73,6 +73,9 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
     break;
   case SDLK_s:
     m_PlayerPtr->Crouch();
+    break;
+  case SDLK_j:
+    m_PlayerPtr->Hold();
     break;
   
   // Switch to level editor

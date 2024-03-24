@@ -70,16 +70,35 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   // Multiple iteration collision handling
   HandleCollision(elapsedSec, tilemap);
 
-  if (m_Velocity.y > 0) {
-    m_State = State::Jumping;
-  } if (m_Velocity.y < -10) {
-    m_State = State::Falling;
-  } else if (m_Velocity.y > 10) {
-    m_State = State::Idle;
-  } else if (m_Velocity.x > 1 || m_Velocity.x < -1) {
-    m_State = State::Running;
+  switch (m_State) {
+    case Player::State::Idle:
+    {
+      m_Dashes = 0;
+      break;
+    }
+    case Player::State::Holding:
+    {
+      m_Velocity.y = 0;
+      m_Velocity.x = 0;
+      break;
+    }
+  }
+
+  if (tilemap.IsTile(m_ColliderSlideLeft->GetShape()) || tilemap.IsTile(m_ColliderSlideRight->GetShape())) {
+    //m_State = State::Sliding;
+    //m_Velocity = GRAVITY * 10 * elapsedSec;
   } else {
-    m_State = State::Idle;
+    if (m_Velocity.y > 0) {
+      m_State = State::Jumping;
+    } if (m_Velocity.y < -10) {
+      m_State = State::Falling;
+    } else if (m_Velocity.y > 10) {
+      m_State = State::Idle;
+    } else if (m_Velocity.x > 1 || m_Velocity.x < -1) {
+      m_State = State::Running;
+    } else {
+      m_State = State::Idle;
+    }
   }
 
   // When the velocity is 0, the player should remain in the given mirror state
@@ -88,13 +107,6 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   }
 
   m_Sprite->SetState((int)m_State);
-
-  switch (m_State) {
-    case Player::State::Idle: {
-      m_Dashes = 0;
-      break;
-    }
-  }
 
   SetPosition(Point2f{
     m_Position.x + m_Velocity.x * elapsedSec,
@@ -125,7 +137,7 @@ void Player::RefillDashes(int amount)
 
 void Player::Jump()
 {
-  if (m_IsGrounded) {
+  if (m_IsGrounded || m_State == State::Holding || m_State == State::Sliding) {
     m_Velocity.y = 1000;
   }
 }
@@ -144,12 +156,10 @@ void Player::Crouch()
   // TODO: update the player hitbox
   if (m_State == Player::State::Idle) {
     m_State = Player::State::Crouching;
-    m_Sprite->SetState(int(m_State));
   }
 
   if (m_State == Player::State::Crouching) {
     m_State = Player::State::Idle;
-    m_Sprite->SetState(int(m_State));
   }
 }
 
@@ -157,7 +167,13 @@ void Player::Hold()
 {
   if (m_State == Player::State::Sliding) {
     m_State = Player::State::Holding;
-    m_Sprite->SetState(int(m_State));
+  }
+}
+
+void Player::LetGo()
+{
+  if (m_State == Player::State::Holding) {
+    m_State = Player::State::Sliding;
   }
 }
 

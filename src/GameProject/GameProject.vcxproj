@@ -162,6 +162,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="CircleShape.cpp" />
     <ClCompile Include="Decal.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="ObjectBlueprint.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
@@ -195,6 +196,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="CircleShape.h" />
     <ClInclude Include="Decal.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="ObjectBlueprint.h" />
     <ClInclude Include="ObjectFactory.h" />

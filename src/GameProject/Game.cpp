@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "ObjectManager.h"
 #include "TextureManager.h"
+#include "GameDefines.h"
 
 Game::Game(const Window& window, GameScreen* initialScreenPtr)
 	: BaseGame{ window }
@@ -37,9 +38,14 @@ void Game::Update(float elapsedSec)
 
 void Game::Draw() const
 {
-	ClearBackground();
+	ClearBackground(BACKGROUND_COLOR);
 
   m_ScreenManagerPtr->GetScreen()->Draw();
+}
+
+void Game::ProcessInputEvent(const SDL_Event& e)
+{
+  m_ScreenManagerPtr->GetScreen()->OnInputEvent(e);
 }
 
 void Game::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
@@ -72,8 +78,8 @@ void Game::ProcessMouseWheelEvent(const SDL_MouseWheelEvent& e)
   m_ScreenManagerPtr->GetScreen()->OnMouseWheelEvent(e);
 }
 
-void Game::ClearBackground() const
+void Game::ClearBackground(Color4f color) const
 {
-	glClearColor( 0.0f, 0.0f, 0.3f, 1.0f );
+	glClearColor(color.r, color.g, color.b, color.a);
 	glClear( GL_COLOR_BUFFER_BIT );
 }

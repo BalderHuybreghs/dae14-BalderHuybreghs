@@ -147,6 +147,8 @@ void BaseGame::Run()
 		// Poll next event from queue
 		while (SDL_PollEvent(&e) != 0)
 		{
+      this->ProcessInputEvent(e); // For the input manager
+
 			// Handle the polled event
 			switch (e.type)
 			{

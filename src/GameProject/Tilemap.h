@@ -18,7 +18,7 @@ public:
 
   // Create a tilemap raw data, a tilemap exists of multiple tilemap images, each representing 1 tile that
   // is automatically rotated based on the placement and neighbours
-  Tilemap(const std::vector<std::string>& resources, const Point2f& size, int tileSize);
+  Tilemap(const Point2f& size, int tileSize, const std::string resources[], int resourcesSize);
 
   void Draw(bool debug = false) const;
 
@@ -43,7 +43,7 @@ public:
   void RemoveTile(const Point2f& point);
 
   // Set the tiles for the tilemap
-  void SetTiles(const std::vector<std::string>& resource);
+  void SetTiles(const std::string resources[], int resourcesSize);
 
   // Made to load in raw tile data from a binary file, the formay is just key-value int-int
   // hence the raw tile data vector size should be even
@@ -59,9 +59,6 @@ public:
 
   // Convert the tiles to raw data
   std::vector<int> ToRawTileData() const;
-
-  // Get the total collisionshape of the tilemap
-  std::vector<std::vector<Point2f>> GenCollisionShapes() const;
 private:
   // Header information
   Point2f m_Size;

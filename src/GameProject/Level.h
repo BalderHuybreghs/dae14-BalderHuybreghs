@@ -9,7 +9,7 @@ class Level
 {
 public:
   // Level with name loads a level
-  Level(const std::string& name, const std::string& foregroundTileResource, const std::string& backgroundTileResource);
+  Level(const std::string& name);
   ~Level();
 
   // Builds the level and all of its objects from the blueprint

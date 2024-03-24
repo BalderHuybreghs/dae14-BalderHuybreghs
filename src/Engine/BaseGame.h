@@ -26,6 +26,11 @@ public:
 	}
 
 	// Event handling
+  virtual void ProcessInputEvent(const SDL_Event& e)
+  {
+
+  }
+
 	virtual void ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 	{
 		

@@ -9,10 +9,10 @@
 
 using namespace utils;
 
-Tilemap::Tilemap(const std::vector<std::string>& resources, const Point2f& size, int tileSize)
+Tilemap::Tilemap(const Point2f& size, int tileSize, const std::string resources[], int resourcesSize)
   : m_Size(size), m_TileSize(tileSize)
 {
-  SetTiles(resources);
+  SetTiles(resources, resourcesSize);
 }
 
 void Tilemap::Draw(bool debug) const
@@ -91,20 +91,21 @@ void Tilemap::RemoveTile(const Point2f& point)
   }
 }
 
-void Tilemap::SetTiles(const std::vector<std::string>& resources)
+void Tilemap::SetTiles(const std::string resources[], int resourcesSize)
 {
   // Clear the exising textures, they don't have to be deleted because the manager takes care of that
 
   m_TileTexturePtrs.clear();
   // For each resource, we load in the texture
-  
-  for (const std::string& resource : resources) {
+
+  for (int index = 0; index < resourcesSize; ++index)
+  {
     // Grabs the tile from the tilemap folder
-    const Texture* texturePtr{ TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resource)) };
+    const Texture* texturePtr{ TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resources[index]))};
 
     // The texture is invalid if it is not divisible by the size of each tile
     if ((int)texturePtr->GetWidth() % m_TileSize != 0 || (int)texturePtr->GetHeight() % m_TileSize != 0) {
-      std::cerr << "Tilemap texture '" << resource << "' is non-divisible by " << m_TileSize << std::endl;
+      std::cerr << "Tilemap texture '" << resources[index] << "' is non-divisible by " << m_TileSize << std::endl;
       exit(-1);
     }
 
@@ -181,22 +182,6 @@ std::vector<int> Tilemap::ToRawTileData() const
   }
 
   return rawTileData;
-}
-
-std::vector<std::vector<Point2f>> Tilemap::GenCollisionShapes() const
-{
-  std::cout << "Generating collision shape for tilemap" << std::endl;
-
-  std::vector<Rectf> collisionTiles;
-
-  // Find all the tiles that need collision
-  for (const std::pair<std::pair<int, int>, int>& tile : m_Tiles) {
-      collisionTiles.push_back(GetTileRect(KeyToPoint({ tile.first.first, tile.first.second })));
-  }
-
-  std::vector<std::vector<Point2f>> collisionPolygons{ AlgoUtils::RectanglesToPolygons(collisionTiles) };
-  std::cout << "Found collision islands: " << collisionPolygons.size() << std::endl;
-  return collisionPolygons;
 }
 
 int Tilemap::ValueToX(float val) const

@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "InputManager.h"
 
 class GameScreen; // Forward declaration
 
@@ -33,13 +34,15 @@ public:
 
   // The screenManagerPtr should not be deleted because it
   // is part of another class
-  virtual ~GameScreen()                                          {};
+  virtual ~GameScreen();
 
   // General game functions
   virtual void Draw()                                            {};
-  virtual void Update(float elapsedSec)                          {};
+  virtual void Update(float elapsedSec) {};
 
-  // Key events
+  // OnInputEvent only called to update t he InputManager
+  void OnInputEvent(const SDL_Event& e);
+
   virtual void OnKeyDownEvent(const SDL_KeyboardEvent& key)      {};
   virtual void OnKeyUpEvent(const SDL_KeyboardEvent& key)        {};
   virtual void OnMouseMotionEvent(const SDL_MouseMotionEvent& e) {};
@@ -51,4 +54,5 @@ protected:
   GameScreen();
 
   ScreenManager* m_ScreenManagerPtr;
+  InputManager* m_InputManagerPtr;
 };

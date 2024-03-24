@@ -38,9 +38,21 @@ ScreenManager* ScreenManager::GetParent()
 GameScreen::GameScreen()
   : m_ScreenManagerPtr(nullptr)
 {
+  m_InputManagerPtr = new InputManager();
+}
+
+GameScreen::~GameScreen()
+{
+  delete m_InputManagerPtr;
 }
 
 void GameScreen::SetScreenManager(ScreenManager* screenManagerPtr)
 {
   m_ScreenManagerPtr = screenManagerPtr;
 }
+
+void GameScreen::OnInputEvent(const SDL_Event& e)
+{
+  m_InputManagerPtr->Update(e);
+}
+

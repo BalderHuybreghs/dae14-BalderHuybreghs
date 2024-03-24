@@ -145,6 +145,9 @@
     <ClCompile Include="ObjectFactory.cpp">
       <Filter>Source Files\Core\Object</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Core\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -239,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="ObjectFactory.h">
       <Filter>Source Files\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Source Files\Core\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
