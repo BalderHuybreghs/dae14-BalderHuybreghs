@@ -44,7 +44,6 @@ private:
   std::string m_LevelName;
 
   Mode m_EditMode;
-  Point2f m_MousePos;
 
   Level* m_LevelPtr;
   Tilemap* m_CurrentTilemapPtr; // Should not be deleted, holds a reference to the tilemap within the level

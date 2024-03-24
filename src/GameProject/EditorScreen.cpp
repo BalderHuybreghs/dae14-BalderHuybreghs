@@ -12,9 +12,8 @@ using namespace utils;
 EditorScreen::EditorScreen(const std::string& levelName, Point2f cameraPos)
   : GameScreen(), m_LevelPtr(nullptr), m_CurrentTilemapPtr(nullptr),
   m_EditMode(Mode::TilesetFront), m_CurrentTile(0),
-  m_MousePos(Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f }), m_CameraPtr(new Camera(cameraPos)),
   m_MouseDragBorder(new RectangleShape(Point2f{ WINDOW_WIDTH - MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL * 2, WINDOW_HEIGHT - MOUSE_DRAG_BORDER_MARGIN_VERTICAL * 2 }, Point2f{ MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL, MOUSE_DRAG_BORDER_MARGIN_VERTICAL })), 
-  m_LevelName(levelName)
+  m_LevelName(levelName), m_CameraPtr(new Camera(cameraPos))
 {
 }
 
@@ -52,7 +51,7 @@ void EditorScreen::Draw()
 
   // Draw an outline around the tile the player may build
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
-  const Rectf selectedTileRect{ m_CurrentTilemapPtr->GetTileRect(m_CameraPtr->GetWorldPosition(m_MousePos)) };
+  const Rectf selectedTileRect{ m_CurrentTilemapPtr->GetTileRect(m_CameraPtr->GetWorldPosition(m_InputManagerPtr->GetMousePosition())) };
 
   // Draw red if we are working in negative coordinates
   if (selectedTileRect.left < 0 || selectedTileRect.bottom < 0) {
@@ -64,11 +63,12 @@ void EditorScreen::Draw()
   m_CameraPtr->PopMatrix();
 
   // Draw a preview tile
-  m_CurrentTilemapPtr->DrawSingleTile(Point2f{ m_MousePos.x + 10, m_MousePos.y - 60 }, m_CurrentTile);
+  const Point2f mousePos{ m_InputManagerPtr->GetMousePosition() };
+  m_CurrentTilemapPtr->DrawSingleTile(Point2f{ mousePos.x + 10, mousePos.y - 60 }, m_CurrentTile);
 
   // Since finding the mouse with a white background might not always be obvious
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
-  FillEllipse(m_MousePos, 7.f, 7.f);
+  FillEllipse(mousePos, 7.f, 7.f);
 
   //m_MouseDragBorder->Draw();
 }
@@ -88,13 +88,20 @@ void EditorScreen::Update(float elapsedSec)
   // The level itself should not be updated in the editor
   m_CameraPtr->Update(elapsedSec);
 
+  const Point2f mousePos{ m_InputManagerPtr->GetMousePosition() };
+  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT)) {
+    m_CurrentTilemapPtr->SetTile(m_CameraPtr->GetWorldPosition(mousePos), m_CurrentTile);
+  } else if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_RIGHT)) {
+    m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(mousePos));
+  }
+
   // If the mouse is outside of a given area, move the camera over the world (warcraft style)
-  if (!m_MouseDragBorder->IsPointInside(m_MousePos)) {
+  if (!m_MouseDragBorder->IsPointInside(m_InputManagerPtr->GetMousePosition())) {
     Point2f cameraPos{ m_CameraPtr->GetPosition() };
 
     const Vector2f mouseFromCenter(
-      m_MousePos.x - WINDOW_WIDTH / 2,
-      m_MousePos.y - WINDOW_HEIGHT / 2
+      mousePos.x - WINDOW_WIDTH / 2,
+      mousePos.y - WINDOW_HEIGHT / 2
     );
 
     const Vector2f direction{ mouseFromCenter.Normalized() };
@@ -122,7 +129,7 @@ void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
     m_LevelPtr->Save();
   	break;
   case SDLK_g:
-    m_LevelPtr->SetPlayerSpawn(m_CameraPtr->GetWorldPosition(m_MousePos));
+    m_LevelPtr->SetPlayerSpawn(m_CameraPtr->GetWorldPosition(m_InputManagerPtr->GetMousePosition()));
     break;
 
   // Switch to playmode
@@ -138,16 +145,7 @@ void EditorScreen::OnKeyUpEvent(const SDL_KeyboardEvent& key)
 
 void EditorScreen::OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
 {
-  m_MousePos = Point2f{ float(e.x), float(e.y) };
 
-  switch(e.state) {
-    case SDL_BUTTON_LEFT:
-      m_CurrentTilemapPtr->SetTile(m_CameraPtr->GetWorldPosition(m_MousePos), m_CurrentTile);
-      break;
-    case SDL_BUTTON_RIGHT:
-      m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(m_MousePos));
-      break;
-  }
 }
 
 void EditorScreen::OnMouseDownEvent(const SDL_MouseButtonEvent& e)

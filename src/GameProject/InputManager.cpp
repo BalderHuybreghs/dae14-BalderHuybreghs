@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "InputManager.h"
+#include "GameDefines.h"
 
 void InputManager::Update(const SDL_Event& event)
 {
@@ -13,10 +14,10 @@ void InputManager::Update(const SDL_Event& event)
     m_KeyStates.insert_or_assign(event.key.keysym.sym, false);
     break;
   case SDL_MOUSEBUTTONDOWN:
-    m_KeyStates.insert_or_assign(event.button.button, true);
+    m_MouseButtonStates.insert_or_assign(event.button.button, true);
     break;
   case SDL_MOUSEBUTTONUP:
-    m_KeyStates.insert_or_assign(event.button.button, false);
+    m_MouseButtonStates.insert_or_assign(event.button.button, false);
     break;
   case SDL_MOUSEMOTION:
     m_MousePosition.x = event.motion.x;
@@ -49,7 +50,7 @@ bool InputManager::IsMouseDown(Uint32 mouseButton) const
   return false;
 }
 
-SDL_Point InputManager::GetMousePosition() const
+Point2f InputManager::GetMousePosition() const
 {
-  return m_MousePosition;
+  return Point2f{ (float)m_MousePosition.x, WINDOW_HEIGHT - (float)m_MousePosition.y };
 }

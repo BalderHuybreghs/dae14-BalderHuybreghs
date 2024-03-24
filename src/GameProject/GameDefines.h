@@ -104,7 +104,7 @@ static const std::string FOREGROUND_TILES[]{
   "star_jump",
   "stone",
   "summit",
-  "summit_no_snow"
+  "summit_no_snow",
   "template",
   "temple_a",
   "temple_b",

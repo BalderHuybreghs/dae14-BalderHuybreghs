@@ -23,7 +23,7 @@ public:
   bool IsMouseDown(Uint32 mouseButton) const;
 
   // Get the current mouse position
-  SDL_Point GetMousePosition() const;
+  Point2f GetMousePosition() const;
 private:
   // Map to store the current state of each key
   std::unordered_map<SDL_Keycode, bool> m_KeyStates;
