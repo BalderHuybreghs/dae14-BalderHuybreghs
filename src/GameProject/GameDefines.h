@@ -73,5 +73,5 @@ static const int FRAME_SIZE{ 32 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
 
 // Playing information
-static const Vector2f GRAVITY{0.f, 0.f};
+static const Vector2f GRAVITY{0.f, -2000.f};
 static const Vector2f TERMINAL_VELOCITY{ 0.f, 0.f }; // TODO: Determine terminal velocity

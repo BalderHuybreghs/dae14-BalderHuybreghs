@@ -157,6 +157,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlgoUtils.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleShape.cpp" />
     <ClCompile Include="Decal.cpp" />
@@ -189,6 +190,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlgoUtils.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleShape.h" />
     <ClInclude Include="Decal.h" />

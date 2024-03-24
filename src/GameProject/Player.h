@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include "Vector2f.h"
 #include "RectangleShape.h"
+#include "Tilemap.h"
 
 class Player
 {
@@ -25,7 +26,7 @@ public:
   void Draw(bool debug = false) const;
 
   // We may pass a list of collision objects to the players update function
-  void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons);
+  void Update(float elapsedSec, const Tilemap& tilemap);
 
   void RefillDashes(int amount);
 
@@ -72,5 +73,5 @@ private:
   bool m_IsGrounded;
 
   // Collision handling stuff
-  void HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons);
+  void HandleCollision(float elapsedSec, const Tilemap& tilemap);
 };

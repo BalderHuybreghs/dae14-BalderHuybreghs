@@ -62,16 +62,13 @@ void Player::Draw(bool debug) const
   }
 }
 
-void Player::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& collisionPolygons)
+void Player::Update(float elapsedSec, const Tilemap& tilemap)
 {
   // Reset grounded, the collision handling will check if the player is grounded
   m_IsGrounded = false;
 
   // Multiple iteration collision handling
-  HandleCollision(elapsedSec, collisionPolygons);
-  HandleCollision(elapsedSec, collisionPolygons);
-  HandleCollision(elapsedSec, collisionPolygons);
-  HandleCollision(elapsedSec, collisionPolygons);
+  HandleCollision(elapsedSec, tilemap);
 
   if (m_Velocity.y > 0) {
     m_State = State::Jumping;
@@ -129,7 +126,7 @@ void Player::RefillDashes(int amount)
 void Player::Jump()
 {
   if (m_IsGrounded) {
-    m_Velocity.y = 500;
+    m_Velocity.y = 1000;
   }
 }
 
@@ -241,9 +238,8 @@ bool Player::IsGrounded() const
   return m_IsGrounded;
 }
 
-void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Point2f>>& polygons)
+void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
 {
-  // TODO: handle collision logic here
   const Point2f nextPlayerPos{
     m_Position.x + m_Velocity.x * elapsedSec,
     m_Position.y + m_Velocity.y * elapsedSec
@@ -260,39 +256,35 @@ void Player::HandleCollision(float elapsedSec, const std::vector<std::vector<Poi
     collisionRect.height
   };
 
-  // The points of the collision rectangle
-  const Point2f bottomLeft{ collisionRect.left, collisionRect.bottom };
-  const Point2f topLeft{ collisionRect.left, collisionRect.bottom + collisionRect.height };
-  const Point2f topRight{ collisionRect.left + collisionRect.width, collisionRect.bottom + collisionRect.height };
-  const Point2f bottomRight{ collisionRect.left + collisionRect.width, collisionRect.bottom };
+  // Check collision with the tilemap
+  if (tilemap.IsTile(nextCollisionRect))
+  {
+    // Handle collision response here
+    // For example, stop player's movement in the direction of collision
 
-  const Point2f nextBottomLeft{ nextCollisionRect.left, nextCollisionRect.bottom };
-  const Point2f nextTopLeft{ nextCollisionRect.left, nextCollisionRect.bottom + nextCollisionRect.height };
-  const Point2f nextTopRight{ nextCollisionRect.left + nextCollisionRect.width, nextCollisionRect.bottom + nextCollisionRect.height };
-  const Point2f nextBottomRight{ nextCollisionRect.left + nextCollisionRect.width, nextCollisionRect.bottom };
-
-  HitInfo infoBottomLeft{};
-  HitInfo infoBottomRight{};
-  HitInfo infoTopLeft{};
-  HitInfo infoTopRight{};
-
-  // Check collision for each polygon
-  for (const std::vector<Point2f> polygon : polygons) {
-    const bool hitBottomLeft{ Raycast(polygon, bottomLeft, nextBottomLeft, infoBottomLeft) };
-    const bool hitBottomRight{ Raycast(polygon, bottomRight, nextBottomRight, infoBottomRight) };
-    const bool hitTopLeft{ Raycast(polygon, topLeft, nextTopLeft, infoTopLeft) };
-    const bool hitTopRight{ Raycast(polygon, topRight, nextTopRight, infoTopRight) };
-
-    m_IsGrounded = m_IsGrounded || infoBottomLeft.normal.y > 0.f || infoBottomRight.normal.y > 0.f;
-
-    if (infoBottomLeft.normal.y != 0.f || infoBottomRight.normal.y != 0.f || infoTopLeft.normal.y != 0.f || infoTopRight.normal.y != 0.f) {
+    // Check if the collision happens on the bottom side
+    if (m_Velocity.y < 0 && tilemap.IsTile(Rectf{ nextCollisionRect.left + 2.f, nextCollisionRect.bottom, nextCollisionRect.width - 4.f, nextCollisionRect.height / 4.f }) || tilemap.IsTile(nextPlayerPos))
+    {
+      // Player collided with the ground
+      m_IsGrounded = true;
       m_Velocity.y = 0.f;
-      //m_Position.x = (infoBottomLeft.intersectPoint.x + infoBottomRight.intersectPoint.x + infoTopLeft.intersectPoint.x + infoTopRight.intersectPoint.x) / ((float)hitBottomLeft + (float)hitBottomRight + (float)hitTopLeft + (float)hitTopRight) - m_Collider->GetShape().height;
     }
 
-    if (infoBottomLeft.normal.x != 0.f || infoBottomRight.normal.x != 0.f || infoTopLeft.normal.x != 0.f || infoTopRight.normal.x != 0.f) {
+    // Check if the collision happens on the top side
+    if (m_Velocity.y > 0 && tilemap.IsTile(Rectf{ nextCollisionRect.left + 2.f, nextCollisionRect.bottom + nextCollisionRect.height - (nextCollisionRect.height / 2.f), nextCollisionRect.width - 4.f, nextCollisionRect.height / 4.f}))
+    {
+      // Player collided with the ceiling
+      m_Velocity.y = 0.f;
+    }
+
+    // Check if the collision happens on the horizontal sides
+    if (m_Velocity.x != 0 && 
+        tilemap.IsTile(Rectf{ nextCollisionRect.left, nextCollisionRect.bottom + 2.f, nextCollisionRect.width / 4.f, nextCollisionRect.height - 4.f}) || 
+        tilemap.IsTile(Rectf{ nextCollisionRect.left + nextCollisionRect.width - (nextCollisionRect.width / 4.f), nextCollisionRect.bottom + 2.f, nextCollisionRect.width / 4.f, nextCollisionRect.height - 4.f})
+        )
+    {
+      // Player collided with the wall
       m_Velocity.x = 0.f;
-      //m_Position.y = (infoBottomLeft.intersectPoint.y + infoBottomRight.intersectPoint.y + infoTopLeft.intersectPoint.y + infoTopRight.intersectPoint.y) / ((float)hitBottomLeft + (float)hitBottomRight + (float)hitTopLeft + (float)hitTopRight);
     }
   }
 }

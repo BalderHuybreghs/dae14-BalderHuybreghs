@@ -35,7 +35,7 @@ void Level::Build()
 
   // Clear polys
   m_CollisionPolygons.clear();
-  m_CollisionPolygons = m_ForegroundTilemapPtr->GenCollisionShapes();
+  //m_CollisionPolygons = m_ForegroundTilemapPtr->GenCollisionShapes();
 
   // Destroy any possible game objects
   for (const GameObject* object : m_Objects) {
@@ -104,9 +104,7 @@ void Level::Update(Player& player, float elapsedSec)
   }
 
   // Apply gravity to the player
-  if (!player.IsGrounded()) {
-    (&player)->ApplyForce(GRAVITY * elapsedSec);
-  }
+  (&player)->ApplyForce(GRAVITY * elapsedSec);
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)

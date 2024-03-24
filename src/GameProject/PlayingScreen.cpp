@@ -51,7 +51,7 @@ void PlayingScreen::Update(float elapsedSec)
   m_LevelPtr->Update(*m_PlayerPtr, elapsedSec);
 
   // Update the player with some collision polygons to collide with
-  m_PlayerPtr->Update(elapsedSec, m_LevelPtr->GetCollisionPolygons());
+  m_PlayerPtr->Update(elapsedSec, *m_TilemapPtr);
 
   m_CameraPtr->SetPosition(m_PlayerPtr->GetPosition());
 }
@@ -63,10 +63,10 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 
   switch (key.keysym.sym) {
   case SDLK_a:
-    m_PlayerPtr->SetVelocity(Vector2f(-700, playerVel.y));
+    m_PlayerPtr->SetVelocity(Vector2f(-1000, playerVel.y));
     break;
   case SDLK_d:
-    m_PlayerPtr->SetVelocity(Vector2f(700, playerVel.y));
+    m_PlayerPtr->SetVelocity(Vector2f(1000, playerVel.y));
     break;
   case SDLK_w:
     m_PlayerPtr->Jump();

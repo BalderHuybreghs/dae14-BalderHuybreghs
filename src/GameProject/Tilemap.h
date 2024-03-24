@@ -1,20 +1,8 @@
 #pragma once
-#include "GameObject.h"
+#include "AlgoUtils.h"
 #include <unordered_map>
 #include <vector>
-
-// Custom hash function for std::pair<int, int>
-// TODO: Clean this up / move this to util
-struct PairHash
-{
-  template <class T1, class T2>
-  std::size_t operator () (const std::pair<T1, T2>& p) const
-  {
-    auto hash1 = std::hash<T1>{}(p.first);
-    auto hash2 = std::hash<T2>{}(p.second);
-    return hash1 ^ hash2; // Combine the hash values
-  }
-};
+#include "Texture.h"
 
 class Tilemap
 {
@@ -32,12 +20,14 @@ public:
   // is automatically rotated based on the placement and neighbours
   Tilemap(const std::vector<std::string>& resources, const Point2f& size, int tileSize);
 
-  // Inherited via GameObject
   void Draw(bool debug = false) const;
 
   // Draw a tile at a given tile position, this function accounts for adjacent tiles
   // the x and y coordinates are to determine the type of type, they are optional
   void DrawSingleTile(Point2f position, int tileId, int x = 0, int y = 0) const;
+
+  // Check if a rectangle is on a tile
+  bool IsTile(const Rectf& rect) const;
 
   // This function rounds floats to ints to check if they are within a tile. 
   // There is no need for "complex" collision detection when using a tilemap.
@@ -81,7 +71,7 @@ private:
   std::vector<const Texture*> m_TileTexturePtrs;
 
   // A mapping of each coordinate and their texture coordinate.
-  std::unordered_map<std::pair<int, int>, int, PairHash> m_Tiles;
+  std::unordered_map<std::pair<int, int>, int, AlgoUtils::PairHash> m_Tiles;
 
   // Converts a worldpoint to a key point in the tilemap
   int ValueToX(float val) const;
@@ -94,34 +84,4 @@ private:
   Rectf GetSourceRect(int x, int y) const;
 
   void DrawSingleTile(std::pair<int, int> position, int tileId) const;
-
-  // COAST MARCHING ALGORITHM STUFF
-  enum class CornerType
-  {
-    Any,
-    BottomLeft,
-    TopLeft,
-    TopRight,
-    BottomRight
-  };
-
-  
-  CornerType FindStartingCorner(int x, int y, const Point2f& previousPoint) const;
-   
-  // Part of the coast marching algorithm, to pick the right corner to start from
-  void SearchTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void SearchTopRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void SearchBottomRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void SearchBottomLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-
-  void FindCornersFromTopLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void FindCornersFromTopRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void FindCornersFromBottomRight(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-  void FindCornersFromBottomLeft(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy, int& cornersFound) const;
-
-  // Explores an island of tiles, this is a custom made algorithm
-  // it works by giving it a list of visited tiles, and a x and y start position
-  // it starts from the start position marching out until it finds a corner of the island,
-  // as soon as it found a corner, it will march in 1 direction based on that corner
-  void ExploreIsland(int x, int y, std::unordered_map<std::pair<int, int>, bool, PairHash>& visitedGrid, std::vector<Point2f>& shape, int dx, int dy) const;
 };
