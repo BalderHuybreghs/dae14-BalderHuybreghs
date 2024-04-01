@@ -7,6 +7,9 @@ Limb::Limb(const Point2f& anchor, const Point2f& goal, int joints, float length)
   // Calculates the size each joint needs to be to cover the total length
   float sizePerJoint{ length / joints };
 
+  // Reserve space
+  m_Joints.reserve(joints);
+
   // Create all the joints on the anchor
   for (size_t jointIndex = 0; jointIndex < joints; jointIndex++)
   {
@@ -95,6 +98,11 @@ Point2f Limb::GetAnchor() const
 Point2f Limb::GetEnd() const
 {
   return m_Joints.front()->GetEnd();
+}
+
+void Limb::AddJoint(Joint* joint)
+{
+  m_Joints.push_back(joint);
 }
 
 const std::vector<Joint*>* Limb::Joints() const

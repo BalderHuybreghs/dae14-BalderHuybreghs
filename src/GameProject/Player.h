@@ -3,6 +3,7 @@
 #include "Vector2f.h"
 #include "RectangleShape.h"
 #include "Tilemap.h"
+#include "Hair.h"
 
 class Player
 {
@@ -17,7 +18,8 @@ public:
     Sliding,
     Crouching,
     Falling,
-    Jumping
+    Jumping,
+    Pushing
   };
 
   Player(const Point2f& position);
@@ -32,13 +34,14 @@ public:
 
   // Player actions
   void Jump();
-  void Dash(const Vector2f& direction);
-  void Crouch();
+  void Dash();
   void Hold();
-  void LetGo();
-  
-  // Will move the player in a direction
-  void Move(const Vector2f& direction);
+
+  // Movement functions the player can do
+  void Up();
+  void Down();
+  void Left();
+  void Right();
 
   // Apply forces such as gravity and the likes
   void ApplyForce(const Vector2f& force);
@@ -49,6 +52,7 @@ public:
 
   void SetPosition(const Point2f& position);
   void SetVelocity(const Vector2f& velocity);
+ 
 
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
@@ -56,22 +60,32 @@ public:
 
   bool IsGrounded() const;
 private:
+  Vector2f m_Direction;
   Vector2f m_Velocity;
   Point2f m_Position;
   int m_Dashes;
 
+  // The player Celeste has stamina
+  // source: https://celeste.ink/wiki/Stamina
+  float m_Stamina;
+
   State m_State;
 
   Sprite* m_Sprite;
+
+  // Visual effects stuff
   Sprite* m_Particle;
+
+  Hair* m_Hair; // The hair rendered behind the player
 
   // Colliders
   RectangleShape* m_Collider;
   RectangleShape* m_ColliderFeet;
-  RectangleShape* m_ColliderSlideLeft;
-  RectangleShape* m_ColliderSlideRight;
+  RectangleShape* m_ColliderLeft;
+  RectangleShape* m_ColliderRight;
 
   bool m_IsGrounded;
+  bool m_CanHold;
 
   // Collision handling stuff
   void HandleCollision(float elapsedSec, const Tilemap& tilemap);

@@ -10,6 +10,10 @@ RectangleShape::RectangleShape(const Point2f& size, const Point2f& position, con
 
 bool RectangleShape::CollidesWith(const Shape& shape)
 {
+  if (!ShouldTestCollisionWith(shape)) {
+    return false;
+  }
+
   // Check if the other shape is a circle
   const CircleShape* otherCircle = dynamic_cast<const CircleShape*>(&shape);
   if (otherCircle)
@@ -48,7 +52,7 @@ Rectf RectangleShape::GetShape() const
   return Rectf(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 }
 
-Point2f RectangleShape::GetSimpleSize() const
+Rectf RectangleShape::GetBoundingBox() const
 {
-    return Point2f(m_Size.x, m_Size.y);
+    return Rectf(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 }

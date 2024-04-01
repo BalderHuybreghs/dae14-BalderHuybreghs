@@ -9,7 +9,7 @@ public:
   Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource);
 
   void Draw(bool debug = false) const;
-  void Update(float elapsedSec);
+  void Update(float elapsedSec); // Update isn't strictly required for every sprite, this is mostly for animaed sprites
 
   // Resources are states in this case, since resources will be added 
   // within code, states should remain relatively unchanged
@@ -25,6 +25,8 @@ public:
   void SetSize(const Point2f& size);
 
   void SetMirror(bool mirror);
+
+  void SetFrame(int frame);
 
   struct StateInfo
   {

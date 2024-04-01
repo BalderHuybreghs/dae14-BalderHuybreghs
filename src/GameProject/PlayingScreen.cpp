@@ -41,13 +41,45 @@ void PlayingScreen::Initialize()
 void PlayingScreen::Draw()
 {
   m_CameraPtr->PushMatrix();
-  m_LevelPtr->Draw(true);
+  m_LevelPtr->DrawBackground(true);
   m_PlayerPtr->Draw(true);
+  m_LevelPtr->DrawForeground(true);
   m_CameraPtr->PopMatrix();
 }
 
 void PlayingScreen::Update(float elapsedSec)
 {
+  // Player controls
+  const Vector2f playerVel{ m_PlayerPtr->GetVelocity() };
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT)) {
+    m_PlayerPtr->Dash();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_a)) {
+    m_PlayerPtr->Left();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_d)) {
+    m_PlayerPtr->Right();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
+    m_PlayerPtr->Jump();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
+    m_PlayerPtr->Hold();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_w)) {
+    m_PlayerPtr->Up();
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_s)) {
+    m_PlayerPtr->Down();
+  }
+
   m_LevelPtr->Update(*m_PlayerPtr, elapsedSec);
 
   // Update the player with some collision polygons to collide with
@@ -59,25 +91,8 @@ void PlayingScreen::Update(float elapsedSec)
 
 void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 {
-  const Vector2f playerVel{ m_PlayerPtr->GetVelocity() };
 
   switch (key.keysym.sym) {
-  case SDLK_a:
-    m_PlayerPtr->SetVelocity(Vector2f(-1000, playerVel.y));
-    break;
-  case SDLK_d:
-    m_PlayerPtr->SetVelocity(Vector2f(1000, playerVel.y));
-    break;
-  case SDLK_w:
-    m_PlayerPtr->Jump();
-    break;
-  case SDLK_s:
-    m_PlayerPtr->Crouch();
-    break;
-  case SDLK_j:
-    m_PlayerPtr->Hold();
-    break;
-  
   // Switch to level editor
   case SDLK_TAB:
     m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, m_PlayerPtr->GetPosition()));

@@ -47,7 +47,8 @@ void EditorScreen::Draw()
 
   m_CameraPtr->PushMatrix();
 
-  m_LevelPtr->Draw(true);
+  m_LevelPtr->DrawBackground(true);
+  m_LevelPtr->DrawForeground(true);
 
   // Draw an outline around the tile the player may build
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
@@ -95,22 +96,25 @@ void EditorScreen::Update(float elapsedSec)
     m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(mousePos));
   }
 
-  // If the mouse is outside of a given area, move the camera over the world (warcraft style)
-  if (!m_MouseDragBorder->IsPointInside(m_InputManagerPtr->GetMousePosition())) {
-    Point2f cameraPos{ m_CameraPtr->GetPosition() };
-
-    const Vector2f mouseFromCenter(
-      mousePos.x - WINDOW_WIDTH / 2,
-      mousePos.y - WINDOW_HEIGHT / 2
-    );
-
-    const Vector2f direction{ mouseFromCenter.Normalized() };
-
-    cameraPos.x += CAMERA_DRAG_SPEED * direction.x * elapsedSec;
-    cameraPos.y += CAMERA_DRAG_SPEED * direction.y * elapsedSec;
-
-    m_CameraPtr->SetPosition(cameraPos);
+  // Camera movement
+  Point2f cameraPosition{ m_CameraPtr->GetPosition() };
+  if (m_InputManagerPtr->IsKeyDown(SDLK_d)) {
+    cameraPosition.x += 1000 * elapsedSec;
   }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_a)) {
+    cameraPosition.x -= 1000 * elapsedSec;
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_w)) {
+    cameraPosition.y += 1000 * elapsedSec;
+  }
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_s)) {
+    cameraPosition.y -= 1000 * elapsedSec;
+  }
+
+  m_CameraPtr->SetPosition(cameraPosition);
 }
 
 void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
@@ -145,11 +149,21 @@ void EditorScreen::OnKeyUpEvent(const SDL_KeyboardEvent& key)
 
 void EditorScreen::OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
 {
+  // Allow the user to pan the camera with middle mouse button
+  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_MIDDLE)) {
+    Point2f cameraPosition{ m_CameraPtr->GetPosition() };
 
+    cameraPosition.x -= e.xrel;
+    cameraPosition.y += e.yrel;
+
+    m_CameraPtr->SetPosition(cameraPosition);
+
+  }
 }
 
 void EditorScreen::OnMouseDownEvent(const SDL_MouseButtonEvent& e)
 {
+
 }
 
 void EditorScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)

@@ -114,3 +114,13 @@ void Sprite::SetMirror(bool mirror)
 {
   m_Mirror = mirror;
 }
+
+void Sprite::SetFrame(int frame)
+{
+  if (frame < 0 || frame > m_State.frames) {
+    std::cout << "Sprite frame for state " << m_State.id << " invalid, frame was: " << frame << std::endl;
+    return;
+  }
+
+  m_Frame = frame;
+}

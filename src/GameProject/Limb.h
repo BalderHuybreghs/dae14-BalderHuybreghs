@@ -25,6 +25,7 @@ public:
   Point2f GetEnd() const;
 
   // Crazy move, I know
+  void AddJoint(Joint* joint);
   const std::vector<Joint*>* Joints() const;
 private:
   std::vector<Joint*> m_Joints;

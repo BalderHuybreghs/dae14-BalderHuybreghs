@@ -47,11 +47,14 @@ void Level::Build()
   }
 }
 
-void Level::Draw(bool debug) const
+void Level::DrawBackground(bool debug) const
 {
   // Draw the background tilemap
   m_BackgroundTilemapPtr->Draw(debug);
+}
 
+void Level::DrawForeground(bool debug) const
+{
   // Draw the objects in between the two tilemaps
   for (const GameObject* object : m_Objects) {
     object->Draw(debug);
@@ -104,7 +107,9 @@ void Level::Update(Player& player, float elapsedSec)
   }
 
   // Apply gravity to the player
-  (&player)->ApplyForce(GRAVITY * elapsedSec);
+  if (player.GetState() != Player::State::Climbing && player.GetState() != Player::State::Holding) {
+   (&player)->ApplyForce(GRAVITY * elapsedSec);
+  }
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)
@@ -174,7 +179,7 @@ void Level::Load()
   file.read(reinterpret_cast<char*>(&m_PlayerSpawn), sizeof(Point2f));
 
   std::vector<int> rawTileInfo;
-  int tileValue;
+  int tileValue{};
 
   while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
   {
@@ -200,7 +205,7 @@ void Level::Load()
   m_ForegroundTilemapPtr->LoadRawTileData(rawTileInfo);
   rawTileInfo.clear();
 
-  int objectId;
+  int objectId{};
   Point2f position;
   while (file.read(reinterpret_cast<char*>(&objectId), sizeof(int)) && file.read(reinterpret_cast<char*>(&position), sizeof(Point2f)))
   {

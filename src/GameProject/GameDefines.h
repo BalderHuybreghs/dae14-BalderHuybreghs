@@ -25,21 +25,27 @@ static const std::string MISSING_TEXTURE_TEXTURE{ TEXTURE_FOLDER + FS + "missing
 
 static const std::string GAMEPLAY_RESOURCE{ "gameplay" };
 static const std::string GUI_FOLDER{ "gui" };
-static const std::string CHARACTER_RESOURCE{ GAMEPLAY_RESOURCE + FS + "character" };
-static const std::string PLAYER_RESOURCE{ CHARACTER_RESOURCE + FS + "player" };
+static const std::string CHARACTER_FOLDER{ GAMEPLAY_RESOURCE + FS + "character" };
+static const std::string PLAYER_FOLDER{ CHARACTER_FOLDER + FS + "player" };
+static const std::string HAIR_FOLDER{ PLAYER_FOLDER + FS + "hair" };
 
 static const std::string TILEMAP_FOLDER{ "tilesets" };
 static const std::string TILEMAP_BG_PREFIX{ "bg_" };
 
-static const std::string PLAYER_IDLE_RESOURCE{ PLAYER_RESOURCE + FS + "idle" };
-static const std::string PLAYER_FALL_RESOURCE{ PLAYER_RESOURCE + FS + "fall" };
-static const std::string PLAYER_EDGE_RESOURCE{ PLAYER_RESOURCE + FS + "edge" };
-static const std::string PLAYER_DANGLING_RESOURCE{ PLAYER_RESOURCE + FS + "dangling" };
-static const std::string PLAYER_DUCK_RESOURCE{ PLAYER_RESOURCE + FS + "duck" };
-static const std::string PLAYER_JUMP_RESOURCE{ PLAYER_RESOURCE + FS + "jump_fast" };
-static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_RESOURCE + FS + "climb" };
-static const std::string PLAYER_RUN_RESOURCE{ PLAYER_RESOURCE + FS + "run_fast" };
-static const std::string PLAYER_WALK_RESOURCE{ PLAYER_RESOURCE + FS + "walk" };
+static const std::string PLAYER_IDLE_RESOURCE{ PLAYER_FOLDER + FS + "idle" };
+static const std::string PLAYER_FALL_RESOURCE{ PLAYER_FOLDER + FS + "fall" };
+static const std::string PLAYER_SLIDE_RESOURCE{ PLAYER_FOLDER + FS + "hold" };
+static const std::string PLAYER_EDGE_RESOURCE{ PLAYER_FOLDER + FS + "edge" };
+static const std::string PLAYER_DANGLING_RESOURCE{ PLAYER_FOLDER + FS + "dangling" };
+static const std::string PLAYER_DUCK_RESOURCE{ PLAYER_FOLDER + FS + "duck" };
+static const std::string PLAYER_JUMP_RESOURCE{ PLAYER_FOLDER + FS + "jump_fast" };
+static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_FOLDER + FS + "climb" };
+static const std::string PLAYER_RUN_RESOURCE{ PLAYER_FOLDER + FS + "run_fast" };
+static const std::string PLAYER_WALK_RESOURCE{ PLAYER_FOLDER + FS + "walk" };
+static const std::string PLAYER_PUSH_RESOURCE{ PLAYER_FOLDER + FS + "push" };
+
+static const std::string BANGS_RESOURCE{ HAIR_FOLDER + FS + "bangs" };
+static const std::string HAIR_RESOURCE{ HAIR_FOLDER + FS + "hair" };
 
 static const std::string SYNE_FONT{ "syne" };
 
@@ -82,7 +88,7 @@ static const std::string BACKGROUND_TILES[]{
   "bg_snow", 
   "bg_summit", 
   "bg_temple_a", 
-  "bg_temple", 
+  "bg_temple_b", 
   "bg_wood"
 };
 
@@ -114,10 +120,22 @@ static const std::string FOREGROUND_TILES[]{
 };
 
 // Animation information
-static const int FRAME_SIZE{ 32 };
+static const int PLAYER_FRAME_SIZE{ 32 };
+static const int BANGS_FRAME_SIZE{ 10 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
 
 // Playing information
 static const Vector2f GRAVITY{0.f, -2000.f};
 static const Vector2f TERMINAL_VELOCITY{ 0.f, 0.f }; // TODO: Determine terminal velocity
 static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }; // The absolute background color is always the same single color in Celeste
+static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
+static const float PLAYER_JUMP_POTENTIAL{ 500.f }; // The maximu  m potential jump force the player may reach
+static const float PLAYER_JUMP_FORCE{ 100.f }; // The jump force applied to the player until it reaches max potential
+static const float PLAYER_DASH_FORCE{ 1500.f }; // The force behind a player dash
+
+// The following stamine values are based on https://celeste.ink/wiki/Stamina, they're not numbers I pulled out my thumb
+static const float PLAYER_BASE_STAMINA{ 110.f };
+static const float STAMINA_FLASH_RED{ 20.f };
+static const float HOLDING_STAMINA_COST{ 10.f };
+static const float CLIMBING_STAMINA_COST{ 45.45f };
+static const float CLIMB_JUMP_STAMINA_COST{ 27.5f };

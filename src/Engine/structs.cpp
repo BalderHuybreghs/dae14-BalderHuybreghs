@@ -24,6 +24,21 @@ Point2f::Point2f( float x, float y )
 {
 }
 
+Point2f Point2f::operator+(const Point2f& other) const
+{
+  return Point2f(x + other.x, y + other.y);
+}
+
+bool Point2f::operator!=(const Point2f& other) const
+{
+  return x != other.x && y != other.y;
+}
+
+bool Point2f::operator==(const Point2f& other) const
+{
+  return x == other.x && y == other.y;
+}
+
 float Point2f::Distance(const Point2f& other) const
 {
   return sqrtf(powf(x - other.x, 2) + powf(y - other.y, 2));

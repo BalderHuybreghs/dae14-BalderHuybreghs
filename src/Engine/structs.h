@@ -20,20 +20,11 @@ struct Point2f
 	float x;
 	float y;
 
-  Point2f operator+(const Point2f& other) const
-  {
-    return Point2f(x + other.x, y + other.y);
-  }
+  Point2f operator+(const Point2f& other) const;
 
-  bool operator!=(const Point2f& other) const
-  {
-    return x != other.x && y != other.y;
-  }
+  bool operator!=(const Point2f& other) const;
 
-  bool operator==(const Point2f& other) const
-  {
-    return x == other.x && y == other.y;
-  }
+  bool operator==(const Point2f& other) const;
 
   // Distance
   float Distance(const Point2f& other) const;

@@ -15,7 +15,8 @@ public:
   // Builds the level and all of its objects from the blueprint
   void Build();
 
-  void Draw(bool debug = false) const;
+  void DrawBackground(bool debug = false) const;
+  void DrawForeground(bool debug = false) const;
   void Update(Player& player, float elapsedSec);
    
   // Adds an object by pointer

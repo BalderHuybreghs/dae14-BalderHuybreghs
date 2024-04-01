@@ -12,7 +12,7 @@ public:
 
   virtual void Draw() const override;
 
-  virtual Point2f GetSimpleSize() const override;
+  virtual Rectf GetBoundingBox() const override;
 
   Rectf GetShape() const;
 private:
