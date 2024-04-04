@@ -25,7 +25,7 @@ public:
 
   // Draw a tile at a given tile position, this function accounts for adjacent tiles
   // the x and y coordinates are to determine the type of type, they are optional
-  void DrawSingleTile(Point2f position, int tileId, int x = 0, int y = 0) const;
+  void DrawSingleTile(Point2f position, int tileID, int rng = 0, int x = 0, int y = 0) const;
 
   // Check if a rectangle is on a tile
   bool IsTile(const Rectf& rect) const;
@@ -64,16 +64,12 @@ private:
   // Header information
   Point2f m_Size;
   int m_TileSize;
-  std::mt19937 m_Rng; // Random number generation
 
   // Internal management of the textures
   std::vector<const Texture*> m_TileTexturePtrs;
 
   // A mapping of each coordinate and their texture coordinate.
-  std::unordered_map<std::pair<int, int>, int, AlgoUtils::PairHash> m_Tiles;
-
-  // For performance reasons, I decided to opt to using a list of generated randomness values for each tile within the tilemap
-  std::unordered_map<std::pair<int, int>, int, AlgoUtils::PairHash> m_RngMap;
+  std::unordered_map<std::pair<int, int>, std::pair<int, int>, AlgoUtils::PairHash> m_Tiles;
 
   // Converts a worldpoint to a key point in the tilemap
   int ValueToX(float val) const;
@@ -83,7 +79,7 @@ private:
 
   // Gets a tile source rect for the tilemap based on a tile position
   // it does this by checking the adjacent tiles
-  Rectf GetSourceRect(int x, int y) const;
+  Rectf GetSourceRect(int x, int y, int rng) const;
 
-  void DrawSingleTile(std::pair<int, int> position, int tileId) const;
+  void DrawSingleTile(std::pair<int, int> position, int tileID, int rng) const;
 };

@@ -2,7 +2,7 @@
 #include "Particle.h"
 #include "utils.h"
 
-Particle::Particle(const Point2f& position, const Vector2f& velocity, const Shape* shape, float lifetime)
+Particle::Particle(const Point2f& position, const Vector2f& velocity, Shape* shape, float lifetime)
   : m_Velocity(velocity), m_Shape(shape), m_Lifetime(lifetime)
 {
   m_Shape->SetPosition(position);

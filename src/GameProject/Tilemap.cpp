@@ -12,20 +12,17 @@ Tilemap::Tilemap(const Point2f& size, int tileSize, const std::string resources[
   : m_Size(size), m_TileSize(tileSize)
 {
   // Seed the rng, source is from chatgpt. it works so I won't question it too much
-  std::seed_seq seed{ std::random_device{}(), std::random_device{}() };
-  m_Rng.seed(seed);
-
   SetTiles(resources, resourcesSize);
 }
 
 void Tilemap::Draw(bool debug) const
 {
-  for (const std::pair<std::pair<int, int>, int>& tileInfo : m_Tiles) {
-    DrawSingleTile(tileInfo.first, tileInfo.second);
+  for (const std::pair<std::pair<int, int>, std::pair<int, int>>& tileInfo : m_Tiles) {
+    DrawSingleTile(tileInfo.first, tileInfo.second.first, tileInfo.second.second);
   }
 }
 
-void Tilemap::DrawSingleTile(Point2f position, int tileId, int x, int y) const
+void Tilemap::DrawSingleTile(Point2f position, int tileID, int rng, int x, int y) const
 {
   // Calculate rects
   const Rectf dstRect{
@@ -36,19 +33,19 @@ void Tilemap::DrawSingleTile(Point2f position, int tileId, int x, int y) const
   };
 
   // Draw a tile with the calculated sourcerect
-  m_TileTexturePtrs[tileId]->Draw(dstRect, GetSourceRect(x, y));
+  m_TileTexturePtrs[tileID]->Draw(dstRect, GetSourceRect(x, y, rng));
 }
 
 // To draw a tile, we check the neighbouring tiles to draw the corerct one
-void Tilemap::DrawSingleTile(std::pair<int, int> tile, int tileId) const
+void Tilemap::DrawSingleTile(std::pair<int, int> tile, int tileID, int rng) const
 {
   const Point2f position{ KeyToPoint(tile) };
-  DrawSingleTile(position, tileId, tile.first, tile.second);
+  DrawSingleTile(position, tileID, rng, tile.first, tile.second);
 }
 
 bool Tilemap::IsTile(const Rectf& rect) const
 {
-  for (const std::pair<std::pair<int, int>, int>& tile : m_Tiles) {
+  for (const std::pair<std::pair<int, int>, std::pair<int, int>>& tile : m_Tiles) {
     const Rectf tileRect{ GetTileRect(KeyToPoint({ tile.first.first, tile.first.second })) };
 
     if (IsOverlapping(rect, tileRect)) {
@@ -71,7 +68,7 @@ bool Tilemap::IsTile(int x, int y) const
 
   // Search for the coordinates in the map
   // No auto :(
-  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::pair<int, int>, int>>>> it{ m_Tiles.find(key) };
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::pair<int, int>, std::pair<int, int>>>>> it{ m_Tiles.find(key) };
 
   return it != m_Tiles.end();
 }
@@ -84,8 +81,12 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
   }
 
   const std::pair<int, int> key{ PointToKey(point) };
-  m_Tiles.insert_or_assign(key, tileID);
-  m_RngMap.insert_or_assign(key, std::abs((int)m_Rng())); // Random shuffling of the tiles
+
+  // Seed random with the x and y values of the tile
+  std::seed_seq seed{ key.first, key.second };
+  std::mt19937 rng(seed);
+
+  m_Tiles.insert_or_assign(key, std::make_pair(tileID, rng()));
 }
 
 void Tilemap::RemoveTile(const Point2f& point)
@@ -94,7 +95,6 @@ void Tilemap::RemoveTile(const Point2f& point)
   if (IsTile(point)) {
     const std::pair<int, int> key{ PointToKey(point) };
     m_Tiles.erase(key);
-    m_RngMap.erase(key);
   }
 }
 
@@ -139,8 +139,10 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
       continue;
     }
 
-    m_Tiles.insert(std::make_pair(std::make_pair(x, y), value));
-    m_RngMap.insert(std::make_pair(std::make_pair(x, y), std::abs((int)m_Rng()))); // Insert a random value into the map, for performance reasons, to keep it consistent
+    // Seed the random with the x and y values of the tile
+    std::seed_seq seed{ x, y };
+    std::mt19937 rng(seed);
+    m_Tiles.insert(std::make_pair(std::make_pair(x, y), std::make_pair(value, std::abs((int)rng()))));
   }
 }
 
@@ -185,7 +187,7 @@ std::vector<int> Tilemap::ToRawTileData() const
     rawTileData.push_back(pair.first.second);
 
     // Push value
-    rawTileData.push_back(pair.second);  // Push value
+    rawTileData.push_back(pair.second.first);  // Push value
   }
 
   return rawTileData;
@@ -214,7 +216,7 @@ Point2f Tilemap::KeyToPoint(std::pair<int, int> key) const
   };
 }
 
-Rectf Tilemap::GetSourceRect(int x, int y) const
+Rectf Tilemap::GetSourceRect(int x, int y, int rng) const
 {
   // Check all the sides
   const bool topTile{ !IsTile(x, y + 1) };
@@ -279,12 +281,6 @@ Rectf Tilemap::GetSourceRect(int x, int y) const
   case 0b0000:
     tileNumber = 15;
     break;
-  }
-
-  int rng = 0; // Initialize rng with some default value
-  std::unordered_map<std::pair<int, int>, int>::const_iterator it = m_RngMap.find(std::make_pair(x, y)); // Find the random value for (x, y)
-  if (it != m_RngMap.end()) {
-    rng = it->second; // Assign the random value if found
   }
 
   // Calculate the source rectangle for the tile
