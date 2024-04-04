@@ -12,4 +12,8 @@ namespace MathUtils
 
   // Lerp on a point
   Point2f Lerp(const Point2f& a, const Point2f& b, float t);
+
+  // Random point generation stuff :), this will be used in the particle emitter
+  Point2f RandPoint(const Rectf& range, int decimals);
+  Point2f RandPoint(const Circlef& range, int decimals);
 }

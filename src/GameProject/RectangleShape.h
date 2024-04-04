@@ -14,6 +14,10 @@ public:
 
   virtual Rectf GetBoundingBox() const override;
 
+  virtual Point2f GetCenter() const override;
+
+  virtual Point2f GetRandomPoint() const override;
+
   Rectf GetShape() const;
 private:
   Point2f m_Size;

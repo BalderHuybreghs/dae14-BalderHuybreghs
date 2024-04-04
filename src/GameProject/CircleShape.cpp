@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "CircleShape.h"
 #include "RectangleShape.h"
+#include "MathUtils.h"
 
 CircleShape::CircleShape(float radius, const Point2f& position, const Color4f& color, bool filled)
   : Shape(position, color, filled), m_Radius(radius)
@@ -51,6 +52,16 @@ Rectf CircleShape::GetBoundingBox() const
 {
   // Rectangular bounding box of a circle
   return Rectf(m_Position.x - m_Radius, m_Position.y - m_Radius, m_Radius * 2.f, m_Radius * 2.f);
+}
+
+Point2f CircleShape::GetCenter() const
+{
+    return m_Position;
+}
+
+Point2f CircleShape::GetRandomPoint() const
+{
+    return MathUtils::RandPoint(GetShape(), 2);
 }
 
 Circlef CircleShape::GetShape() const

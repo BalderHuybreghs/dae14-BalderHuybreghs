@@ -32,3 +32,22 @@ Point2f MathUtils::Lerp(const Point2f& a, const Point2f& b, float t)
     Lerp(a.y, b.y, t),
   };
 }
+
+Point2f MathUtils::RandPoint(const Rectf& range, int decimals)
+{
+  float randX = RandFloat(range.left, range.left + range.width, decimals);
+  float randY = RandFloat(range.bottom, range.bottom + range.height, decimals);
+  return Point2f(randX, randY);
+}
+
+Point2f MathUtils::RandPoint(const Circlef& range, int decimals)
+{
+  float randAngle = RandFloat(0.0f, 2 * float(M_PI), decimals); // A random angle
+  float randRadius = RandFloat(0.0f, range.radius, decimals); // Random radius
+
+  // Convert polar to cartesian coordinates
+  float randX = range.center.x + randRadius * cosf(randAngle);
+  float randY = range.center.y + randRadius * sinf(randAngle);
+
+  return Point2f(randX, randY);
+}

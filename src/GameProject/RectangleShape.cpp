@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "RectangleShape.h"
 #include "CircleShape.h"
+#include "MathUtils.h"
 
 RectangleShape::RectangleShape(const Point2f& size, const Point2f& position, const Color4f& color, bool filled)
   : Shape(position, color, filled), m_Size(size)
@@ -55,4 +56,18 @@ Rectf RectangleShape::GetShape() const
 Rectf RectangleShape::GetBoundingBox() const
 {
     return Rectf(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
+}
+
+Point2f RectangleShape::GetCenter() const
+{
+  const Rectf shape{ GetShape() };
+  return Point2f{
+    shape.left + shape.width / 2.f,
+    shape.bottom + shape.height / 2.f
+  };
+}
+
+Point2f RectangleShape::GetRandomPoint() const
+{
+    return MathUtils::RandPoint(GetShape(), 2);
 }

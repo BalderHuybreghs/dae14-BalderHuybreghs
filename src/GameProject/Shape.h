@@ -12,10 +12,17 @@ public:
   // Returns the simply x and y size of the shape, this can be used to center the shape
   virtual Rectf GetBoundingBox() const = 0;
 
+  // Returns the center position of the shape
+  virtual Point2f GetCenter() const = 0;
+
+  // Returns a random point within the shape
+  virtual Point2f GetRandomPoint() const = 0;
+
   // Atempts to lerp one shape into the other, if unimplemented or unfinished,
   // will just write to console and return itself
   // virtual Shape Lerp(const Shape& other, float t) = 0;
-  
+    
+  Point2f GetPosition() const;
   Color4f GetColor() const;
   bool    IsFilled() const;
 

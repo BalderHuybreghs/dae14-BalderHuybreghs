@@ -32,6 +32,11 @@ void Shape::SetFilled(bool filled)
   m_Filled = filled;
 }
 
+Point2f Shape::GetPosition() const
+{
+    return m_Position;
+}
+
 Color4f Shape::GetColor() const
 {
   return m_Color;
