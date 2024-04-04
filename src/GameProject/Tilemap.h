@@ -68,7 +68,7 @@ private:
   // Internal management of the textures
   std::vector<const Texture*> m_TileTexturePtrs;
 
-  // A mapping of each coordinate and their texture coordinate.
+  // A mapping of each coordinate and their texture coordinate. Also updated to have the rng value of each tile for optimization reasons
   std::unordered_map<std::pair<int, int>, std::pair<int, int>, AlgoUtils::PairHash> m_Tiles;
 
   // Converts a worldpoint to a key point in the tilemap
