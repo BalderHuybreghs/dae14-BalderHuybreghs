@@ -67,6 +67,7 @@ static const float CAMERA_DRAG_SPEED{ 1000 };
 // Tilemap information
 // How big a single tile is
 static const int TILE_SIZE{ 8 };
+static const float TILEMAP_SCALE{ 7.f }; // The tilemap scale in pixels per tile
 
 // How many side tiles per row
 static const int TILE_SIDE_SIZE{ 4 };

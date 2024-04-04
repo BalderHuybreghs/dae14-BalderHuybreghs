@@ -5,13 +5,16 @@
 #include "ResourceUtils.h"
 #include "GameDefines.h"
 #include "utils.h"
-#include <random>
 
 using namespace utils;
 
 Tilemap::Tilemap(const Point2f& size, int tileSize, const std::string resources[], int resourcesSize)
   : m_Size(size), m_TileSize(tileSize)
 {
+  // Seed the rng, source is from chatgpt. it works so I won't question it too much
+  std::seed_seq seed{ std::random_device{}(), std::random_device{}() };
+  m_Rng.seed(seed);
+
   SetTiles(resources, resourcesSize);
 }
 
@@ -80,7 +83,9 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
     return;
   }
 
-  m_Tiles.insert_or_assign(PointToKey(point), tileID);
+  const std::pair<int, int> key{ PointToKey(point) };
+  m_Tiles.insert_or_assign(key, tileID);
+  m_RngMap.insert_or_assign(key, m_Rng()); // Random shuffling of the tiles
 }
 
 void Tilemap::RemoveTile(const Point2f& point)
@@ -134,6 +139,7 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
     }
 
     m_Tiles.insert(std::make_pair(std::make_pair(x, y), value));
+    m_RngMap.insert(std::make_pair(std::make_pair(x, y), m_Rng())); // Insert a random value into the map, for performance reasons, to keep it consistent
   }
 }
 
@@ -274,14 +280,16 @@ Rectf Tilemap::GetSourceRect(int x, int y) const
     break;
   }
 
-  // To not affect the global random, we create our own random with the x y seed to get consistent "random" values
-  std::seed_seq seed{ x, y };
-  std::mt19937 rng(seed);
+  int rng = 0; // Initialize rng with some default value
+  std::unordered_map<std::pair<int, int>, int>::const_iterator it = m_RngMap.find(std::make_pair(x, y)); // Find the random value for (x, y)
+  if (it != m_RngMap.end()) {
+    rng = it->second; // Assign the random value if found
+  }
 
   // Calculate the source rectangle for the tile
   Rectf sourceRect{
-      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : float(rng() % 4) * m_TileSize ,
-      tileNumber == 15 ? float(rng() % 12) * m_TileSize : float(m_TileSize * tileNumber),
+      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : float(rng % 4) * m_TileSize ,
+      tileNumber == 15 ? float(rng % 12) * m_TileSize : float(m_TileSize * tileNumber),
       float(m_TileSize),               // width
       float(m_TileSize)                // height
   };

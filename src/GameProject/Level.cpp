@@ -12,8 +12,8 @@ Level::Level(const std::string& name)
   : m_Name(name), m_PlayerSpawn(Point2f())
 {
   // Load both the foreground and background tilemaps
-  m_BackgroundTilemapPtr = new Tilemap(Point2f{7.f, 7.f}, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
-  m_ForegroundTilemapPtr = new Tilemap(Point2f{7.f, 7.f}, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
 }
 
 Level::~Level()

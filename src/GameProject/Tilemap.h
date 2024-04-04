@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Texture.h"
+#include <random>
 
 class Tilemap
 {
@@ -63,12 +64,16 @@ private:
   // Header information
   Point2f m_Size;
   int m_TileSize;
+  std::mt19937 m_Rng; // Random number generation
 
   // Internal management of the textures
   std::vector<const Texture*> m_TileTexturePtrs;
 
   // A mapping of each coordinate and their texture coordinate.
   std::unordered_map<std::pair<int, int>, int, AlgoUtils::PairHash> m_Tiles;
+
+  // For performance reasons, I decided to opt to using a list of generated randomness values for each tile within the tilemap
+  std::unordered_map<std::pair<int, int>, int, AlgoUtils::PairHash> m_RngMap;
 
   // Converts a worldpoint to a key point in the tilemap
   int ValueToX(float val) const;
