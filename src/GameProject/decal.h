@@ -9,7 +9,7 @@ public:
 
   // Inherited via GameObject
   void Draw(bool debug = false) const override;
-  void Update(Player& player, float elapsedSec) override;
+  void Update(Player& player, Camera& camera, float elapsedSec) override;
 
 private:
   Texture* m_Texture;

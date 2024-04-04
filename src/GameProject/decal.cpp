@@ -5,7 +5,7 @@ void Decal::Draw(bool debug) const
 {
 }
 
-void Decal::Update(Player& player, float elapsedSec)
+void Decal::Update(Player& player, Camera& camera, float elapsedSec)
 {
 }
 

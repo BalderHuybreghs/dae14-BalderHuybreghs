@@ -80,7 +80,7 @@ void PlayingScreen::Update(float elapsedSec)
     m_PlayerPtr->Down();
   }
 
-  m_LevelPtr->Update(*m_PlayerPtr, elapsedSec);
+  m_LevelPtr->Update(*m_PlayerPtr, *m_CameraPtr, elapsedSec);
 
   // Update the player with some collision polygons to collide with
   m_PlayerPtr->Update(elapsedSec, *m_TilemapPtr);

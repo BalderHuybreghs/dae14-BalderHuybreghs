@@ -99,11 +99,11 @@ void Level::DrawForeground(bool debug) const
   }
 }
 
-void Level::Update(Player& player, float elapsedSec)
+void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
   // Update all the level gameobjects
   for (GameObject* object : m_Objects) {
-    object->Update(player, elapsedSec);
+    object->Update(player, camera, elapsedSec);
   }
 
   // Apply gravity to the player

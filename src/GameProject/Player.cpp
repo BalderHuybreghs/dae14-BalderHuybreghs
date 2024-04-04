@@ -129,7 +129,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       
   // Update velocity
   m_Velocity = Vector2f{
-    MathUtils::Lerp(m_Velocity.x, 0.f, 0.3),
+    MathUtils::Lerp(m_Velocity.x, 0.f, 0.3f),
     m_Velocity.y,
   };
 
@@ -176,7 +176,7 @@ void Player::Dash()
   }
 
   m_Velocity = m_Direction * PLAYER_DASH_FORCE;
-  m_State == State::Dashing;
+  m_State = State::Dashing;
   --m_Dashes;
 }
 

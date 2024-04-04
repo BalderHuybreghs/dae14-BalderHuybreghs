@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Player.h"
+#include "Camera.h"
 
 // The overarching class for GameObjects
 // Refer to https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Virtual_Constructor for more information
@@ -18,8 +19,8 @@ public:
   // This is a reverse of what professional engines tend to do, where the player (or mainly developer)
   // may query for all objects with xyz components with ECS, this approach is essentially
   // the opposite of that. All objects know of player and act accordingly.
-  // This works in this context because Celeste does not have any more complex 
-  virtual void Update(Player& player, float elapsedSec) = 0;
+  // It also takes the camera now... Man I really am floating towards an ECS mentality aren't I?
+  virtual void Update(Player& player, Camera& camera, float elapsedSec) = 0; 
 
   // Allows for cloning the given gameobject
   virtual GameObject* Clone() const = 0;

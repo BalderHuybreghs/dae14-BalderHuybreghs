@@ -17,7 +17,7 @@ public:
 
   void DrawBackground(bool debug = false) const;
   void DrawForeground(bool debug = false) const;
-  void Update(Player& player, float elapsedSec);
+  void Update(Player& player, Camera& camera, float elapsedSec);
    
   // Adds an object by pointer
   void AddBlueprint(const ObjectBlueprint& blueprint);
