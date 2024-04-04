@@ -85,24 +85,25 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
 
   const std::pair<int, int> key{ PointToKey(point) };
   m_Tiles.insert_or_assign(key, tileID);
-  m_RngMap.insert_or_assign(key, m_Rng()); // Random shuffling of the tiles
+  m_RngMap.insert_or_assign(key, std::abs((int)m_Rng())); // Random shuffling of the tiles
 }
 
 void Tilemap::RemoveTile(const Point2f& point)
 {
   // Remove the tile if it exists
   if (IsTile(point)) {
-    m_Tiles.erase(PointToKey(point));
+    const std::pair<int, int> key{ PointToKey(point) };
+    m_Tiles.erase(key);
+    m_RngMap.erase(key);
   }
 }
 
 void Tilemap::SetTiles(const std::string resources[], int resourcesSize)
 {
   // Clear the exising textures, they don't have to be deleted because the manager takes care of that
-
   m_TileTexturePtrs.clear();
-  // For each resource, we load in the texture
 
+  // For each resource, we load in the texture
   for (int index = 0; index < resourcesSize; ++index)
   {
     // Grabs the tile from the tilemap folder
@@ -139,7 +140,7 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
     }
 
     m_Tiles.insert(std::make_pair(std::make_pair(x, y), value));
-    m_RngMap.insert(std::make_pair(std::make_pair(x, y), m_Rng())); // Insert a random value into the map, for performance reasons, to keep it consistent
+    m_RngMap.insert(std::make_pair(std::make_pair(x, y), std::abs((int)m_Rng()))); // Insert a random value into the map, for performance reasons, to keep it consistent
   }
 }
 
@@ -288,8 +289,8 @@ Rectf Tilemap::GetSourceRect(int x, int y) const
 
   // Calculate the source rectangle for the tile
   Rectf sourceRect{
-      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : float(rng % 4) * m_TileSize ,
-      tileNumber == 15 ? float(rng % 12) * m_TileSize : float(m_TileSize * tileNumber),
+      tileNumber == 15 ? (TILE_COLUMN_SIZE - 1) * m_TileSize : float((rng % 4) * m_TileSize),
+      tileNumber == 15 ? float((rng % 12) * m_TileSize) : float(m_TileSize * tileNumber),
       float(m_TileSize),               // width
       float(m_TileSize)                // height
   };
