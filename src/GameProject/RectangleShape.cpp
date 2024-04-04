@@ -71,3 +71,8 @@ Point2f RectangleShape::GetRandomPoint() const
 {
     return MathUtils::RandPoint(GetShape(), 2);
 }
+
+Shape* RectangleShape::Copy() const
+{
+    return new RectangleShape(*this);
+}

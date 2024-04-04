@@ -18,6 +18,8 @@ public:
 
   virtual Point2f GetRandomPoint() const override;
 
+  virtual Shape* Copy() const override;
+
   Rectf GetShape() const;
 private:
   Point2f m_Size;

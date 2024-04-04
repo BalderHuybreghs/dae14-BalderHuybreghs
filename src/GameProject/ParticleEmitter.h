@@ -2,44 +2,60 @@
 #include "Particle.h"
 #include <vector>
 
+// A struct designed to contain a bunch of information regarding particle spawning
+struct EmitterSpawnInfo
+{
+  float minForce;     // The minimum force on a particle
+  float maxForce;     // The maximum force on a particle
+  float minRotation;  // The minimum rotation in radians
+  float maxRotation;  // The maximum rotation in radians
+  float minLifetime;  // The minimum lifetime for a particle in seconds
+  float maxLifetime;  // The maximum lifetime for a particle in seconds
+  int   minBatchSize; // The minimum amount of particles to spawn in a run
+  int   maxBatchSize; // The maximum amount of particles to spawn in a run
+  int   maxParticles; // The maximum amount of particles allowed at a time
+  float minDelay;     // The minimum spawning delay in seconds
+  float maxDelay;     // The maximum spawning delay in seconds
+};
+
 // The particle emitter is essentially a manager for all
 // particles, except for that it also creates these particles in a defined pattern
 class ParticleEmitter
 {
 public:
   // Any pointer given with this class will be cleaned automatically when this class is destroyed
-  ParticleEmitter(Shape* emissionZone, const Vector2f& minVelocity, const Vector2f& maxVelocity, const std::vector<Particle*>& spawnParticles, int maxParticles);
+  ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape>& spawnShapes);
   ~ParticleEmitter();
 
   void Draw(bool debug = false) const;
   void Update(float elapsedSec);
 
   void SetPosition(const Point2f& position);
-  void SetMaxParticles(int maxParticles);
   void SetEmissionZone(Shape* emissionZone); // WARNING: This deletes the old emission zone
-  void SetMinVelocity(const Vector2f& minVelocity);
-  void SetMaxVelocity(const Vector2f& maxVelocity);
+  void SetSpawnInfo(const EmitterSpawnInfo& spawnInfo);
 
   Point2f GetPosition() const;
-  int GetMaxParticles() const;
-  Vector2f GetMinVelocity() const;
-  Vector2f GetMaxVelocity() const;
+  EmitterSpawnInfo GetSpawnInfo() const;
 private:
-  // When the maximum amount of particles is reached, it will start destroying older particles
-  int m_MaxParticles;
-
   // The zone where particles are spawned. Points are picked randomly from here
   // in a more professional / usual way, engines have spawning patterns.
   Shape* m_EmissionZone;
 
-  // The velocity range that particles may have
-  Vector2f m_MinVelocity;
-  Vector2f m_MaxVelocity;
+  // The information for spawning new particles
+  EmitterSpawnInfo m_SpawnInfo;
 
   // The particles that the particle emitter may pick to spawn
-  const std::vector<Particle*>& m_SpawnParticles;
+  const std::vector<Shape>& m_SpawnShapes;
 
   // INTERNAL MANAGEMENT
   // Particles are stored in a queue to be destroyed
   std::vector<Particle*> m_Particles;
+
+  float m_Delay; // The delay until the next batch
+
+  // Functions used by the emitter
+  void UpdateParticles(float elapsedSec);
+
+  Particle* CreateParticle(); // Creates a particle according to the criteria
+  void SpawnBatch(); // Spawns a new batch of particles
 };

@@ -64,6 +64,11 @@ Point2f CircleShape::GetRandomPoint() const
     return MathUtils::RandPoint(GetShape(), 2);
 }
 
+Shape* CircleShape::Copy() const
+{
+    return new CircleShape(*this);
+}
+
 Circlef CircleShape::GetShape() const
 {
   return Circlef(m_Position.x, m_Position.y, m_Radius);

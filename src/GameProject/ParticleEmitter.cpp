@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "ParticleEmitter.h"
 #include <iostream>
+#include "MathUtils.h" // This will be required for this lol
 
-ParticleEmitter::ParticleEmitter(Shape* emissionZone, const Vector2f& minVelocity, const Vector2f& maxVelocity, const std::vector<Particle*>& spawnParticles, int maxParticles)
-  : m_EmissionZone(emissionZone), m_MinVelocity(minVelocity), m_MaxVelocity(maxVelocity), m_SpawnParticles(spawnParticles), m_MaxParticles(maxParticles)
+using namespace MathUtils;
+
+ParticleEmitter::ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape>& spawnShapes)
+  : m_EmissionZone(emissionZone), m_SpawnShapes(spawnShapes), m_SpawnInfo(spawnInfo)
 {
+  m_Delay = RandFloat(m_SpawnInfo.minDelay, m_SpawnInfo.maxDelay, 2);
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -15,12 +19,6 @@ ParticleEmitter::~ParticleEmitter()
 
   // Delete all the particles that have been spawned
   for (Particle* particle : m_Particles) {
-    delete particle;
-    particle = nullptr;
-  }
-  
-  // Delete the spawn particle
-  for (Particle* particle : m_SpawnParticles) {
     delete particle;
     particle = nullptr;
   }
@@ -40,20 +38,19 @@ void ParticleEmitter::Draw(bool debug) const
 
 void ParticleEmitter::Update(float elapsedSec)
 {
+  UpdateParticles(elapsedSec);
+
+  if (m_Delay <= 0.f) {
+    m_Delay = RandFloat(m_SpawnInfo.minDelay, m_SpawnInfo.maxDelay, 2);
+    SpawnBatch();
+  }
+
+  m_Delay -= elapsedSec; // Change the delay
 }
 
 void ParticleEmitter::SetPosition(const Point2f& position)
 {
   m_EmissionZone->SetPosition(position);
-}
-
-void ParticleEmitter::SetMaxParticles(int maxParticles)
-{
-  if (maxParticles < 1) {
-    std::cout << "Max particles invalid: " << maxParticles << std::endl;
-  }
-
-  m_MaxParticles = maxParticles;
 }
 
 void ParticleEmitter::SetEmissionZone(Shape* emissionZone)
@@ -62,14 +59,9 @@ void ParticleEmitter::SetEmissionZone(Shape* emissionZone)
   m_EmissionZone = emissionZone;
 }
 
-void ParticleEmitter::SetMinVelocity(const Vector2f& minVelocity)
+void ParticleEmitter::SetSpawnInfo(const EmitterSpawnInfo& spawnInfo)
 {
-  m_MinVelocity = minVelocity;
-}
-
-void ParticleEmitter::SetMaxVelocity(const Vector2f& maxVelocity)
-{
-  m_MaxVelocity = maxVelocity;
+  m_SpawnInfo = spawnInfo;
 }
 
 Point2f ParticleEmitter::GetPosition() const
@@ -77,17 +69,69 @@ Point2f ParticleEmitter::GetPosition() const
   return m_EmissionZone->GetPosition();
 }
 
-int ParticleEmitter::GetMaxParticles() const
+EmitterSpawnInfo ParticleEmitter::GetSpawnInfo() const
 {
-  return m_MaxParticles;
+  return m_SpawnInfo;
 }
 
-Vector2f ParticleEmitter::GetMinVelocity() const
+void ParticleEmitter::UpdateParticles(float elapsedSec)
 {
-  return m_MinVelocity;
+  // Go through all the particles and update them
+  for (std::vector<Particle*>::iterator it = m_Particles.begin(); it != m_Particles.end();) {
+    Particle* particle = *it;
+
+    // If the particle is dead, delete it and remove it from the vector
+    if (particle->GetLifetime() <= 0.f) {
+      delete particle;
+      it = m_Particles.erase(it);
+    } else {
+      // Update the particle if it's still alive
+      particle->Update(elapsedSec);
+      ++it;
+    }
+  }
 }
 
-Vector2f ParticleEmitter::GetMaxVelocity() const
+Particle* ParticleEmitter::CreateParticle()
 {
-  return m_MaxVelocity;
+  Shape* shape{ m_SpawnShapes.at( RandInt(0, m_SpawnShapes.size()) ).Copy()};
+  const float lifeTime{ RandFloat(m_SpawnInfo.minLifetime, m_SpawnInfo.maxLifetime, 2)};
+  const Point2f position{ m_EmissionZone->GetRandomPoint() };
+
+  const float rotation{ RandFloat(m_SpawnInfo.minRotation, m_SpawnInfo.maxRotation, 5) }; // More decimals for rotation
+  const float magnitude{ RandFloat(m_SpawnInfo.minForce, m_SpawnInfo.maxForce, 2) };
+
+  const Vector2f velocity{
+    cos(rotation) * magnitude,
+    sin(rotation) * magnitude
+  };
+
+  return new Particle(position, velocity, shape, lifeTime);
+}
+
+void ParticleEmitter::SpawnBatch()
+{
+  // Create a batchsize of particles to spawn
+  const int batchSize{ RandInt(m_SpawnInfo.minBatchSize, m_SpawnInfo.maxBatchSize) };
+  const int currentSize = m_Particles.size();
+  const int maxSize = m_SpawnInfo.maxParticles;
+
+  // Cleanup particles if we are over the limit
+  if (currentSize + batchSize > maxSize) {
+    // Calculate the number of particles to remove
+    const int particlesToRemove = currentSize + batchSize - maxSize;
+
+    // Remove the oldest particles from the beginning of the vector
+    for (int i = 0; i < particlesToRemove; ++i) {
+      delete m_Particles[i];
+      m_Particles[i] = nullptr;
+    }
+
+    m_Particles.erase(m_Particles.begin(), m_Particles.begin() + particlesToRemove);
+  }
+
+  // Actually create the particles
+  for (int i = 0; i < batchSize; ++i) {
+    m_Particles.push_back(CreateParticle());
+  }
 }

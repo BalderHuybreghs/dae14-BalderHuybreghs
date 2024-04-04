@@ -18,6 +18,8 @@ public:
 
   virtual Point2f GetRandomPoint() const override;
 
+  virtual Shape* Copy() const override;
+
   Circlef GetShape() const;
 private:
   float m_Radius;

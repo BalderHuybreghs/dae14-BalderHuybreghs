@@ -18,6 +18,9 @@ public:
   // Returns a random point within the shape
   virtual Point2f GetRandomPoint() const = 0;
 
+  // Creates a copy of the current shape, don't forget to delete the copy :)
+  virtual Shape* Copy() const = 0;
+
   // Atempts to lerp one shape into the other, if unimplemented or unfinished,
   // will just write to console and return itself
   // virtual Shape Lerp(const Shape& other, float t) = 0;
