@@ -22,8 +22,10 @@ struct Point2f
 
   Point2f operator-(float val) const;
   Point2f operator+(float val) const;
+  Point2f operator*(float val) const;
 
   Point2f operator+(const Point2f& other) const;
+  Point2f operator*(const Point2f& other) const;
 
   bool operator!=(const Point2f& other) const;
 

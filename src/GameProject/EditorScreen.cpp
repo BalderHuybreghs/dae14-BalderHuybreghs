@@ -114,6 +114,24 @@ void EditorScreen::Update(float elapsedSec)
     cameraPosition.y -= 1000 * elapsedSec;
   }
 
+  // Camera zoom
+  const float zoomFactor{ 1.0f + (0.2f * elapsedSec) };
+  if (m_InputManagerPtr->IsKeyDown(SDLK_z)) {
+    // Zoom out
+    m_CameraPtr->SetZoom(m_CameraPtr->GetZoom() / zoomFactor);
+
+    // Adjust camera position to keep the center fixed
+    cameraPosition.x /= zoomFactor;
+    cameraPosition.y /= zoomFactor;
+  } else if (m_InputManagerPtr->IsKeyDown(SDLK_x)) {
+    // Zoom in
+    m_CameraPtr->SetZoom(m_CameraPtr->GetZoom() * zoomFactor);
+
+    // Adjust camera position to keep the center fixed
+    cameraPosition.x *= zoomFactor;
+    cameraPosition.y *= zoomFactor;
+  }
+
   m_CameraPtr->SetPosition(cameraPosition);
 }
 

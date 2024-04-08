@@ -40,9 +40,28 @@ Point2f Point2f::operator+(float val) const
   );
 }
 
+Point2f Point2f::operator*(float val) const
+{
+  return Point2f(
+    x * val,
+    y * val
+  );
+}
+
 Point2f Point2f::operator+(const Point2f& other) const
 {
-  return Point2f(x + other.x, y + other.y);
+  return Point2f(
+    x + other.x, 
+    y + other.y
+  );
+}
+
+Point2f Point2f::operator*(const Point2f& other) const
+{
+  return Point2f(
+    x * other.x,
+    y * other.y
+  );
 }
 
 bool Point2f::operator!=(const Point2f& other) const
