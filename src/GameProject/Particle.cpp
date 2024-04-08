@@ -37,15 +37,15 @@ void Particle::Draw(bool debug) const
   m_Shape->Draw();
 
   // Draw the velocity of the particle
-  if (debug) {
-    const Point2f center{ m_Shape->GetCenter() };
-    const Vector2f direction{ m_Velocity.Normalized() };
-    const float directionLength{ 100.f };
-    const Vector2f drawVector{ direction * directionLength };
-    const Point2f endPoint{ center.x + drawVector.x, center.y + drawVector.y };
+  //if (debug) {
+  //  const Point2f center{ m_Shape->GetCenter() };
+  //  const Vector2f direction{ m_Velocity.Normalized() };
+  //  const float directionLength{ 100.f };
+  //  const Vector2f drawVector{ direction * directionLength };
+  //  const Point2f endPoint{ center.x + drawVector.x, center.y + drawVector.y };
 
-    utils::DrawLine(center, endPoint);
-  }
+  //  utils::DrawLine(center, endPoint);
+  //}
 }
 
 void Particle::Update(float elapsedSec)

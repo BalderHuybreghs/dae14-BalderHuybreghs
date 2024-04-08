@@ -9,6 +9,15 @@ CircleShape::CircleShape(float radius, const Point2f& position, const Color4f& c
 {
 }
 
+CircleShape::CircleShape(const CircleShape& other)
+{
+  const Circlef circle{ other.GetShape() };
+  m_Position = circle.center;
+  m_Color = other.GetColor();
+  m_Filled = other.IsFilled();
+  m_Radius = circle.radius;
+}
+
 bool CircleShape::CollidesWith(const Shape& shape)
 {
   if (!ShouldTestCollisionWith(shape)) {

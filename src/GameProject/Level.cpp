@@ -17,7 +17,7 @@ Level::Level(const std::string& name)
   m_BackgroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
 
-  Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{}) };
+  Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{ 100.f, 50.f }) };
 
   Shape* shape1{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR1, true) };
   Shape* shape2{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR2, true) };
@@ -146,9 +146,15 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   }
 
   // Update the particle emitters, especially the location such that they follow the player
-  m_ParticleEmitterBack->SetPosition(m_ParticleEmitterBack->GetPosition() + camera.GetPosition());
-  m_ParticleEmitterMid->SetPosition(m_ParticleEmitterMid->GetPosition() + camera.GetPosition());
-  m_ParticleEmitterFront->SetPosition(m_ParticleEmitterFront->GetPosition() + camera.GetPosition());
+  const Point2f cameraPosition{ camera.GetPosition() };
+  const Point2f particleEmittersPosition{
+    cameraPosition.x + WINDOW_WIDTH / 2.f,
+    cameraPosition.y - WINDOW_HEIGHT / 2.f
+  };
+
+  m_ParticleEmitterBack->SetPosition(particleEmittersPosition);
+  m_ParticleEmitterMid->SetPosition(particleEmittersPosition);
+  m_ParticleEmitterFront->SetPosition(particleEmittersPosition);
 
   m_ParticleEmitterBack->Update(elapsedSec);
   m_ParticleEmitterMid->Update(elapsedSec);

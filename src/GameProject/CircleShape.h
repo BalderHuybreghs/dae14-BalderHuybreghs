@@ -5,6 +5,9 @@ class CircleShape : public Shape
 {
 public:
   CircleShape(float radius, const Point2f& position = Point2f(0.0f, 0.0f), const Color4f& color = Color4f{ 0.f, 0.f, 0.f, 1.f }, bool filled = false);
+  
+  CircleShape(const CircleShape& other);
+  CircleShape& operator=(const CircleShape& other) = delete;
   virtual ~CircleShape() override = default;
 
   virtual bool CollidesWith(const Shape& shape) override;

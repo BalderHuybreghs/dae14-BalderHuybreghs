@@ -9,6 +9,15 @@ RectangleShape::RectangleShape(const Point2f& size, const Point2f& position, con
 {
 }
 
+RectangleShape::RectangleShape(const RectangleShape& other)
+{
+  const Rectf shape{ other.GetShape() };
+  m_Color = other.GetColor();
+  m_Filled = other.IsFilled();
+  m_Position = Point2f{ shape.left, shape.bottom };
+  m_Size = Point2f{ shape.width, shape.height };
+}
+
 bool RectangleShape::CollidesWith(const Shape& shape)
 {
   if (!ShouldTestCollisionWith(shape)) {
@@ -69,7 +78,7 @@ Point2f RectangleShape::GetCenter() const
 
 Point2f RectangleShape::GetRandomPoint() const
 {
-    return MathUtils::RandPoint(GetShape(), 2);
+    return MathUtils::RandPoint(GetShape(), 0);
 }
 
 Shape* RectangleShape::Copy() const

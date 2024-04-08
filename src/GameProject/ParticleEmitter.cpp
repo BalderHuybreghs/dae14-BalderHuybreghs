@@ -103,7 +103,7 @@ Particle* ParticleEmitter::CreateParticle()
   const float lifeTime{ RandFloat(m_SpawnInfo.minLifetime, m_SpawnInfo.maxLifetime, 2)};
   const Point2f position{ m_EmissionZone->GetRandomPoint() };
 
-  const float rotation{ RandFloat(m_SpawnInfo.minRotation, m_SpawnInfo.maxRotation, 10) }; // More decimals for rotation
+  const float rotation{ RandFloat(m_SpawnInfo.minRotation, m_SpawnInfo.maxRotation, 5) }; // More decimals for rotation
   const float magnitude{ RandFloat(m_SpawnInfo.minForce, m_SpawnInfo.maxForce, 2) };
 
   const Vector2f velocity{
@@ -134,6 +134,9 @@ void ParticleEmitter::SpawnBatch()
 
     m_Particles.erase(m_Particles.begin(), m_Particles.begin() + particlesToRemove);
   }
+
+  // Preallocate space
+  m_Particles.reserve(batchSize);
 
   // Actually create the particles
   for (int i = 0; i < batchSize; ++i) {

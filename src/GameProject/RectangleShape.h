@@ -5,6 +5,9 @@ class RectangleShape : public Shape
 {
 public:
   RectangleShape(const Point2f& size, const Point2f& position = Point2f(0.0f, 0.0f), const Color4f& color = Color4f{ 0.f, 0.f, 0.f, 1.f }, bool filled = false);
+  
+  RectangleShape(const RectangleShape& other);
+  RectangleShape& operator=(const RectangleShape& other) = delete;
   virtual ~RectangleShape() override = default;
 
   virtual bool CollidesWith(const Shape& shape) override;
