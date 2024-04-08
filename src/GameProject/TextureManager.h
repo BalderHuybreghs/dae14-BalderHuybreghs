@@ -17,7 +17,6 @@ public:
   TextureManager& operator=(const TextureManager& other) = delete;
   ~TextureManager();
 
-  // CleanTexture cleans a texture if it isn't being used by anything else
   const Texture* GetTexture(const std::string& resource);
 
   static TextureManager* Instance();

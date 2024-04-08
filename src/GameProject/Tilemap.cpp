@@ -11,7 +11,6 @@ using namespace utils;
 Tilemap::Tilemap(const Point2f& size, int tileSize, const std::string resources[], int resourcesSize)
   : m_Size(size), m_TileSize(tileSize)
 {
-  // Seed the rng, source is from chatgpt. it works so I won't question it too much
   SetTiles(resources, resourcesSize);
 }
 
@@ -181,7 +180,7 @@ std::vector<int> Tilemap::ToRawTileData() const
 
   std::vector<int> rawTileData;
 
-  for (const auto& pair : m_Tiles) {
+  for (const std::pair<std::pair<int, int>, std::pair<int, int>>& pair : m_Tiles) {
     // Push key
     rawTileData.push_back(pair.first.first);
     rawTileData.push_back(pair.first.second);
