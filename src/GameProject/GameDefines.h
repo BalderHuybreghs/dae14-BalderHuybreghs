@@ -134,6 +134,7 @@ static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player
 static const float PLAYER_JUMP_POTENTIAL{ 500.f }; // The maximu  m potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 100.f }; // The jump force applied to the player until it reaches max potential
 static const float PLAYER_DASH_FORCE{ 1500.f }; // The force behind a player dash
+static const float PLAYER_SCALE{ 200.f };
 
 // The following stamine values are based on https://celeste.ink/wiki/Stamina, they're not numbers I pulled out my thumb
 static const float PLAYER_BASE_STAMINA{ 110.f };
@@ -146,22 +147,22 @@ static const float CLIMB_JUMP_STAMINA_COST{ 27.5f };
 static const float SCREEN_EMISSION_ZONE_WIDTH{ 100.f };
 static const float SCREEN_EMISSION_ZONE_HEIGHT{ WINDOW_HEIGHT };
 
-static const float SNOW_PARTICLE_SIZE{ 10.f };
+static const float SNOW_PARTICLE_SIZE{ TILEMAP_SCALE };
 
 static const Color4f SNOW_PARTICLE_COLOR1{ 1.f, 1.f, 1.f, 1.f };
 static const Color4f SNOW_PARTICLE_COLOR2{ 0.f, 0.f, 0.2f, 1.f };
 static const Color4f SNOW_PARTICLE_COLOR3{ 0.5f, 0.5f, 0.5f, 1.f };
 
 static const EmitterSpawnInfo SNOW_PARTICLE_INFO{
-    100.f,     // The minimum force on a particle
-    200.f,    // The maximum force on a particle
+    600.f,     // The minimum force on a particle
+    1000.f,    // The maximum force on a particle
     3.f, // The minimum rotation in radians
     5.f, // The maximum rotation in radians
     10.f,     // The minimum lifetime for a particle in seconds
     10.f,     // The maximum lifetime for a particle in seconds
     1,        // The minimum amount of particles to spawn in a run
     2,        // The maximum amount of particles to spawn in a run
-    50,      // The maximum amount of particles allowed at a time
+    100,      // The maximum amount of particles allowed at a time
     .1f,      // The minimum spawning delay in seconds
     .5f       // The maximum spawning delay in seconds
 };

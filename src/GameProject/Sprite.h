@@ -6,10 +6,14 @@
 class Sprite
 {
 public:
-  Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource);
+  // Since each animation in Celeste has a variable amount of culumns, instead of asking for the amount of columns,
+  // we ask for the size of a single frame
+  Sprite(const Point2f& frameSize, float msPerFrame, const std::string& resource);
   virtual ~Sprite() = default;
 
-  void Draw(bool debug = false) const;
+  void Draw(const Rectf& dstRect, bool flipped = false, bool debug = false) const;
+  void Draw(const Point2f& position, float scale, bool flipped = false, bool debug = false) const;
+  void Draw(const Point2f& position, bool flipped = false, bool debug = false) const;
   void Update(float elapsedSec); // Update isn't strictly required for every sprite, this is mostly for animaed sprites
 
   // Resources are states in this case, since resources will be added 
@@ -18,14 +22,6 @@ public:
 
   // Adds a resource to this sprite and returns its id
   size_t AddResource(const std::string& resource);
-
-  Point2f GetPosition() const;
-  Point2f GetSize() const;
-
-  void SetPosition(const Point2f& position);
-  void SetSize(const Point2f& size);
-
-  void SetMirror(bool mirror);
 
   void SetFrame(int frame);
 
@@ -36,11 +32,8 @@ public:
     int frames;
   };
 protected:
-  Point2f m_Position;
-  Point2f m_Size;
   Point2f m_FrameSize;
   float m_MsPerFrame;
-  bool m_Mirror;
 
   // Internal management
   std::vector<StateInfo> m_States;

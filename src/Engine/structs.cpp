@@ -24,6 +24,22 @@ Point2f::Point2f( float x, float y )
 {
 }
 
+Point2f Point2f::operator-(float val) const
+{
+  return Point2f(
+    x - val,
+    y - val
+  );
+}
+
+Point2f Point2f::operator+(float val) const
+{
+  return Point2f(
+    x + val,
+    y + val
+  );
+}
+
 Point2f Point2f::operator+(const Point2f& other) const
 {
   return Point2f(x + other.x, y + other.y);

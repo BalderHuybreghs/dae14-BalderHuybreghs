@@ -8,21 +8,14 @@
 
 using namespace utils;
 
-Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
-  : m_Position(position), m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({0, nullptr, 0}), m_Mirror(false)
+Sprite::Sprite(const Point2f& frameSize, float msPerFrame, const std::string& resource)
+  : m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({0, nullptr, 0})
 {
   SetState((int)AddResource(resource) - 1, true);
 }
 
-void Sprite::Draw(bool debug) const
+void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
 {
-  Rectf dstRect{
-    m_Position.x,
-    m_Position.y,
-    m_Size.x,
-    m_Size.y
-  };
-
   if (debug) {
     SetColor(Color4f{ 1.f, 1.f, 1.f, 0.2f });
     FillRect(dstRect);
@@ -45,14 +38,31 @@ void Sprite::Draw(bool debug) const
   glPushMatrix();
 
   // Apply mirroring transformation
-  glTranslatef(m_Position.x + m_Size.x / 2, m_Position.y + m_Size.y / 2, 0.f);
-  glScalef(m_Mirror ? -1.f : 1.f, 1.f, 1.f);
-  glTranslatef(-m_Position.x - m_Size.x / 2, -m_Position.y - m_Size.y / 2, 0.f);
+  glTranslatef(dstRect.left + dstRect.width / 2, dstRect.bottom + dstRect.height / 2, 0.f);
+  glScalef(flipped ? -1.f : 1.f, 1.f, 1.f);
+  glTranslatef(-dstRect.left - dstRect.width / 2, -dstRect.bottom - dstRect.height / 2, 0.f);
 
   // Draw the sprite
   m_State.texture->Draw(dstRect, srcRect);
 
   glPopMatrix();
+}
+
+void Sprite::Draw(const Point2f& position, float scale, bool flipped, bool debug) const
+{
+  const Rectf dstRect{
+    position.x,
+    position.y,
+    scale,
+    scale
+  };
+
+  Draw(dstRect, flipped, debug);
+}
+
+void Sprite::Draw(const Point2f& position, bool flipped, bool debug) const
+{
+  Draw(position, 1.f, flipped, debug);
 }
 
 void Sprite::Update(float elapsedSec)
@@ -88,31 +98,6 @@ size_t Sprite::AddResource(const std::string& resource)
 
   m_States.push_back(state);
   return m_States.size();
-}
-
-Point2f Sprite::GetPosition() const
-{
-  return m_Position;
-}
-
-Point2f Sprite::GetSize() const
-{
-  return m_Size;
-}
-
-void Sprite::SetPosition(const Point2f& position)
-{
-  m_Position = position;
-}
-
-void Sprite::SetSize(const Point2f& size)
-{
-  m_Size = size;
-}
-
-void Sprite::SetMirror(bool mirror)
-{
-  m_Mirror = mirror;
 }
 
 void Sprite::SetFrame(int frame)

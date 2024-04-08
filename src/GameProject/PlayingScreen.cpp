@@ -30,8 +30,8 @@ void PlayingScreen::Initialize()
 
   m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn());
 
-  const Point2f playerPos{ m_PlayerPtr->GetPosition() };
-  m_CameraPtr = new Camera(m_PlayerPtr->GetPosition());
+  const Point2f playerPos{ m_PlayerPtr->GetCenter() };
+  m_CameraPtr = new Camera(playerPos);
   m_TilemapPtr = m_LevelPtr->GetFrontTilemap();
 
   // Build the level at the end of creation
@@ -41,9 +41,9 @@ void PlayingScreen::Initialize()
 void PlayingScreen::Draw()
 {
   m_CameraPtr->PushMatrix();
-  m_LevelPtr->DrawBackground(true);
+  m_LevelPtr->DrawBackground(*m_CameraPtr, true);
   m_PlayerPtr->Draw(true);
-  m_LevelPtr->DrawForeground(true);
+  m_LevelPtr->DrawForeground(*m_CameraPtr, true);
   m_CameraPtr->PopMatrix();
 }
 
@@ -85,7 +85,13 @@ void PlayingScreen::Update(float elapsedSec)
   // Update the player with some collision polygons to collide with
   m_PlayerPtr->Update(elapsedSec, *m_TilemapPtr);
 
-  m_CameraPtr->SetPosition(m_PlayerPtr->GetPosition());
+  const Point2f playerPos{ m_PlayerPtr->GetCenter() };
+  const Point2f center{
+    playerPos.x - WINDOW_WIDTH / 2.f,
+    playerPos.y - WINDOW_HEIGHT / 2.f
+  };
+
+  m_CameraPtr->SetPosition(center);
 }
 
 
@@ -95,7 +101,9 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
   switch (key.keysym.sym) {
   // Switch to level editor
   case SDLK_TAB:
-    m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, m_PlayerPtr->GetPosition()));
+    const Point2f playerCenter{ m_PlayerPtr->GetCenter() };
+    const Point2f cameraCenter{ playerCenter.x - WINDOW_WIDTH / 2.f, playerCenter.y - WINDOW_HEIGHT / 2.f };
+    m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, cameraCenter));
     break;
   }
 }

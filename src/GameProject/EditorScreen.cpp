@@ -11,14 +11,13 @@ using namespace utils;
 
 EditorScreen::EditorScreen(const std::string& levelName, Point2f cameraPos)
   : GameScreen(), m_LevelPtr(nullptr), m_CurrentTilemapPtr(nullptr),
-  m_EditMode(Mode::TilesetFront), m_CurrentTile(0),
-  m_MouseDragBorder(new RectangleShape(Point2f{ WINDOW_WIDTH - MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL * 2, WINDOW_HEIGHT - MOUSE_DRAG_BORDER_MARGIN_VERTICAL * 2 }, Point2f{ MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL, MOUSE_DRAG_BORDER_MARGIN_VERTICAL })), 
+  m_EditMode(Mode::TilesetFront), m_CurrentTile(0), 
   m_LevelName(levelName), m_CameraPtr(new Camera(cameraPos))
 {
 }
 
 EditorScreen::EditorScreen(const std::string& levelName)
-  : EditorScreen(levelName, Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f })
+  : EditorScreen(levelName, Point2f{})
 {
   
 }
@@ -29,8 +28,10 @@ void EditorScreen::Initialize()
   m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
   m_LevelPtr->Load();
 
-  if (m_CameraPtr->GetPosition() == Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f }) {
-    m_CameraPtr->SetPosition(m_LevelPtr->GetPlayerSpawn());
+  if (m_CameraPtr->GetPosition() == Point2f{}) {
+    const Point2f spawn{ m_LevelPtr->GetPlayerSpawn() };
+    const Point2f center{ spawn.x - WINDOW_WIDTH / 2.f, spawn.y - WINDOW_HEIGHT / 2.f };
+    m_CameraPtr->SetPosition(center);
   }
 }
 
@@ -41,17 +42,15 @@ EditorScreen::~EditorScreen()
 
   delete m_LevelPtr;
   delete m_CameraPtr;
-  delete m_MouseDragBorder;
 }
 
 void EditorScreen::Draw()
 {
-  // Everything will be drawn with debug info in the editor by default
-
   m_CameraPtr->PushMatrix();
 
-  m_LevelPtr->DrawBackground(true);
-  m_LevelPtr->DrawForeground(true);
+  // Everything will be drawn with debug info in the editor by default
+  m_LevelPtr->DrawBackground(*m_CameraPtr, true);
+  m_LevelPtr->DrawForeground(*m_CameraPtr, true);
 
   // Draw an outline around the tile the player may build
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
@@ -73,8 +72,6 @@ void EditorScreen::Draw()
   // Since finding the mouse with a white background might not always be obvious
   SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
   FillEllipse(mousePos, 7.f, 7.f);
-
-  //m_MouseDragBorder->Draw();
 }
 
 void EditorScreen::Update(float elapsedSec)

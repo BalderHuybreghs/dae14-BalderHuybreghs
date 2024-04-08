@@ -57,8 +57,8 @@ public:
 
   void SetPosition(const Point2f& position);
   void SetVelocity(const Vector2f& velocity);
- 
 
+  Point2f GetCenter() const;
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
   State GetState() const;
@@ -85,7 +85,6 @@ private:
 
   // Colliders
   RectangleShape* m_Collider;
-  RectangleShape* m_ColliderFeet;
   RectangleShape* m_ColliderLeft;
   RectangleShape* m_ColliderRight;
 

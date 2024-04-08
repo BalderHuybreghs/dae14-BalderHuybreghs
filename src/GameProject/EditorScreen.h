@@ -51,8 +51,6 @@ private:
   Tilemap* m_CurrentTilemapPtr; // Should not be deleted, holds a reference to the tilemap within the level
   Camera* m_CameraPtr;
 
-  Shape* m_MouseDragBorder;
-
   int m_CurrentTile;
 };
 

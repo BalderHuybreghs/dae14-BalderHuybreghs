@@ -17,7 +17,7 @@ Level::Level(const std::string& name)
   m_BackgroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
 
-  Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{ 100.f, 50.f }) };
+  Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{ WINDOW_WIDTH, 0.f }) };
 
   Shape* shape1{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR1, true) };
   Shape* shape2{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR2, true) };
@@ -73,18 +73,23 @@ void Level::Build()
   }
 }
 
-void Level::DrawBackground(bool debug) const
+void Level::DrawBackground(Camera& camera, bool debug) const
 {
+  // Make sure the particle emitter is always on screen
+  camera.PushMatrixInverse();
   // Draw the back particle emitter
   m_ParticleEmitterBack->Draw(debug);
+  camera.PopMatrix();
 
   // Draw the background tilemap
   m_BackgroundTilemapPtr->Draw(debug);
 }
 
-void Level::DrawForeground(bool debug) const
+void Level::DrawForeground(Camera& camera, bool debug) const
 {
+  camera.PushMatrixInverse();
   m_ParticleEmitterMid->Draw(debug); // Draw the middle particle emitter
+  camera.PopMatrix();
 
   // Draw the objects in between the two tilemaps
   for (const GameObject* object : m_Objects) {
@@ -102,7 +107,9 @@ void Level::DrawForeground(bool debug) const
   m_ForegroundTilemapPtr->Draw(debug);
 
   // Draw the front particle emitter
+  camera.PushMatrixInverse();
   m_ParticleEmitterFront->Draw(debug);
+  camera.PopMatrix();
 
   // Draw the player spawn position on top of everything in debug mode
   if (debug) {
@@ -127,9 +134,9 @@ void Level::DrawForeground(bool debug) const
     // Draw the player spawn
     utils::SetColor(Color4f{ .8f, 0.2f, 0.2f, 0.8f });
     utils::FillRect(Point2f{
-        m_PlayerSpawn.x - 70.f / 2.f,
+        m_PlayerSpawn.x,
         m_PlayerSpawn.y
-    }, 70.f, 70.f);
+    }, PLAYER_SCALE, PLAYER_SCALE);
   }
 }
 
@@ -151,10 +158,6 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
     cameraPosition.x + WINDOW_WIDTH / 2.f,
     cameraPosition.y - WINDOW_HEIGHT / 2.f
   };
-
-  m_ParticleEmitterBack->SetPosition(particleEmittersPosition);
-  m_ParticleEmitterMid->SetPosition(particleEmittersPosition);
-  m_ParticleEmitterFront->SetPosition(particleEmittersPosition);
 
   m_ParticleEmitterBack->Update(elapsedSec);
   m_ParticleEmitterMid->Update(elapsedSec);

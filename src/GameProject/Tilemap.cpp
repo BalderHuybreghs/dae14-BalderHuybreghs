@@ -84,8 +84,7 @@ void Tilemap::SetTile(const Point2f& point, int tileID)
   // Seed random with the x and y values of the tile
   std::seed_seq seed{ key.first, key.second };
   std::mt19937 rng(seed);
-
-  m_Tiles.insert_or_assign(key, std::make_pair(tileID, rng()));
+  m_Tiles.insert_or_assign(key, std::make_pair(tileID, std::abs((int)rng())));
 }
 
 void Tilemap::RemoveTile(const Point2f& point)
@@ -194,12 +193,12 @@ std::vector<int> Tilemap::ToRawTileData() const
 
 int Tilemap::ValueToX(float val) const
 {
-  return int(val / (m_TileSize * m_Size.x));
+  return int(std::floor(val / (m_TileSize * m_Size.x)));
 }
 
 int Tilemap::ValueToY(float val) const
 {
-  return int(val / (m_TileSize * m_Size.y));
+  return int(std::floor(val / (m_TileSize * m_Size.y)));
 }
 
 std::pair<int, int> Tilemap::PointToKey(const Point2f& point) const

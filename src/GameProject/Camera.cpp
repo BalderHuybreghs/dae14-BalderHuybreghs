@@ -14,12 +14,18 @@ Camera::Camera(const Point2f& position)
 {
 }
 
+void Camera::PushMatrixInverse()
+{
+  glPushMatrix();
+  glTranslatef(m_Position.x, m_Position.y, 0);
+}
+
 void Camera::PushMatrix()
 {
   glPushMatrix();
 
   // Center camera around position
-  glTranslatef(-m_Position.x + WINDOW_WIDTH / 2, -m_Position.y + WINDOW_HEIGHT / 2, 0);
+  glTranslatef(-m_Position.x, -m_Position.y, 0);
   glScalef(m_Zoom, m_Zoom, 1); // Preserve Z component for proper scaling
 }
 
@@ -57,7 +63,7 @@ Point2f Camera::GetWorldPosition(const Point2f& screenPosition) const
 {
   // Calculate world position from screen position, considering zoom
   return Point2f{
-      (screenPosition.x - (WINDOW_WIDTH / m_Zoom) / 2) + m_Position.x,
-      (screenPosition.y - (WINDOW_HEIGHT / m_Zoom) / 2) + m_Position.y
+      screenPosition.x * m_Zoom + m_Position.x,
+      screenPosition.y * m_Zoom + m_Position.y
   };
 }

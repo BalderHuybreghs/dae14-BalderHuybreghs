@@ -24,6 +24,7 @@ public:
   void SetGoal(const Point2f& goal);
 private:
   // The goal position for the hair
+  const float m_Size;
   Point2f m_Position;
   Point2f m_Goal;
 

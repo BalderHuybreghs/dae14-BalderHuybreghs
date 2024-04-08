@@ -20,8 +20,8 @@ public:
   // Builds the level and all of its objects from the blueprint
   void Build();
 
-  void DrawBackground(bool debug = false) const;
-  void DrawForeground(bool debug = false) const;
+  void DrawBackground(Camera& camera, bool debug = false) const;
+  void DrawForeground(Camera& camera, bool debug = false) const;
   void Update(Player& player, Camera& camera, float elapsedSec);
    
   // Adds an object by pointer
@@ -50,7 +50,7 @@ private:
   std::vector<std::vector<Point2f>> m_CollisionPolygons; // Holds the collision polygons generated from the tilemap
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 
-  // Since there are 3 layers of particles being emitted
+  // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBack;
   ParticleEmitter* m_ParticleEmitterMid;
   ParticleEmitter* m_ParticleEmitterFront;

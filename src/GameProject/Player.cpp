@@ -11,12 +11,12 @@ using namespace utils;
 
 Player::Player(const Point2f& position)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_Collider(nullptr), m_ColliderLeft(nullptr),
-  m_ColliderRight(nullptr), m_ColliderFeet(nullptr), m_Sprite(nullptr), m_Particle(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false)
+  m_ColliderRight(nullptr), m_Sprite(nullptr), m_Particle(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
   // All the player animations
-  m_Sprite = new Sprite(m_Position, Point2f{ 200.f, 200.f}, Point2f{ PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
+  m_Sprite = new Sprite(Point2f{ PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
   m_Sprite->AddResource(PLAYER_WALK_RESOURCE);
   m_Sprite->AddResource(PLAYER_CLIMB_RESOURCE);
   m_Sprite->AddResource(PLAYER_SLIDE_RESOURCE);
@@ -35,7 +35,6 @@ Player::Player(const Point2f& position)
   m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, colliderColor, true);
   m_ColliderLeft = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, colliderSideColor, true);
   m_ColliderRight = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, colliderSideColor, true);
-  m_ColliderFeet = new RectangleShape(Point2f{ 10.f, 3.f }, Point2f{ m_Position.x, m_Position.y + 5.f }, colliderColor, true);
 }
 
 Player::~Player()
@@ -45,7 +44,6 @@ Player::~Player()
   delete m_Particle;
   delete m_Hair;
   delete m_Collider;
-  delete m_ColliderFeet;
   delete m_ColliderLeft;
   delete m_ColliderRight;
 }
@@ -53,14 +51,13 @@ Player::~Player()
 void Player::Draw(bool debug) const
 {
   // Draw the hair behind the player
+  const float half{ PLAYER_SCALE / 2.f };
   m_Hair->Draw(debug);
 
-  m_Sprite->Draw(debug);
-
+  m_Sprite->Draw(m_Position, PLAYER_SCALE, m_Direction.x < 0.f, debug);
 
   if (debug) {
     m_Collider->Draw();
-    m_ColliderFeet->Draw();
     m_ColliderLeft->Draw();
     m_ColliderRight->Draw();
 
@@ -70,7 +67,7 @@ void Player::Draw(bool debug) const
 
     // Draw the direction vector
     SetColor(Color4f{ 1.f, 0.f, 0.f, 1.f });
-    DrawLine(m_Position, m_Position + Vector2f(m_Direction * 100.f).ToPoint2f());
+    DrawLine(m_Position + half, m_Position + half + Vector2f(m_Direction * 100.f).ToPoint2f());
   }
 }
 
@@ -104,11 +101,8 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
   if (m_IsGrounded) {
     const Point2f newPos = MathUtils::Lerp(m_Hair->GetPosition(), Point2f{ m_Position.x, m_Position.y }, 0.05f);
-     m_Hair->SetEnd(newPos); // Slowly move the hair toward the desired position
+    m_Hair->SetEnd(newPos); // Slowly move the hair toward the desired position
   }
-
-  // Face the player toward the direction
-  m_Sprite->SetMirror(m_Direction.x < 0.f);
 
   m_Sprite->SetState((int)m_State);
 
@@ -206,39 +200,27 @@ const RectangleShape* Player::GetCollisionShape() const
 void Player::SetPosition(const Point2f& position)
 {
   m_Position = position;
-  
-  const Point2f spriteSize{ m_Sprite->GetSize() };
+  const float half{ PLAYER_SCALE / 2.f };
+
   const Rectf colliderSize{ m_Collider->GetBoundingBox() };
 
-  m_Sprite->SetPosition(Point2f{
-      m_Position.x - spriteSize.x / 2.f,
-      m_Position.y
-  });
-
   m_Collider->SetPosition(Point2f{
-    m_Position.x - colliderSize.width / 2.f,
+    m_Position.x + half - colliderSize.width / 2.f,
     m_Position.y
   });
 
   // Side colliders for hold detection
   m_ColliderLeft->SetPosition(Point2f{ 
-    m_Position.x - colliderSize.width / 2.f - 2.f,
+    m_Position.x + half - colliderSize.width / 2.f - 2.f,
     m_Position.y + (colliderSize.height - m_ColliderLeft->GetBoundingBox().height) / 2.f
   });
 
   m_ColliderRight->SetPosition(Point2f{ 
-    m_Position.x + colliderSize.width / 2.f - m_ColliderRight->GetBoundingBox().width +2.f,
+    m_Position.x + half + colliderSize.width / 2.f - m_ColliderRight->GetBoundingBox().width +2.f,
     m_Position.y + (colliderSize.height - m_ColliderRight->GetBoundingBox().height) / 2.f
   });
 
-  m_ColliderFeet->SetPosition(Point2f{ m_Position.x, m_Position.y + 5.f });
-
-  const Point2f spritePos{ m_Sprite->GetPosition() };
-  const Point2f spriteScale{ m_Sprite->GetSize() };
-  const float pixelsX{ 14 * 7.f };
-  const float pixelsY{ 10 * 7.f };
-
-  m_Hair->SetGoal(Point2f{ spritePos.x + pixelsX, spritePos.y + pixelsY});
+  m_Hair->SetGoal(Point2f{ m_Position.x + half, m_Position.y + half});
 }
 
 void Player::SetVelocity(const Vector2f& velocity)
@@ -280,6 +262,12 @@ void Player::Right()
   m_Velocity.x = m_Direction.x * PLAYER_ACCELERATION; // Too lazy to type anything
 }
 
+Point2f Player::GetCenter() const
+{
+  const float half{ PLAYER_SCALE / 2.f };
+  return m_Position + half;
+}
+
 Point2f Player::GetPosition() const
 {
   return m_Position;
@@ -303,7 +291,7 @@ bool Player::IsGrounded() const
 void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
 {
   const Point2f nextPlayerPos{
-    m_Position.x + m_Velocity.x * elapsedSec,
+    GetCenter().x + m_Velocity.x * elapsedSec,
     m_Position.y + m_Velocity.y * elapsedSec
   };
 

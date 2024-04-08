@@ -23,6 +23,9 @@ public:
   Camera(const Point2f& position);
   virtual ~Camera() = default;
 
+  // This is a function to render on the screen position if we are already rendering on a camera
+  void PushMatrixInverse();
+
   void PushMatrix();
   void PopMatrix();
 

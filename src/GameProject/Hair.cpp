@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 
 Hair::Hair(const Point2f& position, int parts, float startingSize)
-  : m_Goal(position)
+  : m_Goal(position), m_Size(startingSize)
 {
   m_HairTexture = TextureManager::Instance()->GetTexture(HAIR_RESOURCE);
   float length{ startingSize / 2.f }; // We can safely asume that the hair is the same size in both width and height
@@ -15,7 +15,7 @@ Hair::Hair(const Point2f& position, int parts, float startingSize)
     m_HairLimb->AddJoint(new Joint(position, length * (1 - i / float(parts))));
   }
 
-  m_Bangs = new Sprite(Point2f{ m_Goal.x - startingSize / 2.f, m_Goal.y - startingSize / 2.f }, Point2f(startingSize, startingSize), Point2f{ BANGS_FRAME_SIZE, BANGS_FRAME_SIZE }, 0, BANGS_RESOURCE);
+  m_Bangs = new Sprite(Point2f{ BANGS_FRAME_SIZE, BANGS_FRAME_SIZE }, 0, BANGS_RESOURCE);
 }
 
 Hair::~Hair()
@@ -42,7 +42,15 @@ void Hair::Draw(bool debug) const
     m_HairTexture->Draw(dstRect);
   }
 
-  m_Bangs->Draw();
+  const float half{ m_Size / 2.f };
+  const Rectf dstRectBangs{
+    m_Goal.x - half,
+    m_Goal.y - half,
+    m_Size,
+    m_Size
+  };
+
+  m_Bangs->Draw(dstRectBangs);
 
   // Debug symbols should be drawn before the actual hair is drawn (obviously :) )
   if (debug) {
@@ -80,7 +88,4 @@ float Hair::SetEnd(const Point2f& position)
 void Hair::SetGoal(const Point2f& goal)
 {
   m_Goal = goal;
-
-  const Point2f bangsSize{ m_Bangs->GetSize() };
-  m_Bangs->SetPosition(Point2f{ m_Goal.x - bangsSize.x / 2.f, m_Goal.y - bangsSize.y / 2.f }); // Update the bangs position
 }

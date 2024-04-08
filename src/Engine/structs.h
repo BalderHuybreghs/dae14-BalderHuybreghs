@@ -20,6 +20,9 @@ struct Point2f
 	float x;
 	float y;
 
+  Point2f operator-(float val) const;
+  Point2f operator+(float val) const;
+
   Point2f operator+(const Point2f& other) const;
 
   bool operator!=(const Point2f& other) const;
