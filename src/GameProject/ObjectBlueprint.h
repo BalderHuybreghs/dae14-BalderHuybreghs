@@ -5,7 +5,7 @@
 // A simple blueprint class that tells the game where it should
 // put which object. This is done to make storing objects to files
 // a lot easier.
-class ObjectBlueprint
+class ObjectBlueprint final
 {
 public:
   ObjectBlueprint(int objectId, Point2f position);

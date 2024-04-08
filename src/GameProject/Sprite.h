@@ -7,6 +7,7 @@ class Sprite
 {
 public:
   Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource);
+  virtual ~Sprite() = default;
 
   void Draw(bool debug = false) const;
   void Update(float elapsedSec); // Update isn't strictly required for every sprite, this is mostly for animaed sprites
@@ -31,7 +32,7 @@ public:
   struct StateInfo
   {
     int id;
-    const Texture* texture;
+    const Texture* texture; // No rule of 3 required despite having a pointer here, this because the manager takes care of cleaning up textures & the pointer here is const
     int frames;
   };
 protected:

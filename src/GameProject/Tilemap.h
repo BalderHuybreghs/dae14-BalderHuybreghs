@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include <random>
 
-class Tilemap
+class Tilemap final
 {
 public:
   enum class TileSide

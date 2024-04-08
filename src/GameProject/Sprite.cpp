@@ -81,7 +81,7 @@ size_t Sprite::AddResource(const std::string& resource)
   const Texture* texture = TextureManager::Instance()->GetTexture(resource);
 
   const Sprite::StateInfo state{
-    m_States.size(),
+    (int)m_States.size(),
     texture,
     int(texture->GetWidth() / m_FrameSize.x)
   };

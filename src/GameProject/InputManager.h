@@ -8,10 +8,10 @@
 // or not. It also solves the issue of not being
 // able to press multiple keys at a time, which was one
 // of my frustrations when working with the default implementation
-class InputManager
+class InputManager final
 {
 public:
-  // No special constructor needed
+  // No special constructor needed, rule of 3 also not required
 
   // Update input state based on SDL events
   void Update(const SDL_Event& event);

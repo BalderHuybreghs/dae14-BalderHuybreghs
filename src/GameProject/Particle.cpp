@@ -8,6 +8,25 @@ Particle::Particle(const Point2f& position, const Vector2f& velocity, Shape* sha
   m_Shape->SetPosition(position);
 }
 
+Particle::Particle(const Particle& other)
+{
+  m_Lifetime = other.GetLifetime();
+  m_Shape = other.GetShape()->Copy();
+  m_Velocity = other.GetVelocity();
+}
+
+Particle& Particle::operator=(const Particle& other)
+{
+  if (this == &other)
+    return *this;
+
+  m_Lifetime = other.GetLifetime();
+  m_Shape = other.GetShape()->Copy();
+  m_Velocity = other.GetVelocity();
+
+  return *this;
+}
+
 Particle::~Particle()
 {
   delete m_Shape;
@@ -41,6 +60,11 @@ void Particle::Update(float elapsedSec)
 void Particle::ApplyForce(const Vector2f& velocity)
 {
   m_Velocity += velocity;
+}
+
+const Shape* Particle::GetShape() const
+{
+  return m_Shape;
 }
 
 Point2f Particle::GetPosition() const

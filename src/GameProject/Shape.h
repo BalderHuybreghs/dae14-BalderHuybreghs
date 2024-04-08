@@ -4,6 +4,8 @@
 class Shape
 {
 public:
+  virtual ~Shape() = default;
+
   virtual bool CollidesWith(const Shape& shape) = 0;
   virtual bool IsPointInside(const Point2f& point) = 0;
 

@@ -28,7 +28,10 @@ void EditorScreen::Initialize()
   m_LevelPtr = new Level(m_LevelName);
   m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
   m_LevelPtr->Load();
-  m_CameraPtr->SetPosition(m_LevelPtr->GetPlayerSpawn());
+
+  if (m_CameraPtr->GetPosition() == Point2f{ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f }) {
+    m_CameraPtr->SetPosition(m_LevelPtr->GetPlayerSpawn());
+  }
 }
 
 EditorScreen::~EditorScreen()

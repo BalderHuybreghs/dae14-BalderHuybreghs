@@ -10,7 +10,12 @@ class Limb
 public:
   Limb(const Point2f& anchor, const Point2f& goal, int joints, float length);
   Limb(const Point2f& anchor, int joints, float length);
-  ~Limb();
+
+  // Application of ro3, how cumbersome to implement for all my classes this late into the game
+  // I wish they explained this to us sooner :/
+  Limb(const Limb& other);
+  Limb& operator=(const Limb& other);
+  virtual ~Limb();
 
   // Draw should only be used in a debug context
   void     Draw();

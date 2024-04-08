@@ -8,6 +8,9 @@ class PlayingScreen : public GameScreen
 {
 public:
   PlayingScreen(const std::string& levelName);
+
+  PlayingScreen(const PlayingScreen& other) = delete;
+  PlayingScreen& operator=(const PlayingScreen& other) = delete;
   ~PlayingScreen();
 
   void Initialize() override;

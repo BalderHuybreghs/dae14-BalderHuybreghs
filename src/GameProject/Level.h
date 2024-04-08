@@ -4,13 +4,18 @@
 #include "Player.h"
 #include "Tilemap.h"
 #include "ObjectBlueprint.h"
+#include "ParticleEmitter.h"
 
 class Level
 {
 public:
   // Level with name loads a level
   Level(const std::string& name);
-  ~Level();
+
+  // Rule of 3 applied, why would we need the ability to copy a level? (I'm too lazy to implement these)
+  Level(const Level& other) = delete;
+  Level& operator=(const Level& other) = delete;
+  virtual ~Level();
 
   // Builds the level and all of its objects from the blueprint
   void Build();
@@ -44,4 +49,9 @@ private:
 
   std::vector<std::vector<Point2f>> m_CollisionPolygons; // Holds the collision polygons generated from the tilemap
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
+
+  // Since there are 3 layers of particles being emitted
+  ParticleEmitter* m_ParticleEmitterBack;
+  ParticleEmitter* m_ParticleEmitterMid;
+  ParticleEmitter* m_ParticleEmitterFront;
 };

@@ -5,10 +5,15 @@
 class GameScreen; // Forward declaration
 
 // Manages the current screen, can have nested screens to save resources across screens
-class ScreenManager
+class ScreenManager final
 {
 public:
   ScreenManager();
+
+  // Prevent making copies of this class, application of rule of 3
+  // I can't imagine a scenario where you would need to copy a screen manager
+  ScreenManager(const ScreenManager& other) = delete;
+  ScreenManager& operator=(const ScreenManager& other) = delete;
   ~ScreenManager();
 
   void        SetScreen(GameScreen* newScreenPtr);
@@ -27,6 +32,10 @@ private:
 class GameScreen
 {
 public:
+  // Again, no copying of the GameScreen class
+  GameScreen(const GameScreen& other) = delete;
+  GameScreen& operator=(const GameScreen& other) = delete;
+
   void SetScreenManager(ScreenManager* screenManagerPtr);
 
   // Gets called when the screen resources should be initialized

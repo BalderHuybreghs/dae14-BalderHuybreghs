@@ -7,6 +7,7 @@ class Joint
 {
 public:
   Joint(const Point2f& anchor, float length);
+  virtual ~Joint() = default;
 
   // Joins will only be drawn in a debug scenario
   void    Draw() const;

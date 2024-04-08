@@ -2,10 +2,13 @@
 #include "ScreenManager.h"
 #include "Sprite.h"
 
-class LoadingScreen : public GameScreen
+class LoadingScreen final : public GameScreen
 {
 public:
   LoadingScreen(GameScreen* nextScreenPtr, float loadingTime);
+
+  LoadingScreen(const LoadingScreen& other) = delete;
+  LoadingScreen& operator=(const LoadingScreen& other) = delete;
   ~LoadingScreen();
 
   void Initialize() override;

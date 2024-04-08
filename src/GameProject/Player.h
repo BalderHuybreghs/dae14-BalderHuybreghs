@@ -5,7 +5,7 @@
 #include "Tilemap.h"
 #include "Hair.h"
 
-class Player
+class Player final
 {
 public:
   enum class State
@@ -23,6 +23,11 @@ public:
   };
 
   Player(const Point2f& position);
+
+  // Look, I know that I am deleting a lot of copy operators / constructors, but I barely use these anyway and I lack the
+  // time to actually implement something which I currently do not use. I'll implement them when I actually need them
+  Player(const Player& other) = delete;
+  Player& operator=(const Player& other) = delete;
   ~Player();
 
   void Draw(bool debug = false) const;

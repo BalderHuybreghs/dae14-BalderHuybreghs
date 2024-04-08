@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Vector2f.h"
+#include "ParticleEmitter.h"
 
 static const std::string PROJECT_NAME{ "GameProject - Huybreghs, balder - 1DAE14" };
 
@@ -140,3 +141,27 @@ static const float STAMINA_FLASH_RED{ 20.f };
 static const float HOLDING_STAMINA_COST{ 10.f };
 static const float CLIMBING_STAMINA_COST{ 45.45f };
 static const float CLIMB_JUMP_STAMINA_COST{ 27.5f };
+
+// Particle information
+static const float SCREEN_EMISSION_ZONE_WIDTH{ 100.f };
+static const float SCREEN_EMISSION_ZONE_HEIGHT{ WINDOW_HEIGHT };
+
+static const float SNOW_PARTICLE_SIZE{ 100.f };
+
+static const Color4f SNOW_PARTICLE_COLOR1{ 1.f, 1.f, 1.f, 1.f };
+static const Color4f SNOW_PARTICLE_COLOR2{ 0.f, 0.f, 0.2f, 1.f };
+static const Color4f SNOW_PARTICLE_COLOR3{ 0.5f, 0.5f, 0.5f, 1.f };
+
+static const EmitterSpawnInfo SNOW_PARTICLE_INFO{
+    500.f,     // The minimum force on a particle
+    1000.f,    // The maximum force on a particle
+    1.570796f, // The minimum rotation in radians
+    4.712389f, // The maximum rotation in radians
+    10.f,      // The minimum lifetime for a particle in seconds
+    10.f,      // The maximum lifetime for a particle in seconds
+    10,        // The minimum amount of particles to spawn in a run
+    20,        // The maximum amount of particles to spawn in a run
+    1000,      // The maximum amount of particles allowed at a time
+    0.1f,      // The minimum spawning delay in seconds
+    0.5f       // The maximum spawning delay in seconds
+};

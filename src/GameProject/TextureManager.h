@@ -6,9 +6,15 @@
 // The texture manager will manage all textures in a memory efficient way.
 // The idea is that there will be a single instance of this class in the entire program
 // making use of the singleton pattern. 
-class TextureManager
+class TextureManager final
 {
 public:
+  // Default constructor
+  TextureManager() = default;
+
+  // Prevent making copies of this class, application of rule of 3
+  TextureManager(const TextureManager& other) = delete;
+  TextureManager& operator=(const TextureManager& other) = delete;
   ~TextureManager();
 
   // CleanTexture cleans a texture if it isn't being used by anything else

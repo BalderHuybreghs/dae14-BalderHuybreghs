@@ -9,7 +9,7 @@
 class GameObject  
 {
 public:
-  virtual ~GameObject() {};
+  virtual ~GameObject() = default;
 
   // Objects should have the ability to be drawn at any given position regadless of their own
   virtual void Draw(Point2f position, bool debug = false) const = 0;
@@ -26,7 +26,7 @@ public:
   virtual GameObject* Clone() const = 0;
  
   void SetPosition(const Point2f& position);
-  Point2f GetPosition();
+  Point2f GetPosition() const;
 protected:
   GameObject(Point2f position) {};
 

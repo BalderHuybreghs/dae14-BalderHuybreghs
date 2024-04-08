@@ -4,11 +4,15 @@
 #include "Vector2f.h"
 #include "Sprite.h"
 
-class Hair
+class Hair final // Why on earth would we need polymorphism on this simple hair class? x.x
 {
 public:
   // Parts determine how many hair parts there are
   Hair(const Point2f& position, int parts, float startingSize);
+
+  // No copying required (totally not being lazy)
+  Hair(const Hair& other) = delete;
+  Hair& operator=(const Hair& other) = delete;
   ~Hair();
 
   void Draw(bool debug = false) const;

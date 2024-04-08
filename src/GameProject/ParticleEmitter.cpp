@@ -5,10 +5,15 @@
 
 using namespace MathUtils;
 
-ParticleEmitter::ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape>& spawnShapes)
+ParticleEmitter::ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, std::vector<Shape*> spawnShapes)
   : m_EmissionZone(emissionZone), m_SpawnShapes(spawnShapes), m_SpawnInfo(spawnInfo)
 {
   m_Delay = RandFloat(m_SpawnInfo.minDelay, m_SpawnInfo.maxDelay, 2);
+
+  if (m_SpawnShapes.empty()) {
+    std::cout << "Particle Emitter spawn shapes vector is empty, cannot proceed with program" << std::endl;
+    SDL_Quit();
+  }
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -94,11 +99,11 @@ void ParticleEmitter::UpdateParticles(float elapsedSec)
 
 Particle* ParticleEmitter::CreateParticle()
 {
-  Shape* shape{ m_SpawnShapes.at( RandInt(0, m_SpawnShapes.size()) ).Copy()};
+  Shape* shape{ m_SpawnShapes.at( RandInt(0, m_SpawnShapes.size() -1) )->Copy() };
   const float lifeTime{ RandFloat(m_SpawnInfo.minLifetime, m_SpawnInfo.maxLifetime, 2)};
   const Point2f position{ m_EmissionZone->GetRandomPoint() };
 
-  const float rotation{ RandFloat(m_SpawnInfo.minRotation, m_SpawnInfo.maxRotation, 5) }; // More decimals for rotation
+  const float rotation{ RandFloat(m_SpawnInfo.minRotation, m_SpawnInfo.maxRotation, 10) }; // More decimals for rotation
   const float magnitude{ RandFloat(m_SpawnInfo.minForce, m_SpawnInfo.maxForce, 2) };
 
   const Vector2f velocity{

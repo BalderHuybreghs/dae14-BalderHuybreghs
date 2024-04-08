@@ -7,9 +7,15 @@
 // This is useful when working with blueprints to create maps
 // from predefined objects. While not the most memory efficient solution
 // it gets the job done good enough for now
-class ObjectManager
+class ObjectManager final
 {
 public:
+  // Default constructor
+  ObjectManager() = default;
+
+  // Singleton pattern, ObjectManager does not need the ability to be copied
+  ObjectManager(const ObjectManager& other) = delete;
+  ObjectManager& operator=(const ObjectManager& other) = delete;
   ~ObjectManager();
 
   // Gets the object with a given ID

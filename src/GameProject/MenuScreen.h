@@ -5,6 +5,9 @@ class MenuScreen : public GameScreen
 {
 public:
   MenuScreen();
+
+  MenuScreen(const MenuScreen& other) = delete;
+  MenuScreen& operator=(const MenuScreen& other) = delete;
   ~MenuScreen();
 
   void Initialize() override;

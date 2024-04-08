@@ -24,8 +24,12 @@ class ParticleEmitter
 {
 public:
   // Any pointer given with this class will be cleaned automatically when this class is destroyed
-  ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape>& spawnShapes);
-  ~ParticleEmitter();
+  ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape*> spawnShapes);
+
+  // Disable copying of a particle emitter
+  ParticleEmitter(const ParticleEmitter& other) = default;
+  ParticleEmitter& operator=(const ParticleEmitter& other) = default;
+  virtual ~ParticleEmitter();
 
   void Draw(bool debug = false) const;
   void Update(float elapsedSec);
@@ -45,7 +49,7 @@ private:
   EmitterSpawnInfo m_SpawnInfo;
 
   // The particles that the particle emitter may pick to spawn
-  const std::vector<Shape>& m_SpawnShapes;
+  const std::vector<Shape*> m_SpawnShapes;
 
   // INTERNAL MANAGEMENT
   // Particles are stored in a queue to be destroyed

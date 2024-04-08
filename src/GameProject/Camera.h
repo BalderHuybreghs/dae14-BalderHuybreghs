@@ -21,6 +21,7 @@ public:
 
   Camera(const Point2f position, float zoom);
   Camera(const Point2f& position);
+  virtual ~Camera() = default;
 
   void PushMatrix();
   void PopMatrix();

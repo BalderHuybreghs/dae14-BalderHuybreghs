@@ -8,6 +8,10 @@ class Particle
 public:
   // Particle will take care of deleting shape
   Particle(const Point2f& position, const Vector2f& velocity, Shape* shape, float lifetime);
+
+  // Application of rule of 3
+  Particle(const Particle& other);
+  Particle& operator=(const Particle& other);
   ~Particle();
 
   void Draw(bool debug) const;
@@ -15,6 +19,7 @@ public:
 
   void ApplyForce(const Vector2f& velocity);
 
+  const Shape* GetShape() const;
   Point2f GetPosition() const;
   Vector2f GetVelocity() const;
   float GetLifetime() const;

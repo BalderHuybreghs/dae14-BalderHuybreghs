@@ -3,10 +3,12 @@
 #include "GameDefines.h"
 #include "ResourceUtils.h"
 #include "utils.h"
+#include "RectangleShape.h"
 
 #include <iostream>
 #include <fstream>
 #include <climits>
+#include <vector>
 
 Level::Level(const std::string& name)
   : m_Name(name), m_PlayerSpawn(Point2f())
@@ -14,17 +16,41 @@ Level::Level(const std::string& name)
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
+
+  Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{}) };
+
+  Shape* shape1{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR1, true) };
+  Shape* shape2{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR2, true) };
+  Shape* shape3{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR3, true) };
+
+  // Create the particle emitters, copy the shapes and remove them afterwards
+  // I'm not sure how to properly handle the shapes part since it's polymorphism, might ask the teachers (you who are reading my code), about it after the spring "vacation"
+  m_ParticleEmitterBack = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterMid = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterFront = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+
+  // ehhh, this is not particularly good...
+  delete emissionZoneShape;
+  delete shape1;
+  delete shape2;
+  delete shape3;
 }
 
 Level::~Level()
 {
-  // Delete all the textures
+  // Clear out the game objects
   for (const GameObject* object : m_Objects) {
     delete object;
   }
 
-  // Clear out the game objects
   m_Objects.clear();
+
+  // Delete the particle emitters
+  delete m_ParticleEmitterBack;
+  delete m_ParticleEmitterMid;
+  delete m_ParticleEmitterFront;
+
+  // Delete the tilemaps
   delete m_ForegroundTilemapPtr;
   delete m_BackgroundTilemapPtr;
 }
@@ -49,12 +75,17 @@ void Level::Build()
 
 void Level::DrawBackground(bool debug) const
 {
+  // Draw the back particle emitter
+  m_ParticleEmitterBack->Draw(debug);
+
   // Draw the background tilemap
   m_BackgroundTilemapPtr->Draw(debug);
 }
 
 void Level::DrawForeground(bool debug) const
 {
+  m_ParticleEmitterMid->Draw(debug); // Draw the middle particle emitter
+
   // Draw the objects in between the two tilemaps
   for (const GameObject* object : m_Objects) {
     object->Draw(debug);
@@ -69,6 +100,9 @@ void Level::DrawForeground(bool debug) const
 
   // Draw the foreground tilemap
   m_ForegroundTilemapPtr->Draw(debug);
+
+  // Draw the front particle emitter
+  m_ParticleEmitterFront->Draw(debug);
 
   // Draw the player spawn position on top of everything in debug mode
   if (debug) {
@@ -108,8 +142,17 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
 
   // Apply gravity to the player
   if (player.GetState() != Player::State::Climbing && player.GetState() != Player::State::Holding) {
-   (&player)->ApplyForce(GRAVITY * elapsedSec);
+    (&player)->ApplyForce(GRAVITY * elapsedSec);
   }
+
+  // Update the particle emitters, especially the location such that they follow the player
+  m_ParticleEmitterBack->SetPosition(m_ParticleEmitterBack->GetPosition() + camera.GetPosition());
+  m_ParticleEmitterMid->SetPosition(m_ParticleEmitterMid->GetPosition() + camera.GetPosition());
+  m_ParticleEmitterFront->SetPosition(m_ParticleEmitterFront->GetPosition() + camera.GetPosition());
+
+  m_ParticleEmitterBack->Update(elapsedSec);
+  m_ParticleEmitterMid->Update(elapsedSec);
+  m_ParticleEmitterFront->Update(elapsedSec);
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)

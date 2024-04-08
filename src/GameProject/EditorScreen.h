@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "Shape.h"
 
-class EditorScreen : public GameScreen
+class EditorScreen final : public GameScreen
 {
 public:
   // Level editing has several modes
@@ -27,6 +27,8 @@ public:
 
   void Initialize() override;
 
+  EditorScreen(const EditorScreen& other) = delete;
+  EditorScreen& operator=(const EditorScreen& other) = delete;
   ~EditorScreen();
 
   // General game functions

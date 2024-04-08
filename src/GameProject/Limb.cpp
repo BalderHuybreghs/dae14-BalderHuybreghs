@@ -25,6 +25,42 @@ Limb::Limb(const Point2f& anchor, int joints, float length)
 {
 }
 
+Limb::Limb(const Limb& other)
+{
+  m_Anchor = other.GetAnchor();
+
+  // Copy the joints over
+  const std::vector<Joint*>* joints{ other.Joints() };
+  
+  for (const Joint* joint : *joints) {
+    m_Joints.push_back(new Joint(*joint));
+  }
+}
+
+Limb& Limb::operator=(const Limb& other)
+{
+  if (this == &other)
+    return *this;
+
+  // Copy anchor
+  m_Anchor = other.GetAnchor();
+
+  // Delete existing joints
+  for (Joint* joint : m_Joints)
+  {
+    delete joint;
+  }
+  m_Joints.clear();
+
+  // Copy new joints
+  const std::vector<Joint*>* otherJoints = other.Joints();
+  for (const Joint* joint : *otherJoints) {
+    m_Joints.push_back(new Joint(*joint));
+  }
+
+  return *this;
+}
+
 Limb::~Limb()
 {
   for (Joint* joint : m_Joints)
@@ -81,7 +117,7 @@ float Limb::Follow(const Point2f& goal)
   for (int jointIndex = lastIndex -1; jointIndex >= 0; jointIndex--)
   {
     Joint* joint{ m_Joints.at(jointIndex) };
-    Joint* next{ m_Joints.at(jointIndex + 1) };
+    Joint* next{ m_Joints.at(size_t(jointIndex + 1)) };
 
     joint->SetPosition(next->GetEnd());
     joint->Calculate();
