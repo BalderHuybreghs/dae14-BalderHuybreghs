@@ -24,7 +24,7 @@ Hair::~Hair()
   delete m_Bangs;
 }
 
-void Hair::Draw(bool debug) const
+void Hair::Draw(bool flipped, bool debug) const
 {
   const int joints{ (int)m_HairLimb->Joints()->size()}; // Used to calculate the size of each hair piece
   
@@ -50,7 +50,7 @@ void Hair::Draw(bool debug) const
     m_Size
   };
 
-  m_Bangs->Draw(dstRectBangs);
+  m_Bangs->Draw(dstRectBangs, flipped);
 
   // Debug symbols should be drawn before the actual hair is drawn (obviously :) )
   if (debug) {

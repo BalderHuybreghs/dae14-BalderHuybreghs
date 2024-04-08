@@ -27,14 +27,14 @@ Player::Player(const Point2f& position)
   m_Sprite->AddResource(PLAYER_JUMP_RESOURCE);
   m_Sprite->AddResource(PLAYER_PUSH_RESOURCE);
 
-  m_Hair = new Hair(m_Position, 3, 50.f);
+  m_Hair = new Hair(m_Position, 3, HAIR_SCALE);
 
   const Color4f colliderColor{ 0.f, 5.f, 0.f, 0.5f };
   const Color4f colliderSideColor{ 0.f, 0.f, .5f, 0.5f };
 
-  m_Collider = new RectangleShape(Point2f{ 50.f, 70.f }, m_Position, colliderColor, true);
-  m_ColliderLeft = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x - 5.f, m_Position.y }, colliderSideColor, true);
-  m_ColliderRight = new RectangleShape(Point2f{ 10.f, 50.f }, Point2f{ m_Position.x + 5.f, m_Position.y }, colliderSideColor, true);
+  m_Collider = new RectangleShape(Point2f{ PLAYER_BODY_WIDTH, PLAYER_BODY_HEIGHT }, m_Position, colliderColor, true);
+  m_ColliderLeft = new RectangleShape(Point2f{ PIXEL_SCALE, PLAYER_BODY_HEIGHT }, Point2f{ m_Position.x - 5.f, m_Position.y }, colliderSideColor, true);
+  m_ColliderRight = new RectangleShape(Point2f{ PIXEL_SCALE, PLAYER_BODY_HEIGHT }, Point2f{ m_Position.x + 5.f, m_Position.y }, colliderSideColor, true);
 }
 
 Player::~Player()
@@ -52,9 +52,10 @@ void Player::Draw(bool debug) const
 {
   // Draw the hair behind the player
   const float half{ PLAYER_SCALE / 2.f };
-  m_Hair->Draw(debug);
+  const bool flipped{ m_Direction.x < 0.f };
 
-  m_Sprite->Draw(m_Position, PLAYER_SCALE, m_Direction.x < 0.f, debug);
+  m_Hair->Draw(flipped, debug);
+  m_Sprite->Draw(m_Position, PLAYER_SCALE, flipped, debug);
 
   if (debug) {
     m_Collider->Draw();
@@ -67,7 +68,7 @@ void Player::Draw(bool debug) const
 
     // Draw the direction vector
     SetColor(Color4f{ 1.f, 0.f, 0.f, 1.f });
-    DrawLine(m_Position + half, m_Position + half + Vector2f(m_Direction * 100.f).ToPoint2f());
+    DrawLine(m_Position + half, m_Position + half + Vector2f(m_Direction * 10.f).ToPoint2f());
   }
 }
 
@@ -99,8 +100,9 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   // Multiple iteration collision handling
   HandleCollision(elapsedSec, tilemap);
 
+  const float half{ PLAYER_SCALE / 2.f };
   if (m_IsGrounded) {
-    const Point2f newPos = MathUtils::Lerp(m_Hair->GetPosition(), Point2f{ m_Position.x, m_Position.y }, 0.05f);
+    const Point2f newPos = MathUtils::Lerp(m_Hair->GetPosition(), Point2f{ m_Position.x + half, m_Position.y }, 0.05f);
     m_Hair->SetEnd(newPos); // Slowly move the hair toward the desired position
   }
 
@@ -220,7 +222,7 @@ void Player::SetPosition(const Point2f& position)
     m_Position.y + (colliderSize.height - m_ColliderRight->GetBoundingBox().height) / 2.f
   });
 
-  m_Hair->SetGoal(Point2f{ m_Position.x + half, m_Position.y + half});
+  m_Hair->SetGoal(Point2f{ m_Position.x + PLAYER_HAIR_START, m_Position.y + PLAYER_HEIGHT});
 }
 
 void Player::SetVelocity(const Vector2f& velocity)

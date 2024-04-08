@@ -15,7 +15,7 @@ public:
   Hair& operator=(const Hair& other) = delete;
   ~Hair();
 
-  void Draw(bool debug = false) const;
+  void Draw(bool flipped = false, bool debug = false) const;
   void Update(float elapsedSec); // The update function applies the velocity in an appropriate way (at least it is intended to be this way)
 
   Point2f GetPosition() const;

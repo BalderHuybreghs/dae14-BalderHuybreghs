@@ -55,9 +55,12 @@ static const std::string LOGO_RESOURCE{ GUI_FOLDER + FS + "logo" };
 
 static const std::string LEVEL1_NAME{ "forsaken_city" };
 
-// Screen info
+// Screen info, Celestes aspect ratio would be 16:9
 static const float WINDOW_WIDTH{ 1280.f };
-static const float WINDOW_HEIGHT{ 800.f };
+static const float WINDOW_HEIGHT{ 720.f };
+
+// The scale of pixels on the screen, source https://aran.ink/posts/celeste-tilesets for more information on aspect ratio and size etc
+static const float PIXEL_SCALE{ WINDOW_WIDTH / 320.f }; 
 
 // Editor related settings
 static const float MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL{ WINDOW_WIDTH * 0.2f };
@@ -68,7 +71,6 @@ static const float CAMERA_DRAG_SPEED{ 1000 };
 // Tilemap information
 // How big a single tile is
 static const int TILE_SIZE{ 8 };
-static const float TILEMAP_SCALE{ 7.f }; // The tilemap scale in pixels per tile
 
 // How many side tiles per row
 static const int TILE_SIDE_SIZE{ 4 };
@@ -123,6 +125,7 @@ static const std::string FOREGROUND_TILES[]{
 
 // Animation information
 static const int PLAYER_FRAME_SIZE{ 32 };
+static const int HAIR_FRAME_SIZE{ 10 };
 static const int BANGS_FRAME_SIZE{ 10 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
 
@@ -134,7 +137,13 @@ static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player
 static const float PLAYER_JUMP_POTENTIAL{ 500.f }; // The maximu  m potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 100.f }; // The jump force applied to the player until it reaches max potential
 static const float PLAYER_DASH_FORCE{ 1500.f }; // The force behind a player dash
-static const float PLAYER_SCALE{ 200.f };
+static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
+static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
+static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };
+static const float PLAYER_LOW{ 10 * PIXEL_SCALE };
+static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
+static const float PLAYER_BODY_WIDTH{ 8 * PIXEL_SCALE };
+static const float PLAYER_BODY_HEIGHT{ 12 * PIXEL_SCALE };
 
 // The following stamine values are based on https://celeste.ink/wiki/Stamina, they're not numbers I pulled out my thumb
 static const float PLAYER_BASE_STAMINA{ 110.f };
@@ -147,7 +156,7 @@ static const float CLIMB_JUMP_STAMINA_COST{ 27.5f };
 static const float SCREEN_EMISSION_ZONE_WIDTH{ 100.f };
 static const float SCREEN_EMISSION_ZONE_HEIGHT{ WINDOW_HEIGHT };
 
-static const float SNOW_PARTICLE_SIZE{ TILEMAP_SCALE };
+static const float SNOW_PARTICLE_SIZE{ PIXEL_SCALE };
 
 static const Color4f SNOW_PARTICLE_COLOR1{ 1.f, 1.f, 1.f, 1.f };
 static const Color4f SNOW_PARTICLE_COLOR2{ 0.f, 0.f, 0.2f, 1.f };
@@ -160,9 +169,9 @@ static const EmitterSpawnInfo SNOW_PARTICLE_INFO{
     5.f, // The maximum rotation in radians
     10.f,     // The minimum lifetime for a particle in seconds
     10.f,     // The maximum lifetime for a particle in seconds
-    1,        // The minimum amount of particles to spawn in a run
-    2,        // The maximum amount of particles to spawn in a run
-    100,      // The maximum amount of particles allowed at a time
+    5,        // The minimum amount of particles to spawn in a run
+    10,        // The maximum amount of particles to spawn in a run
+    500,      // The maximum amount of particles allowed at a time
     .1f,      // The minimum spawning delay in seconds
     .5f       // The maximum spawning delay in seconds
 };

@@ -14,8 +14,8 @@ Level::Level(const std::string& name)
   : m_Name(name), m_PlayerSpawn(Point2f())
 {
   // Load both the foreground and background tilemaps
-  m_BackgroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
-  m_ForegroundTilemapPtr = new Tilemap(Point2f{TILEMAP_SCALE, TILEMAP_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
+  m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
+  m_ForegroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
 
   Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{ WINDOW_WIDTH, 0.f }) };
 
