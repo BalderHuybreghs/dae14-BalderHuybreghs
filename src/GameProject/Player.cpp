@@ -55,7 +55,7 @@ void Player::Draw(bool debug) const
   const bool flipped{ m_Direction.x < 0.f };
 
   m_Hair->Draw(flipped, debug);
-  m_Sprite->Draw(m_Position, PLAYER_SCALE, flipped, debug);
+  m_Sprite->Draw(m_Position, PIXEL_SCALE, flipped, debug);
 
   if (debug) {
     m_Collider->Draw();
@@ -161,7 +161,7 @@ void Player::RefillDashes(int amount)
 void Player::Jump()
 {
   if (m_IsGrounded || m_State == State::Holding || m_State == State::Sliding) {
-    m_Velocity.y = 1000;
+    m_Velocity.y = PLAYER_JUMP_FORCE;
   }
 }
 

@@ -53,8 +53,8 @@ void Sprite::Draw(const Point2f& position, float scale, bool flipped, bool debug
   const Rectf dstRect{
     position.x,
     position.y,
-    scale,
-    scale
+    m_FrameSize.x * scale,
+    m_FrameSize.y * scale
   };
 
   Draw(dstRect, flipped, debug);

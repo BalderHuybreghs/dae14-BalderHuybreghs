@@ -62,6 +62,9 @@ static const float WINDOW_HEIGHT{ 720.f };
 // The scale of pixels on the screen, source https://aran.ink/posts/celeste-tilesets for more information on aspect ratio and size etc
 static const float PIXEL_SCALE{ WINDOW_WIDTH / 320.f }; 
 
+static const float LOGO_WIDTH{ 1920.f };
+static const float LOGO_HEIGHT{ 1080.f };
+
 // Editor related settings
 static const float MOUSE_DRAG_BORDER_MARGIN_HORIZONTAL{ WINDOW_WIDTH * 0.2f };
 static const float MOUSE_DRAG_BORDER_MARGIN_VERTICAL{ WINDOW_HEIGHT * 0.2f };
@@ -134,9 +137,9 @@ static const Vector2f GRAVITY{0.f, -2000.f};
 static const Vector2f TERMINAL_VELOCITY{ 0.f, 0.f }; // TODO: Determine terminal velocity
 static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }; // The absolute background color is always the same single color in Celeste
 static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
-static const float PLAYER_JUMP_POTENTIAL{ 500.f }; // The maximu  m potential jump force the player may reach
-static const float PLAYER_JUMP_FORCE{ 100.f }; // The jump force applied to the player until it reaches max potential
-static const float PLAYER_DASH_FORCE{ 1500.f }; // The force behind a player dash
+static const float PLAYER_JUMP_POTENTIAL{ 50.f }; // The maximum potential jump force the player may reach
+static const float PLAYER_JUMP_FORCE{ 500.f }; // The jump force applied to the player until it reaches max potential
+static const float PLAYER_DASH_FORCE{ 500.f }; // The force behind a player dash
 static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
 static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
 static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };

@@ -1,6 +1,7 @@
 #pragma once
 #include "ScreenManager.h"
 #include "Sprite.h"
+#include "ParticleEmitter.h"
 
 class LoadingScreen final : public GameScreen
 {
@@ -20,6 +21,9 @@ private:
   GameScreen* m_NextScreenPtr;
   Sprite* m_LogoPtr;
   Sprite* m_LoadingPtr;
+
+  // A particle emitter for snow particles
+  ParticleEmitter* m_ParticleEmitterPtr;
 
   float m_TimeLeft;
 };

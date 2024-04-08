@@ -15,28 +15,25 @@ LoadingScreen::~LoadingScreen()
 
 void LoadingScreen::Initialize()
 {
-  m_LogoPtr = new Sprite(Point2f{ 1920.f, 1080.f }, 0, LOGO_RESOURCE);
+  m_LogoPtr = new Sprite(Point2f{ LOGO_WIDTH, LOGO_HEIGHT }, 0, LOGO_RESOURCE);
   m_LoadingPtr = new Sprite(Point2f{ 200.f, 200.f }, FRAMES_PER_SECOND, LOADING_RESOURCE);
 }
 
 void LoadingScreen::Draw()
 {
-  const Rectf logoRect{
-    WINDOW_WIDTH / 2.f - 1920.f / 4,
-    WINDOW_HEIGHT / 2.f - 1080.f / 4,
-    1920.f / 2,
-    1080.f / 2
+  const float scale{ WINDOW_HEIGHT / WINDOW_WIDTH };
+  const Point2f logoPos{
+    WINDOW_WIDTH  / 2.f - LOGO_WIDTH  * scale / 2.f,
+    WINDOW_HEIGHT / 2.f - LOGO_HEIGHT * scale / 2.f
   };
 
-  const Rectf loadingRect{
+  const Point2f loadingPos{
     WINDOW_WIDTH - 120.f,
-    20.f,
-    100.f,
-    100.f
+    20.f
   };
 
-  m_LogoPtr->Draw(logoRect);
-  m_LoadingPtr->Draw(loadingRect);
+  m_LogoPtr->Draw(logoPos, scale);
+  m_LoadingPtr->Draw(loadingPos, scale);
 }
 
 void LoadingScreen::Update(float elapsedSec)
