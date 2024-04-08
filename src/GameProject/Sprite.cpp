@@ -11,7 +11,7 @@ using namespace utils;
 Sprite::Sprite(const Point2f& position, const Point2f& size, const Point2f& frameSize, float msPerFrame, const std::string& resource)
   : m_Position(position), m_Size(size), m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({0, nullptr, 0}), m_Mirror(false)
 {
-  SetState(AddResource(resource) - 1, true);
+  SetState((int)AddResource(resource) - 1, true);
 }
 
 void Sprite::Draw(bool debug) const
@@ -46,7 +46,7 @@ void Sprite::Draw(bool debug) const
 
   // Apply mirroring transformation
   glTranslatef(m_Position.x + m_Size.x / 2, m_Position.y + m_Size.y / 2, 0.f);
-  glScalef(m_Mirror ? -1 : 1, 1, 1);
+  glScalef(m_Mirror ? -1.f : 1.f, 1.f, 1.f);
   glTranslatef(-m_Position.x - m_Size.x / 2, -m_Position.y - m_Size.y / 2, 0.f);
 
   // Draw the sprite

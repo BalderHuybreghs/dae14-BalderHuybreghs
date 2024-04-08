@@ -147,7 +147,7 @@ void Tilemap::LoadRawTileData(const std::vector<int>& rawTileData)
 
 int Tilemap::GetTileCount() const
 {
-  return m_TileTexturePtrs.size();
+  return (int)m_TileTexturePtrs.size();
 }
 
 int Tilemap::GetTileSize() const

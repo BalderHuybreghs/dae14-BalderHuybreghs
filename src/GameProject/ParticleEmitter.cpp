@@ -99,7 +99,7 @@ void ParticleEmitter::UpdateParticles(float elapsedSec)
 
 Particle* ParticleEmitter::CreateParticle()
 {
-  Shape* shape{ m_SpawnShapes.at( RandInt(0, m_SpawnShapes.size() -1) )->Copy() };
+  Shape* shape{ m_SpawnShapes.at( (size_t)RandInt(0, (int)m_SpawnShapes.size() -1) )->Copy() };
   const float lifeTime{ RandFloat(m_SpawnInfo.minLifetime, m_SpawnInfo.maxLifetime, 2)};
   const Point2f position{ m_EmissionZone->GetRandomPoint() };
 
@@ -118,7 +118,7 @@ void ParticleEmitter::SpawnBatch()
 {
   // Create a batchsize of particles to spawn
   const int batchSize{ RandInt(m_SpawnInfo.minBatchSize, m_SpawnInfo.maxBatchSize) };
-  const int currentSize = m_Particles.size();
+  const int currentSize = (int)m_Particles.size();
   const int maxSize = m_SpawnInfo.maxParticles;
 
   // Cleanup particles if we are over the limit
