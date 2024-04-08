@@ -13,6 +13,9 @@
 Level::Level(const std::string& name)
   : m_Name(name), m_PlayerSpawn(Point2f())
 {
+  m_MusicStream = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
+  m_MusicStream->SetVolume(10);
+
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
@@ -38,6 +41,9 @@ Level::Level(const std::string& name)
 
 Level::~Level()
 {
+  // Stop the music from playing
+  m_MusicStream->Stop();
+
   // Clear out the game objects
   for (const GameObject* object : m_Objects) {
     delete object;
@@ -53,6 +59,8 @@ Level::~Level()
   // Delete the tilemaps
   delete m_ForegroundTilemapPtr;
   delete m_BackgroundTilemapPtr;
+
+  delete m_MusicStream;
 }
 
 void Level::Build()
@@ -70,6 +78,11 @@ void Level::Build()
 
   for (const ObjectBlueprint objectBlueprint : m_ObjectBlueprints) {
     objectBlueprint.Construct();
+  }
+
+  // Queue the music :-)
+  if (m_MusicStream->IsLoaded()) {
+    m_MusicStream->Play(true);
   }
 }
 

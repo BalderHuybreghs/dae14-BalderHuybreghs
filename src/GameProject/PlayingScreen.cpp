@@ -31,7 +31,7 @@ void PlayingScreen::Initialize()
   m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn());
 
   const Point2f playerPos{ m_PlayerPtr->GetCenter() };
-  m_CameraPtr = new Camera(playerPos);
+  m_CameraPtr = new Camera(START_CAMERA_POSITION);
   m_TilemapPtr = m_LevelPtr->GetFrontTilemap();
 
   // Build the level at the end of creation
@@ -91,7 +91,7 @@ void PlayingScreen::Update(float elapsedSec)
     playerPos.y - WINDOW_HEIGHT / 2.f
   };
 
-  m_CameraPtr->SetPosition(center);
+  // m_CameraPtr->SetPosition(center);
 }
 
 

@@ -148,6 +148,12 @@ static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
 static const float PLAYER_BODY_WIDTH{ 8 * PIXEL_SCALE };
 static const float PLAYER_BODY_HEIGHT{ 12 * PIXEL_SCALE };
 
+// I just moved the camera in edit mode, printing out the position values until I was satisfied
+static const Point2f START_CAMERA_POSITION{
+  2515.f,
+  1221.f
+};
+
 // The following stamine values are based on https://celeste.ink/wiki/Stamina, they're not numbers I pulled out my thumb
 static const float PLAYER_BASE_STAMINA{ 110.f };
 static const float STAMINA_FLASH_RED{ 20.f };

@@ -5,6 +5,7 @@
 #include "Tilemap.h"
 #include "ObjectBlueprint.h"
 #include "ParticleEmitter.h"
+#include "SoundStream.h"
 
 class Level
 {
@@ -54,4 +55,6 @@ private:
   ParticleEmitter* m_ParticleEmitterBack;
   ParticleEmitter* m_ParticleEmitterMid;
   ParticleEmitter* m_ParticleEmitterFront;
+
+  SoundStream* m_MusicStream;
 };
