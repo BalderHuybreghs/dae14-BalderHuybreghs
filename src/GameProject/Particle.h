@@ -24,9 +24,8 @@ public:
   Vector2f GetVelocity() const;
   float GetLifetime() const;
 private:
-  // Position and velocity information
+  // Particle information
   Vector2f m_Velocity;
-
   Shape* m_Shape;
 
   float m_Lifetime;

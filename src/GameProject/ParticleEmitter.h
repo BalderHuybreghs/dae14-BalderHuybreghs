@@ -52,7 +52,6 @@ private:
   const std::vector<Shape*> m_SpawnShapes;
 
   // INTERNAL MANAGEMENT
-  // Particles are stored in a queue to be destroyed
   std::vector<Particle*> m_Particles;
 
   float m_Delay; // The delay until the next batch

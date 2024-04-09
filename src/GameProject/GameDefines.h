@@ -139,13 +139,13 @@ static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }
 static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
 static const float PLAYER_JUMP_POTENTIAL{ 50.f }; // The maximum potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 500.f }; // The jump force applied to the player until it reaches max potential
-static const float PLAYER_DASH_FORCE{ 500.f }; // The force behind a player dash
+static const float PLAYER_DASH_FORCE{ 550.f }; // The force behind a player dash
 static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
 static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
 static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };
 static const float PLAYER_LOW{ 10 * PIXEL_SCALE };
 static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
-static const float PLAYER_BODY_WIDTH{ 8 * PIXEL_SCALE };
+static const float PLAYER_BODY_WIDTH{ 7 * PIXEL_SCALE };
 static const float PLAYER_BODY_HEIGHT{ 12 * PIXEL_SCALE };
 
 // I just moved the camera in edit mode, printing out the position values until I was satisfied
