@@ -12,7 +12,7 @@ ParticleEmitter::ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& sp
 
   if (m_SpawnShapes.empty()) {
     std::cout << "Particle Emitter spawn shapes vector is empty, cannot proceed with program" << std::endl;
-    SDL_Quit();
+    exit(-1);
   }
 }
 

@@ -15,5 +15,9 @@ namespace AlgoUtils
       return hash1 ^ hash2; // Combine the hash values
     }
   };
+
+  // Compression of a binary vec
+  std::vector<char> Compress(const std::vector<char>& input);
+  std::vector<char> Decompress(const std::vector<char>& input);
 };
 

@@ -148,6 +148,9 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Core\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="BinaryStream.cpp">
+      <Filter>Source Files\Core\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -245,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Source Files\Core\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryStream.h">
+      <Filter>Source Files\Core\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

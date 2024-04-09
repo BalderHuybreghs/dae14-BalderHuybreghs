@@ -51,6 +51,10 @@ private:
   std::vector<std::vector<Point2f>> m_CollisionPolygons; // Holds the collision polygons generated from the tilemap
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 
+  // A list of valid camera positions, when the player enters the viewport range
+  // of a camera position, then the camera will lerp over there
+  std::vector<Point2f> m_CameraPositions;
+
   // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBack;
   ParticleEmitter* m_ParticleEmitterMid;

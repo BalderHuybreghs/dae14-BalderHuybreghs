@@ -4,6 +4,7 @@
 #include "ResourceUtils.h"
 #include "utils.h"
 #include "RectangleShape.h"
+#include "BinaryStream.h"
 
 #include <iostream>
 #include <fstream>
@@ -207,107 +208,32 @@ const std::vector<std::vector<Point2f>>& Level::GetCollisionPolygons() const
   return m_CollisionPolygons;
 }
 
-// Check https://cplusplus.com/doc/tutorial/files/ to see where I found how to implement these
-
-// WARNING: THIS IS A VERY DIRTY AND DANGEROUS IMPLEMENTATION, I AM HIGHLY AWARE OF THAT, HOWEVER
-// I JUST WANT A LEVEL EDITOR THAT DOES WHAT IT NEEDS TO DO AND FOR THAT WE WILL ASSUME THAT THE LEVEL
-// FILE WILL REMAIN UNTAMPERED WITH
-// Define a delimiter value
-// Function to get the raw bytes of any type and add them to a vector<char>
-template<typename T>
-void AddValueToVector(const T& value, std::vector<char>& vec)
-{
-  // Treat the value as an array of bytes
-  const char* bytes = reinterpret_cast<const char*>(&value);
-
-  // Add each byte to the vector
-  vec.insert(vec.end(), bytes, bytes + sizeof(T));
-}
-
 constexpr int TILEMAP_DELIMITER = MAXINT;
 
 void Level::Load()
 {
   std::cout << "Loading level: " << m_Name << std::endl;
 
-  std::ifstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::in | std::ios::binary);
+  BinaryStream* stream{ new BinaryStream(ResourceUtils::ResourceToLevelPath(m_Name)) };
+  stream->Load(); // Load the data
 
-  if (!file.is_open())
-  {
-    std::cout << "Unable to load level '" << m_Name << "' at " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
-    return;
-  };
+  m_PlayerSpawn = stream->ReadPoint();
+  m_BackgroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
+  m_ForegroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
+  m_ObjectBlueprints = stream->ReadBlueprintVec();
 
-  file.seekg(0, std::ios::beg);
-
-  // Read PlayerSpawn
-  file.read(reinterpret_cast<char*>(&m_PlayerSpawn), sizeof(Point2f));
-
-  std::vector<int> rawTileInfo;
-  int tileValue{};
-
-  while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
-  {
-    if (tileValue == TILEMAP_DELIMITER)
-      break;
-
-    rawTileInfo.push_back(tileValue);
-  }
-
-  // Assuming BackgroundTilemap and ForegroundTilemap are initialized correctly
-  m_BackgroundTilemapPtr->LoadRawTileData(rawTileInfo);
-
-  rawTileInfo.clear();
-
-  while (file.read(reinterpret_cast<char*>(&tileValue), sizeof(int)))
-  {
-    if (tileValue == TILEMAP_DELIMITER)
-      break;
-
-    rawTileInfo.push_back(tileValue);
-  }
-
-  m_ForegroundTilemapPtr->LoadRawTileData(rawTileInfo);
-  rawTileInfo.clear();
-
-  int objectId{};
-  Point2f position;
-  while (file.read(reinterpret_cast<char*>(&objectId), sizeof(int)) && file.read(reinterpret_cast<char*>(&position), sizeof(Point2f)))
-  {
-    m_ObjectBlueprints.push_back(ObjectBlueprint(objectId, position));
-  }
-
-  file.close();
+  delete stream;
 }
 
 void Level::Save() const
 {
   std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
 
-  std::vector<char> data;
-
-  AddValueToVector(m_PlayerSpawn, data);
-
-  for (int val : m_BackgroundTilemapPtr->ToRawTileData()) {
-    AddValueToVector(val, data);
-  }
-
-  // Write the delimiter for the background tilemap
-  AddValueToVector(TILEMAP_DELIMITER, data);
-
-  for (int val : m_ForegroundTilemapPtr->ToRawTileData()) {
-    AddValueToVector(val, data);
-  }
-
-  // Write the delimiter for the foreground tilemap
-  AddValueToVector(TILEMAP_DELIMITER, data);
-
-  for (const ObjectBlueprint& bp : m_ObjectBlueprints) {
-    AddValueToVector(bp.GetObjectId(), data);
-    AddValueToVector(bp.GetPosition(), data);
-  }
-
-  std::ofstream file(ResourceUtils::ResourceToLevelPath(m_Name), std::ios::out | std::ios::binary);
-  file.write(data.data(), data.size());
-  file.close();
+  BinaryStream* stream{ new BinaryStream(ResourceUtils::ResourceToLevelPath(m_Name)) };
+  stream->Write(m_PlayerSpawn);
+  stream->Write(m_BackgroundTilemapPtr->ToRawTileData());
+  stream->Write(m_ForegroundTilemapPtr->ToRawTileData());
+  stream->Write(m_ObjectBlueprints);
+  stream->Save();
+  delete stream;
 }
