@@ -7,16 +7,9 @@ public:
   // A goal for this camera to follow
   struct AnimationGoal
   {
-    enum class Type
-    {
-      None,
-      Linear
-    };
-
-    Point2f goal;    // The goal for the camera to reach
-    float zoomGoal;  // The zoom goal
+    Point2f position;    // The goal for the camera to reach
+    float zoom;  // The zoom goal
     float duration;  // The duration in milliseconds
-    Type type;       // Motion type, the camera may move in a certain way
   };
 
   Camera(const Point2f position, float zoom);
@@ -32,6 +25,8 @@ public:
   // The camera has the ability to follow objects in a certain pattern
   void Update(float elapsedSec);
 
+  void AddGoal(const AnimationGoal& goal);
+
   void SetPosition(const Point2f& position);
   void SetZoom(float zoom);
 
@@ -39,9 +34,15 @@ public:
   Point2f GetPosition() const;
   Point2f GetWorldPosition(const Point2f& screenPosition) const;
 private:
-  std::queue<AnimationGoal> m_AnimationGoals;
-
+  // Current camera info
   Point2f m_Position;
   float m_Zoom;
+
+  // Animation data
+  std::queue<AnimationGoal> m_AnimationGoals;
+
+  float m_AnimationSeconds;
+  float m_PreviousZoom;
+  Point2f m_PreviousPosition;
 };
 

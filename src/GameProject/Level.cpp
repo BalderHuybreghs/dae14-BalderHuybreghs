@@ -176,11 +176,41 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   m_ParticleEmitterBack->Update(elapsedSec);
   m_ParticleEmitterMid->Update(elapsedSec);
   m_ParticleEmitterFront->Update(elapsedSec);
+
+  // Check if the camera rect should be updated
+  const Rectf playerCollider{ player.GetCollisionShape()->GetShape() };
+  for (const Rectf& rect : m_CameraRects) {
+    if (IsOverlapping(playerCollider, rect))
+    {
+      // A new goal position for the camera to lerp to
+      Camera::AnimationGoal goal{
+        Point2f{ rect.left, rect.bottom },
+        1.f,
+        .5f, 
+      };
+
+      camera.AddGoal(goal);
+      break;
+    }
+  }
 }
 
 void Level::AddBlueprint(const ObjectBlueprint& blueprint)
 {
   m_ObjectBlueprints.push_back(blueprint);
+}
+
+bool Level::AddCameraRect(const Rectf& rect)
+{
+  // Check if the rect is not colliding with any other camera rects
+  for (const Rectf& other : m_CameraRects) {
+    if (IsOverlapping(rect, other)) {
+      return false;
+    }
+  }
+  
+  m_CameraRects.push_back(rect);
+  return true;
 }
 
 Tilemap* Level::GetFrontTilemap() const
@@ -218,6 +248,7 @@ void Level::Load()
   stream->Load(); // Load the data
 
   m_PlayerSpawn = stream->ReadPoint();
+  m_CameraRects = stream->ReadRectVec();
   m_BackgroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ForegroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ObjectBlueprints = stream->ReadBlueprintVec();
@@ -230,10 +261,13 @@ void Level::Save() const
   std::cout << "Saving level '" << m_Name << "' at: " << ResourceUtils::ResourceToLevelPath(m_Name) << std::endl;
 
   BinaryStream* stream{ new BinaryStream(ResourceUtils::ResourceToLevelPath(m_Name)) };
+
   stream->Write(m_PlayerSpawn);
+  stream->Write(m_CameraRects);
   stream->Write(m_BackgroundTilemapPtr->ToRawTileData());
   stream->Write(m_ForegroundTilemapPtr->ToRawTileData());
   stream->Write(m_ObjectBlueprints);
   stream->Save();
+
   delete stream;
 }

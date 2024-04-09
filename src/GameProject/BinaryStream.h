@@ -7,7 +7,7 @@
 #include <vector>
 
 // A utility class for easily writing to binary files, reads should always happen in the same order as writes et vice versa
-class BinaryStream
+class BinaryStream final
 {
 public:
   // Create a stream of the given file, if the file does not exist, will write to a new one

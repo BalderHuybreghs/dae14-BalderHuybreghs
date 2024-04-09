@@ -28,6 +28,10 @@ public:
   // Adds an object by pointer
   void AddBlueprint(const ObjectBlueprint& blueprint);
 
+  // Adds a camera position if it isn't overlapping with an existing one
+  // Returns true if the camera managed to add the rect
+  bool AddCameraRect(const Rectf& rect); 
+
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
 
@@ -51,9 +55,9 @@ private:
   std::vector<std::vector<Point2f>> m_CollisionPolygons; // Holds the collision polygons generated from the tilemap
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 
-  // A list of valid camera positions, when the player enters the viewport range
-  // of a camera position, then the camera will lerp over there
-  std::vector<Point2f> m_CameraPositions;
+  // A list of valid camera rects, when the player enters the rect
+  // the camera will lerp over to it's position
+  std::vector<Rectf> m_CameraRects;
 
   // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBack;

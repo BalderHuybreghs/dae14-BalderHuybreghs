@@ -2,9 +2,10 @@
 #include "Camera.h"
 #include "GameDefines.h"
 #include "iostream"
+#include "MathUtils.h"
 
 Camera::Camera(const Point2f position, float zoom)
-  : m_Position(position), m_Zoom(zoom)
+  : m_Position(position), m_Zoom(zoom), m_PreviousPosition(position), m_PreviousZoom(zoom), m_AnimationSeconds(0)
 {
   std::cout << "Creating camera at (" << position.x << ", " << position.y << ") with zoom factor " << zoom << std::endl;
 }
@@ -37,7 +38,29 @@ void Camera::PopMatrix()
 
 void Camera::Update(float elapsedSec)
 {
-  // TODO: Implement this
+  if (m_AnimationGoals.empty()) {
+    return;
+  }
+
+  const AnimationGoal goal{ m_AnimationGoals.front() };
+  const float delta{ m_AnimationSeconds / goal.duration };
+  if (delta >= 1.f) {
+    m_AnimationGoals.pop();
+    m_AnimationSeconds = 0;
+    m_PreviousPosition = m_Position;
+    return;
+  }
+
+  // Lerp the camera to it's goal position
+  m_Position = MathUtils::Lerp(m_PreviousPosition, goal.position, delta);
+  m_Zoom = MathUtils::Lerp(m_PreviousZoom, goal.zoom, delta);
+
+  m_AnimationSeconds += elapsedSec;
+}
+
+void Camera::AddGoal(const AnimationGoal& goal)
+{
+  m_AnimationGoals.push(goal);
 }
 
 void Camera::SetPosition(const Point2f& position)
