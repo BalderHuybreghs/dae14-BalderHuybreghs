@@ -29,6 +29,11 @@ static const std::string GUI_FOLDER{ "gui" };
 static const std::string CHARACTER_FOLDER{ GAMEPLAY_RESOURCE + FS + "character" };
 static const std::string PLAYER_FOLDER{ CHARACTER_FOLDER + FS + "player" };
 static const std::string HAIR_FOLDER{ PLAYER_FOLDER + FS + "hair" };
+static const std::string BACKGROUND_FOLDER{ GAMEPLAY_RESOURCE + FS + "background" };
+
+static const std::string BACKGROUND_SUFFIX_FRONT{ "_f" };
+static const std::string BACKGROUND_SUFFIX_MID{ "_m" };
+static const std::string BACKGROUND_SUFFIX_BACK{ "_b" };
 
 static const std::string TILEMAP_FOLDER{ "tilesets" };
 static const std::string TILEMAP_BG_PREFIX{ "bg_" };
@@ -139,7 +144,7 @@ static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }
 static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
 static const float PLAYER_JUMP_POTENTIAL{ 50.f }; // The maximum potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 550.f }; // The jump force applied to the player until it reaches max potential
-static const float PLAYER_DASH_FORCE{ 600.f }; // The force behind a player dash
+static const float PLAYER_DASH_FORCE{ 650.f }; // The force behind a player dash
 static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
 static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
 static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };

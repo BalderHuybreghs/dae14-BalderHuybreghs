@@ -7,6 +7,7 @@
 #include <vector>
 
 // A utility class for easily writing to binary files, reads should always happen in the same order as writes et vice versa
+// NOTE: this does not support sharing a file of a platform which has different primitive sizes, to another platform which has different primitive sizes
 class BinaryStream final
 {
 public:

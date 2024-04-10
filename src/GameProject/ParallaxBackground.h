@@ -7,11 +7,11 @@
 class ParallaxBackground
 {
 public:
-  ParallaxBackground(const std::vector<std::string>& resources);
+  ParallaxBackground(const std::string& resource); // Loads both a foreground AND a background texture
   
-  void Draw(bool debug = false);
-  void Update(const Camera& camera, float elapsedSec); // The background will of course require camera information
-
+  void Draw(const Camera& camera, bool debug = false) const;
 private:
-  std::vector<Texture*> m_Textures;
+  const Texture* m_BackTexture;
+  const Texture* m_MidTexture;
+  const Texture* m_FrontTexture;
 };

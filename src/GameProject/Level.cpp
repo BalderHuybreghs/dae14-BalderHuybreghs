@@ -12,7 +12,7 @@
 #include <vector>
 
 Level::Level(const std::string& name)
-  : m_Name(name), m_PlayerSpawn(Point2f())
+  : m_Name(name), m_PlayerSpawn(Point2f()), m_ParallaxBackground(nullptr)
 {
   m_MusicStream = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
   m_MusicStream->SetVolume(10);
@@ -61,12 +61,17 @@ Level::~Level()
   delete m_ForegroundTilemapPtr;
   delete m_BackgroundTilemapPtr;
 
+  delete m_ParallaxBackground;
+
   delete m_MusicStream;
 }
 
 void Level::Build()
 {
   std::cout << "Building level '" << m_Name << "'" << std::endl;
+
+  // Create background
+  m_ParallaxBackground = new ParallaxBackground(m_Name);
 
   // Destroy any possible game objects
   for (const GameObject* object : m_Objects) {
@@ -79,7 +84,7 @@ void Level::Build()
 
   // Queue the music :-)
   if (m_MusicStream->IsLoaded()) {
-    m_MusicStream->Play(true);
+    // m_MusicStream->Play(true);
   }
 }
 
@@ -87,6 +92,11 @@ void Level::DrawBackground(Camera& camera, bool debug) const
 {
   // Make sure the particle emitter is always on screen
   camera.PushMatrixInverse();
+
+  if (m_ParallaxBackground != nullptr) {
+    m_ParallaxBackground->Draw(camera, debug);
+  }
+
   // Draw the back particle emitter
   m_ParticleEmitterBack->Draw(debug);
   camera.PopMatrix();

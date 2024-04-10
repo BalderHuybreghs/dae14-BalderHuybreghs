@@ -6,6 +6,7 @@
 #include "ObjectBlueprint.h"
 #include "ParticleEmitter.h"
 #include "SoundStream.h"
+#include "ParallaxBackground.h"
 
 class Level
 {
@@ -62,6 +63,8 @@ private:
   ParticleEmitter* m_ParticleEmitterBack;
   ParticleEmitter* m_ParticleEmitterMid;
   ParticleEmitter* m_ParticleEmitterFront;
+
+  ParallaxBackground* m_ParallaxBackground;
 
   SoundStream* m_MusicStream;
 };
