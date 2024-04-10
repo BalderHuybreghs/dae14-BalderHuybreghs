@@ -161,6 +161,14 @@ static const float HOLDING_STAMINA_COST{ 10.f };
 static const float CLIMBING_STAMINA_COST{ 45.45f };
 static const float CLIMB_JUMP_STAMINA_COST{ 27.5f };
 
+static const int EditToolTextSize{ 22 };
+static const Color4f EditToolTextColor{
+  1.f,
+  1.f,
+  1.f,
+  1.f
+};
+
 // Particle information
 static const float SCREEN_EMISSION_ZONE_WIDTH{ 100.f };
 static const float SCREEN_EMISSION_ZONE_HEIGHT{ WINDOW_HEIGHT };

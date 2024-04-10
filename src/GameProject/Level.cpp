@@ -126,31 +126,38 @@ void Level::DrawForeground(Camera& camera, bool debug) const
   camera.PopMatrix();
 
   // Draw the player spawn position on top of everything in debug mode
-  if (debug) {
-    // Draw the collision shapes
-    for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
-      utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
-      utils::FillPolygon(polygon);
+  if (!debug) {
+    return;
+  }
 
-      // Draw the points, OpenGL does NOT like concave polygons
-      int count{ 0 };
-      for (const Point2f& point : polygon) {
-        utils::FillEllipse(point, 5.f, 5.f);
-        // Draw count as text
-        //Texture* text{ new Texture(std::to_string(count), FONT_FOLDER + FS + SYNE_FONT + FONT_EXTENSION, 20, Color4f(1.f, 0.f, 0.f, 1.f))};
-        //text->Draw(point);
-        //delete text;
+  // Draw the collision shapes
+  for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
+    utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
+    utils::FillPolygon(polygon);
 
-        ++count;
-      }
+    // Draw the points, OpenGL does NOT like concave polygons
+    int count{ 0 };
+    for (const Point2f& point : polygon) {
+      utils::FillEllipse(point, 5.f, 5.f);
+      // Draw count as text
+      //Texture* text{ new Texture(std::to_string(count), FONT_FOLDER + FS + SYNE_FONT + FONT_EXTENSION, 20, Color4f(1.f, 0.f, 0.f, 1.f))};
+      //text->Draw(point);
+      //delete text;
+
+      ++count;
     }
+  }
 
-    // Draw the player spawn
-    utils::SetColor(Color4f{ .8f, 0.2f, 0.2f, 0.8f });
-    utils::FillRect(Point2f{
-        m_PlayerSpawn.x,
-        m_PlayerSpawn.y
-    }, PLAYER_SCALE, PLAYER_SCALE);
+  // Draw the player spawn
+  utils::SetColor(Color4f{ .8f, 0.2f, 0.2f, 0.8f });
+  utils::FillRect(Point2f{
+      m_PlayerSpawn.x,
+      m_PlayerSpawn.y
+                  }, PLAYER_SCALE, PLAYER_SCALE);
+
+  // Draw all the camera rects
+  for (const Rectf& rect : m_CameraRects) {
+    utils::DrawRect(rect);
   }
 }
 
@@ -182,9 +189,17 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   for (const Rectf& rect : m_CameraRects) {
     if (IsOverlapping(playerCollider, rect))
     {
+      const Point2f position{ rect.left, rect.bottom };
+      const Point2f cameraPosition{ camera.GetPosition() };
+
+      // Move on if the camera is already in the right position
+      if ((int)cameraPosition.x == (int)position.x && (int)cameraPosition.y == (int)position.y || camera.GoalCount() > 0) {
+        continue;
+      }
+
       // A new goal position for the camera to lerp to
       Camera::AnimationGoal goal{
-        Point2f{ rect.left, rect.bottom },
+        position,
         1.f,
         .5f, 
       };
@@ -200,17 +215,24 @@ void Level::AddBlueprint(const ObjectBlueprint& blueprint)
   m_ObjectBlueprints.push_back(blueprint);
 }
 
-bool Level::AddCameraRect(const Rectf& rect)
+void Level::AddCameraRect(const Rectf& rect)
 {
   // Check if the rect is not colliding with any other camera rects
-  for (const Rectf& other : m_CameraRects) {
-    if (IsOverlapping(rect, other)) {
-      return false;
+  m_CameraRects.push_back(rect);
+}
+
+bool Level::RemoveCameraRect(const Point2f& point)
+{
+  for (std::vector<Rectf>::iterator it = m_CameraRects.begin(); it != m_CameraRects.end(); ++it) {
+    const Rectf& rect = *it;
+    if (IsPointInRect(point, rect)) {
+      // Remove this value from camerarects
+      m_CameraRects.erase(it);
+      return true;
     }
   }
-  
-  m_CameraRects.push_back(rect);
-  return true;
+
+  return false;
 }
 
 Tilemap* Level::GetFrontTilemap() const

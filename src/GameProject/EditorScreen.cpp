@@ -6,13 +6,15 @@
 #include "RectangleShape.h"
 #include "MathUtils.h"
 #include "PlayingScreen.h"
+#include "TilemapTool.h"
+#include "CameraTool.h"
 
 using namespace utils;
 
 EditorScreen::EditorScreen(const std::string& levelName, Point2f cameraPos)
   : GameScreen(), m_LevelPtr(nullptr), m_CurrentTilemapPtr(nullptr),
-  m_EditMode(Mode::TilesetFront), m_CurrentTile(0), 
-  m_LevelName(levelName), m_CameraPtr(new Camera(cameraPos))
+  m_Tool(nullptr), m_LevelName(levelName), m_CameraPtr(new Camera(cameraPos)), 
+  m_Tools(std::vector<EditTool*>()), m_ToolId(0)
 {
 }
 
@@ -33,6 +35,17 @@ void EditorScreen::Initialize()
     const Point2f center{ spawn.x - WINDOW_WIDTH / 2.f, spawn.y - WINDOW_HEIGHT / 2.f };
     m_CameraPtr->SetPosition(center);
   }
+
+  // Create the tools
+  TilemapTool* frontTilemapTool{ new TilemapTool(m_LevelPtr->GetFrontTilemap(), m_InputManagerPtr) };
+  TilemapTool* backTilemapTool{ new TilemapTool(m_LevelPtr->GetBackTilemap(), m_InputManagerPtr) };
+  CameraTool* cameraTool{ new CameraTool(m_LevelPtr, m_InputManagerPtr) };
+
+  m_Tools.push_back(frontTilemapTool);
+  m_Tools.push_back(backTilemapTool);
+  m_Tools.push_back(cameraTool);
+
+  m_Tool = m_Tools.front();
 }
 
 EditorScreen::~EditorScreen()
@@ -42,6 +55,11 @@ EditorScreen::~EditorScreen()
 
   delete m_LevelPtr;
   delete m_CameraPtr;
+
+  for (EditTool* tool : m_Tools) {
+    delete tool;
+    tool = nullptr;
+  }
 }
 
 void EditorScreen::Draw()
@@ -65,35 +83,16 @@ void EditorScreen::Draw()
 
   m_CameraPtr->PopMatrix();
 
-  // Draw a preview tile
-  const Point2f mousePos{ m_InputManagerPtr->GetMousePosition() };
-  m_CurrentTilemapPtr->DrawSingleTile(Point2f{ mousePos.x + 10, mousePos.y - 60 }, m_CurrentTile);
-
-  // Since finding the mouse with a white background might not always be obvious
-  SetColor(Color4f{ 1.f, 0.f, 1.f, 1.f });
-  FillEllipse(mousePos, 7.f, 7.f);
+  // Draw the current tool
+  if (m_Tool != nullptr) {
+    m_Tool->Draw(m_CameraPtr);
+  }
 }
 
 void EditorScreen::Update(float elapsedSec)
-{
-  // Do stuff based on the edit mode 
-  switch (m_EditMode) {
-  case Mode::TilesetFront:
-    m_CurrentTilemapPtr = m_LevelPtr->GetFrontTilemap();
-    break;
-  case Mode::TilesetBack:
-    m_CurrentTilemapPtr = m_LevelPtr->GetBackTilemap();
-    break;
-  }
- 
-  // The level itself should not be updated in the editor
-  m_CameraPtr->Update(elapsedSec);
-
-  const Point2f mousePos{ m_InputManagerPtr->GetMousePosition() };
-  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT)) {
-    m_CurrentTilemapPtr->SetTile(m_CameraPtr->GetWorldPosition(mousePos), m_CurrentTile);
-  } else if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_RIGHT)) {
-    m_CurrentTilemapPtr->RemoveTile(m_CameraPtr->GetWorldPosition(mousePos));
+{ 
+  if (m_Tool != nullptr) {
+    m_Tool->Update(elapsedSec, m_CurrentTilemapPtr->GetTileRect(m_CameraPtr->GetWorldPosition(m_InputManagerPtr->GetMousePosition())));
   }
 
   // Camera movement
@@ -140,12 +139,18 @@ void EditorScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
   switch (key.keysym.sym)
   {
   case SDLK_e:
-    m_EditMode = EditorScreen::Mode((int)m_EditMode + 1 % 4);
-    m_CurrentTile = 0;
+    if (m_ToolId >= m_Tools.size() -1) {
+      break;
+    }
+
+    m_Tool = m_Tools.at(++m_ToolId);
     break;
   case SDLK_q:
-    m_EditMode = EditorScreen::Mode((int)m_EditMode - 1 % 4);
-    m_CurrentTile = 0;
+    if (m_ToolId < 1) {
+      break;
+    }
+
+    m_Tool = m_Tools.at(--m_ToolId);
     break;
   case SDLK_SPACE:
     m_LevelPtr->Save();
@@ -190,11 +195,7 @@ void EditorScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 
 void EditorScreen::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
 {
-  if (e.y > 0) // Scroll up
-  {
-    m_CurrentTile = m_CurrentTile > 0 ? m_CurrentTile - 1 : 0;
-  } else if (e.y < 0) // Scroll down
-  {
-    m_CurrentTile = m_CurrentTile < m_CurrentTilemapPtr->GetTileCount() -1 ? m_CurrentTile + 1 : m_CurrentTile;
+  if (m_Tool != nullptr) {
+    m_Tool->OnMouseWheelEvent(e);
   }
 }

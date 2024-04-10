@@ -160,8 +160,10 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="AlgoUtils.cpp" />
     <ClCompile Include="BinaryStream.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraTool.cpp" />
     <ClCompile Include="CircleShape.cpp" />
     <ClCompile Include="Decal.cpp" />
+    <ClCompile Include="EditTool.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -190,13 +192,16 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="ResourceUtils.cpp" />
     <ClCompile Include="Tilemap.cpp" />
+    <ClCompile Include="TilemapTool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgoUtils.h" />
     <ClInclude Include="BinaryStream.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraTool.h" />
     <ClInclude Include="CircleShape.h" />
     <ClInclude Include="Decal.h" />
+    <ClInclude Include="EditTool.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Level.h" />
@@ -225,6 +230,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="ResourceUtils.h" />
     <ClInclude Include="Tilemap.h" />
+    <ClInclude Include="TilemapTool.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

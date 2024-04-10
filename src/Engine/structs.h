@@ -50,6 +50,7 @@ struct Rectf
 	float width;
 	float height;
 
+  Point2f Center() const;
 };
 
 

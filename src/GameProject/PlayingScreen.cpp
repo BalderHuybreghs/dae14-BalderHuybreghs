@@ -85,13 +85,7 @@ void PlayingScreen::Update(float elapsedSec)
   // Update the player with some collision polygons to collide with
   m_PlayerPtr->Update(elapsedSec, *m_TilemapPtr);
 
-  const Point2f playerPos{ m_PlayerPtr->GetCenter() };
-  const Point2f center{
-    playerPos.x - WINDOW_WIDTH / 2.f,
-    playerPos.y - WINDOW_HEIGHT / 2.f
-  };
-
-  // m_CameraPtr->SetPosition(center);
+  m_CameraPtr->Update(elapsedSec); // Update the camera here for animating its movement
 }
 
 

@@ -10,9 +10,6 @@
 class ObjectManager final
 {
 public:
-  // Default constructor
-  ObjectManager() = default;
-
   // Singleton pattern, ObjectManager does not need the ability to be copied
   ObjectManager(const ObjectManager& other) = delete;
   ObjectManager& operator=(const ObjectManager& other) = delete;
@@ -34,7 +31,11 @@ public:
 
   static ObjectManager* Instance();
   static void DestroyInstance();
+
 private:
+  // Default constructor
+  ObjectManager() = default;
+
   int m_IdCounter{};
   std::unordered_map<int, const GameObject*> m_ObjectPtrs;
 

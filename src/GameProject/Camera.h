@@ -17,10 +17,10 @@ public:
   virtual ~Camera() = default;
 
   // This is a function to render on the screen position if we are already rendering on a camera
-  void PushMatrixInverse();
+  void PushMatrixInverse() const;
 
-  void PushMatrix();
-  void PopMatrix();
+  void PushMatrix() const;
+  void PopMatrix() const;
 
   // The camera has the ability to follow objects in a certain pattern
   void Update(float elapsedSec);
@@ -33,6 +33,8 @@ public:
   float GetZoom() const;
   Point2f GetPosition() const;
   Point2f GetWorldPosition(const Point2f& screenPosition) const;
+
+  int GoalCount() const;
 private:
   // Current camera info
   Point2f m_Position;

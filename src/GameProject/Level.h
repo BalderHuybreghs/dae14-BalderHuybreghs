@@ -30,7 +30,8 @@ public:
 
   // Adds a camera position if it isn't overlapping with an existing one
   // Returns true if the camera managed to add the rect
-  bool AddCameraRect(const Rectf& rect); 
+  void AddCameraRect(const Rectf& rect); 
+  bool RemoveCameraRect(const Point2f& point); // Removes a camera rect at a point, returns if it found a rect to remove
 
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;

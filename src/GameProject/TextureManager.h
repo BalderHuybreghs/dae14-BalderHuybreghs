@@ -9,9 +9,6 @@
 class TextureManager final
 {
 public:
-  // Default constructor
-  TextureManager() = default;
-
   // Prevent making copies of this class, application of rule of 3
   TextureManager(const TextureManager& other) = delete;
   TextureManager& operator=(const TextureManager& other) = delete;
@@ -21,11 +18,14 @@ public:
 
   static TextureManager* Instance();
   static void DestroyInstance();
-protected:
-  const Texture* CreateTextureInstance(const std::string& resource);
-  const Texture* CreateFromResource(const std::string& resource);
 private:
+  // Default constructor
+  TextureManager() = default;
+
   std::unordered_map<std::string, const Texture*> m_TexturePtrs;
 
   static TextureManager* _instance;
+
+  const Texture* CreateTextureInstance(const std::string& resource);
+  const Texture* CreateFromResource(const std::string& resource);
 };

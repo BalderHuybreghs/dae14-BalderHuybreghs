@@ -17,6 +17,11 @@ std::string ResourceUtils::ResourceToMusicPath(const std::string& resource)
   return MUSIC_FOLDER + FS + resource + SOUND_EXTENSION;
 }
 
+std::string ResourceUtils::ResourceToFontPath(const std::string& resource)
+{
+    return FONT_FOLDER + FS + resource + FONT_EXTENSION;
+}
+
 std::string ResourceUtils::ResourceToTilemapPath(const std::string& resource)
 {
   return GAMEPLAY_RESOURCE + FS + TILEMAP_FOLDER + FS + resource;

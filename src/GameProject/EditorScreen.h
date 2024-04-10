@@ -2,26 +2,13 @@
 #include "ScreenManager.h"
 #include "Level.h"
 #include "Tilemap.h"
-#include "ObjectBlueprint.h"
-#include "ObjectManager.h"
 #include "Camera.h"
 #include "Shape.h"
+#include "EditTool.h"
 
 class EditorScreen final : public GameScreen
 {
 public:
-  // Level editing has several modes
-  // Tileset: Place tiles on the map
-  // Object: Place objects on the map
-  // Decal Place decals on the map
-  enum class Mode
-  {
-    TilesetFront,
-    TilesetBack,
-    Object,
-    Decal
-  };
-
   EditorScreen(const std::string& levelName, Point2f cameraPos);
   EditorScreen(const std::string& levelName);
 
@@ -45,12 +32,13 @@ public:
 private:
   std::string m_LevelName;
 
-  Mode m_EditMode;
+  // A list of all the tools the user can switch to, this so that we do not loose tool information when switching
+  std::vector<EditTool*> m_Tools;
+  size_t m_ToolId; // The ID of the current tool
+  EditTool* m_Tool;
 
   Level* m_LevelPtr;
   Tilemap* m_CurrentTilemapPtr; // Should not be deleted, holds a reference to the tilemap within the level
   Camera* m_CameraPtr;
-
-  int m_CurrentTile;
 };
 

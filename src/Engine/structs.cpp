@@ -106,6 +106,14 @@ Rectf::Rectf( float left, float bottom, float width, float height )
 {
 }
 
+Point2f Rectf::Center() const
+{
+    return Point2f(
+      left + width / 2.f,
+      bottom + height / 2.f
+    );
+}
+
 //-----------------------------------------------------------------
 // Color4f Constructors
 //-----------------------------------------------------------------

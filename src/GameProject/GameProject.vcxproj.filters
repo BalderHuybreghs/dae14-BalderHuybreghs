@@ -50,6 +50,9 @@
     <Filter Include="Source Files\Core\Render\Texture">
       <UniqueIdentifier>{0290a299-9676-4243-9662-f128c33ecc23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Level\EditorTool">
+      <UniqueIdentifier>{fe0ce7ce-3bc1-4000-9f80-f3b5308764c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -151,6 +154,15 @@
     <ClCompile Include="BinaryStream.cpp">
       <Filter>Source Files\Core\Util</Filter>
     </ClCompile>
+    <ClCompile Include="EditTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
+    <ClCompile Include="TilemapTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -251,6 +263,15 @@
     </ClInclude>
     <ClInclude Include="BinaryStream.h">
       <Filter>Source Files\Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="EditTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="TilemapTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

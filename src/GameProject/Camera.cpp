@@ -15,14 +15,14 @@ Camera::Camera(const Point2f& position)
 {
 }
 
-void Camera::PushMatrixInverse()
+void Camera::PushMatrixInverse() const
 {
   glPushMatrix();
   glTranslatef(m_Position.x, m_Position.y, 0);
   glScalef(1, 1, 1);
 }
 
-void Camera::PushMatrix()
+void Camera::PushMatrix() const
 {
   glPushMatrix();
 
@@ -31,7 +31,7 @@ void Camera::PushMatrix()
   glScalef(m_Zoom, m_Zoom, 1); // Preserve Z component for proper scaling
 }
 
-void Camera::PopMatrix()
+void Camera::PopMatrix() const
 {
   glPopMatrix();
 }
@@ -90,4 +90,9 @@ Point2f Camera::GetWorldPosition(const Point2f& screenPosition) const
       screenPosition.x / m_Zoom + m_Position.x / m_Zoom,
       screenPosition.y / m_Zoom + m_Position.y / m_Zoom
   };
+}
+
+int Camera::GoalCount() const
+{
+  return m_AnimationGoals.size();
 }
