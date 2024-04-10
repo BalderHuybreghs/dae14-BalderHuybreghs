@@ -33,5 +33,5 @@ private:
   Player* m_PlayerPtr;
   Camera* m_CameraPtr;
 
-  Tilemap* m_TilemapPtr;
+  Tilemap* m_TilemapPtr; // Should not be deleted, is owned by Level
 };

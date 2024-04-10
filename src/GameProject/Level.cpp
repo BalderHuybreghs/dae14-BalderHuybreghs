@@ -68,10 +68,6 @@ void Level::Build()
 {
   std::cout << "Building level '" << m_Name << "'" << std::endl;
 
-  // Clear polys
-  m_CollisionPolygons.clear();
-  //m_CollisionPolygons = m_ForegroundTilemapPtr->GenCollisionShapes();
-
   // Destroy any possible game objects
   for (const GameObject* object : m_Objects) {
     delete object;
@@ -128,24 +124,6 @@ void Level::DrawForeground(Camera& camera, bool debug) const
   // Draw the player spawn position on top of everything in debug mode
   if (!debug) {
     return;
-  }
-
-  // Draw the collision shapes
-  for (const std::vector<Point2f>& polygon : m_CollisionPolygons) {
-    utils::SetColor(Color4f{ 0.2f, 0.8f, 0.2f, 0.5f });
-    utils::FillPolygon(polygon);
-
-    // Draw the points, OpenGL does NOT like concave polygons
-    int count{ 0 };
-    for (const Point2f& point : polygon) {
-      utils::FillEllipse(point, 5.f, 5.f);
-      // Draw count as text
-      //Texture* text{ new Texture(std::to_string(count), FONT_FOLDER + FS + SYNE_FONT + FONT_EXTENSION, 20, Color4f(1.f, 0.f, 0.f, 1.f))};
-      //text->Draw(point);
-      //delete text;
-
-      ++count;
-    }
   }
 
   // Draw the player spawn
@@ -266,11 +244,6 @@ void Level::SetPlayerSpawn(const Point2f& position)
 Point2f Level::GetPlayerSpawn() const
 {
   return m_PlayerSpawn;
-}
-
-const std::vector<std::vector<Point2f>>& Level::GetCollisionPolygons() const
-{
-  return m_CollisionPolygons;
 }
 
 constexpr int TILEMAP_DELIMITER = MAXINT;

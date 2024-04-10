@@ -40,8 +40,6 @@ public:
   void SetPlayerSpawn(const Point2f& position);
   Point2f GetPlayerSpawn() const;
 
-  const std::vector<std::vector<Point2f>>& GetCollisionPolygons() const;
-
   // Save and load the level from and to a file
   void Load();
   void Save() const;
@@ -54,7 +52,6 @@ private:
   Tilemap* m_BackgroundTilemapPtr; // The background tilemap for the level
   Tilemap* m_ForegroundTilemapPtr; // The tilemap for the level that contains all general blocks, the tilemap will contain collision information
 
-  std::vector<std::vector<Point2f>> m_CollisionPolygons; // Holds the collision polygons generated from the tilemap
   std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
 
   // A list of valid camera rects, when the player enters the rect
