@@ -107,9 +107,7 @@ void PlayingScreen::OnKeyDownEvent(const SDL_KeyboardEvent& key)
 
   case SDLK_TAB:
     // Switch to level editor
-    const Point2f playerCenter{ m_PlayerPtr->GetCenter() };
-    const Point2f cameraCenter{ playerCenter.x - WINDOW_WIDTH / 2.f, playerCenter.y - WINDOW_HEIGHT / 2.f };
-    m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, cameraCenter));
+    m_ScreenManagerPtr->SetScreen(new EditorScreen(m_LevelName, m_CameraPtr->GetPosition()));
     break;
   }
 }
