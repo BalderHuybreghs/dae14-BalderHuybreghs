@@ -235,6 +235,19 @@ bool Level::RemoveCameraRect(const Point2f& point)
   return false;
 }
 
+Rectf Level::GetCameraRect(const Player& player)
+{
+  const Rectf playerCollider{ player.GetCollisionShape()->GetShape() };
+  for (const Rectf& rect : m_CameraRects) {
+    if (IsOverlapping(playerCollider, rect))
+    {
+      return rect;
+    }
+  }
+
+  return player.GetCollisionShape()->GetShape();
+}
+
 Tilemap* Level::GetFrontTilemap() const
 {
   return m_ForegroundTilemapPtr;

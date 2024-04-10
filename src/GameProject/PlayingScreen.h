@@ -27,6 +27,7 @@ public:
   void OnMouseUpEvent(const SDL_MouseButtonEvent& e) override;
 private:
   std::string m_LevelName;
+  bool m_Debug;
 
   Level* m_LevelPtr;
   Player* m_PlayerPtr;

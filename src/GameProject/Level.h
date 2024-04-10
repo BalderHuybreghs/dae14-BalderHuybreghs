@@ -32,6 +32,7 @@ public:
   // Returns true if the camera managed to add the rect
   void AddCameraRect(const Rectf& rect); 
   bool RemoveCameraRect(const Point2f& point); // Removes a camera rect at a point, returns if it found a rect to remove
+  Rectf GetCameraRect(const Player& player); // Gets the camera rect the player is in
 
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
