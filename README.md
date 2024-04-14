@@ -89,17 +89,11 @@ This section gives a clear and detailed overview of which parts of the original 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Detailed instructions on how to run your game project are in this section.
+### Requirements
+* Visual Studio 2022+
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* Visual Studio 2022
-
-### How to run the project
-
-Explain which project (version) must be run.
-* any extra steps if required 
+### Compiling
+* Simply build (and run) the project using visual studio
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -107,28 +101,72 @@ Explain which project (version) must be run.
 
 <!-- HOW TO PLAY -->
 ## How to play
-
-Use this space to show useful examples of how a game can be played. 
-Additional screenshots and demos work well in this space. 
+My implementation of the game has 2 modes: play and edit, you can switch between modes live by simply pressing tab. The control schemes for both modes will be listed here.
 
 ### Controls
-* keys, .. 
-* .. 
+- Tab to switch mode
+
+#### Play
+- F1 to toggle debug mode
+- ad to move
+- space to jump
+- Shift to dash
+- w & s to look up or down (or crouch when grounded)
+
+#### Edit
+- wasd (or drag with middle mouse) to pan the camera
+- z & x to zoom the camera
+- q and e to switch editor tools
+- space to save the level
+- LMB, RMB and scrolling are tool-specific
+
+##### Tools
+- Tilemap (there are 2 tilemap tools, front tilemap and back tilemap), LMB to place, RMB to remove, scroll to select tile
+- Camera click and drag to draw camera rectangles, when a player enters one of these, the camera moves to the bottom left of the rectangle the player is in. RMB inside a rectangle to remove it
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CLASS STRUCTURE -->
-## Class structure 
+## Class structure
+Since the class structure is still subject to change (and it is quite large), I will reserve writing this section for the end of the semester.
 
 ### Object composition 
-If you applied object composition (optional); explain where and how.
+Since there are a large amount of classes that make use of object composition, I will simply list them without further elaboration.
+
+- Limb
+- ObjectManager
+- GameScreen
+- ScreenManager
+- TextureManager
+- Particle
+- ParticleEmitter
+- Sprite
+- Tilemap
+- ParallaxBackground
+- Game
+- Hair
+- Player
+- EditTool
+- CameraTool
+- TilemapTool
+- Level
+- EditorScreen
+- LoadingScreen
+- MenuScreen
+- PlayingScreen
 
 ### Inheritance 
-Explain where you applied inheritance (mandatory).
+Inheritance is applied in 3 core parts of the project. 
 
-### ..
+The first being for shapes. For which the base class Shape is defined, and and a couple children classes that inherit from Shape (RectangleShape & CircleShape). This is useful because that means you can ask for a Shape pointer in the game, instead of asking for a specific shape.
+
+The second part would be for game objects. Since the level format makes use of a blueprint system to create objects based on a list of IDs stored per level, a base class GameObject exists, which all objects that can be loaded into a level inherit.
+
+This system is used in combination with an ObjectManager class, which can copy an instance of an existing GameObject based on its ID, such that those objects serve as a blueprint to build a level.
+
+It is designed this way because storing instances of GameObject raw in a binary file would mean we lose the info on what type of class the object was created with, thus the game cannot know how many bytes (or what type they are) to read next.
+
+The third one, for which the implementation is more complex, is the screen system. There exists a base class GameScreen, which the ScreenManager class keeps hold of. The ScreenManager is part of the main game class, which calls GameScreen functions to draw, update etc. Any class that inherits GameScreen can be rendered on its own in the game.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -137,15 +175,15 @@ Explain where you applied inheritance (mandatory).
 ## Checklist
 
 - [x] Accept / set up github project
-- [ ] week 01 topics applied
-    - [ ] const keyword applied proactively (variables, functions,..)
-    - [ ] static keyword applied proactively (class variables, static functions,..)
-    - [ ] object composition (optional)
-- [ ] week 02 topics applied
-- [ ] week 03 topics applied
-- [ ] week 04 topics applied
-- [ ] week 05 topics applied
-- [ ] week 06 topics applied
+- [x] week 01 topics applied
+    - [x] const keyword applied proactively (variables, functions,..)
+    - [x] static keyword applied proactively (class variables, static functions,..)
+    - [x] object composition (optional)
+- [x] week 02 topics applied
+- [x] week 03 topics applied
+- [x] week 04 topics applied
+- [x] week 05 topics applied
+- [x] week 06 topics applied
 - [ ] week 07 topics applied
 - [ ] week 08 topics applied
 - [ ] week 09 topics applied (optional)
@@ -156,20 +194,23 @@ Explain where you applied inheritance (mandatory).
 <!-- CONTACT -->
 ## Contact
 
-Your Name - email@student.howest.be
+Your Name - balder.huybreghs@student.howest.be
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: https://github.com/BalderHuybreghs/dae14-BalderHuybreghs
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
+Resources I found useful when working on this project
 
-Use this space to list resources you find helpful and would like to give credit to. 
-
-* [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* ..
+* [Celeste Wiki](https://celeste.ink/wiki/)
+* [Celeste Analysis](https://aran.ink/posts/celeste-tilesets)
+* [Celeste Asset Extractor](https://github.com/TeWu/CelesteExtractor/releases)
+* [Unordered Map Documentation](https://en.cppreference.com/w/cpp/container/unordered_map)
+* [Pair Documentation](https://en.cppreference.com/w/cpp/utility/pair)
+* [Binary File Writing & Reading in C++](https://cplusplus.com/doc/tutorial/files/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
