@@ -23,5 +23,5 @@ protected:
   EditTool(const std::string& name, const InputManager* inputManagerPtr);
 
   const InputManager* m_InputManagerPtr;
-  const Texture* m_NameTexture;
+  const Texture* m_NameTexturePtr;
 };

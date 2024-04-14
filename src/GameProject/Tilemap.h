@@ -61,19 +61,10 @@ public:
   // Convert the tiles to raw data
   std::vector<int> ToRawTileData() const;
 private:
-  // Header information
-  Point2f m_Size;
-  int m_TileSize;
-
-  // Internal management of the textures
-  std::vector<const Texture*> m_TileTexturePtrs;
-
-  // A mapping of each coordinate and their texture coordinate. Also updated to have the rng value of each tile for optimization reasons
-  std::unordered_map<std::pair<int, int>, std::pair<int, int>, AlgoUtils::PairHash> m_Tiles;
-
-  // Converts a worldpoint to a key point in the tilemap
   int ValueToX(float val) const;
   int ValueToY(float val) const;
+
+  // Converts a worldpoint to a key point in the tilemap
   std::pair<int, int> PointToKey(const Point2f& point) const;
   Point2f KeyToPoint(std::pair<int, int> key) const;
 
@@ -82,4 +73,15 @@ private:
   Rectf GetSourceRect(int x, int y, int rng) const;
 
   void DrawSingleTile(std::pair<int, int> position, int tileID, int rng) const;
+
+  // Header information
+  Point2f m_Size;
+  int m_TileSize;
+
+  // Internal management of the tilemap textures
+  std::vector<const Texture*> m_TileTexturePtrs;
+
+  // A mapping of each coordinate and their texture coordinate. Also updated to have the rng value of each tile for optimization reasons
+  std::unordered_map<std::pair<int, int>, std::pair<int, int>, AlgoUtils::PairHash> m_Tiles;
+
 };

@@ -29,7 +29,7 @@ public:
   // Returns how many objects are registered
   int GetObjectCount();
 
-  static ObjectManager* Instance();
+  static ObjectManager* GetInstance();
   static void DestroyInstance();
 
 private:
@@ -39,5 +39,5 @@ private:
   int m_IdCounter{};
   std::unordered_map<int, const GameObject*> m_ObjectPtrs;
 
-  static ObjectManager* _instance;
+  static ObjectManager* instance;
 };

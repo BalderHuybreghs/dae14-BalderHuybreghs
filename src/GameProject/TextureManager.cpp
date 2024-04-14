@@ -4,7 +4,7 @@
 #include "GameDefines.h"
 #include "ResourceUtils.h"
 
-TextureManager* TextureManager::_instance = nullptr;
+TextureManager* TextureManager::instance = nullptr;
 
 TextureManager::~TextureManager()
 {
@@ -74,19 +74,19 @@ const Texture* TextureManager::GetTexture(const std::string& resource)
   return CreateFromResource(resource);
 }
 
-TextureManager* TextureManager::Instance()
+TextureManager* TextureManager::GetInstance()
 {
-  if (_instance == nullptr) {
+  if (instance == nullptr) {
     std::cout << "Creating texture manager" << std::endl;
-    _instance = new TextureManager();
+    instance = new TextureManager();
   }
 
-  return _instance;
+  return instance;
 }
 
 void TextureManager::DestroyInstance()
 {
   std::cout << "Destroying texture manager" << std::endl;
-  delete _instance;
-  _instance = nullptr;
+  delete instance;
+  instance = nullptr;
 }

@@ -53,18 +53,18 @@ private:
   Tilemap* m_BackgroundTilemapPtr; // The background tilemap for the level
   Tilemap* m_ForegroundTilemapPtr; // The tilemap for the level that contains all general blocks, the tilemap will contain collision information
 
-  std::vector<GameObject*> m_Objects; // All interactible objects, objects usually get a hold of the player
+  std::vector<GameObject*> m_ObjectPtrs; // All interactible objects, objects usually get a hold of the player
 
   // A list of valid camera rects, when the player enters the rect
   // the camera will lerp over to it's position
   std::vector<Rectf> m_CameraRects;
 
   // Every level has 3 possible particle layers
-  ParticleEmitter* m_ParticleEmitterBack;
-  ParticleEmitter* m_ParticleEmitterMid;
-  ParticleEmitter* m_ParticleEmitterFront;
+  ParticleEmitter* m_ParticleEmitterBackPtr;
+  ParticleEmitter* m_ParticleEmitterMidPtr;
+  ParticleEmitter* m_ParticleEmitterFrontPtr;
 
-  ParallaxBackground* m_ParallaxBackground;
+  ParallaxBackground* m_ParallaxBackgroundPtr;
 
-  SoundStream* m_MusicStream;
+  SoundStream* m_MusicStreamPtr;
 };

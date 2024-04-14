@@ -27,11 +27,11 @@ public:
   void ProcessMouseWheelEvent(const SDL_MouseWheelEvent& e) override;
 
 private:
-  // Variables
-  ScreenManager* m_ScreenManagerPtr;
-
-	// FUNCTIONS
+	// Functions
 	void Initialize(GameScreen* initialScreenPtr);
 	void Cleanup( );
   void ClearBackground(Color4f color = Color4f{ 0.f, 0.f, 0.f, 1.f}) const;
+
+  // Variables
+  ScreenManager* m_ScreenManagerPtr;
 };

@@ -65,6 +65,9 @@ public:
 
   bool IsGrounded() const;
 private:
+  // Collision handling stuff
+  void HandleCollision(float elapsedSec, const Tilemap& tilemap);
+
   Vector2f m_Direction;
   Vector2f m_Velocity;
   Point2f m_Position;
@@ -76,21 +79,18 @@ private:
 
   State m_State;
 
-  Sprite* m_Sprite;
+  Sprite* m_SpritePtr;
 
   // Visual effects stuff
-  Sprite* m_Particle;
+  Sprite* m_ParticleSpritePtr;
 
-  Hair* m_Hair; // The hair rendered behind the player
+  Hair* m_HairPtr; // The hair rendered behind the player
 
   // Colliders
-  RectangleShape* m_Collider;
-  RectangleShape* m_ColliderLeft;
-  RectangleShape* m_ColliderRight;
+  RectangleShape* m_ColliderPtr;
+  RectangleShape* m_ColliderLeftPtr;
+  RectangleShape* m_ColliderRightPtr;
 
   bool m_IsGrounded;
   bool m_CanHold;
-
-  // Collision handling stuff
-  void HandleCollision(float elapsedSec, const Tilemap& tilemap);
 };

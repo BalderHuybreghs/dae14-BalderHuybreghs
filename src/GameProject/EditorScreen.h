@@ -32,7 +32,7 @@ public:
 private:
   std::string m_LevelName;
 
-  // A list of all the tools the user can switch to, this so that we do not loose tool information when switching
+  // A list of all the tools the user can switch to, this so that we do not lose tool information when switching
   std::vector<EditTool*> m_Tools;
   size_t m_ToolId; // The ID of the current tool
   EditTool* m_Tool;

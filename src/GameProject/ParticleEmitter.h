@@ -41,24 +41,23 @@ public:
   Point2f GetPosition() const;
   EmitterSpawnInfo GetSpawnInfo() const;
 private:
+  void UpdateParticles(float elapsedSec);
+
+  Particle* CreateParticle(); // Creates a particle according to the criteria
+  void SpawnBatch(); // Spawns a new batch of particles
+
   // The zone where particles are spawned. Points are picked randomly from here
   // in a more professional / usual way, engines have spawning patterns.
-  Shape* m_EmissionZone;
+  Shape* m_EmissionZonePtr;
 
   // The information for spawning new particles
   EmitterSpawnInfo m_SpawnInfo;
 
   // The particles that the particle emitter may pick to spawn
-  const std::vector<Shape*> m_SpawnShapes;
+  const std::vector<Shape*> m_SpawnShapePtrs;
 
   // INTERNAL MANAGEMENT
-  std::vector<Particle*> m_Particles;
+  std::vector<Particle*> m_ParticlePtrs;
 
   float m_Delay; // The delay until the next batch
-
-  // Functions used by the emitter
-  void UpdateParticles(float elapsedSec);
-
-  Particle* CreateParticle(); // Creates a particle according to the criteria
-  void SpawnBatch(); // Spawns a new batch of particles
 };

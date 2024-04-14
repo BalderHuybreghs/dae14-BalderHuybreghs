@@ -16,16 +16,17 @@ public:
 
   const Texture* GetTexture(const std::string& resource);
 
-  static TextureManager* Instance();
+  static TextureManager* GetInstance();
   static void DestroyInstance();
 private:
   // Default constructor
   TextureManager() = default;
 
-  std::unordered_map<std::string, const Texture*> m_TexturePtrs;
-
-  static TextureManager* _instance;
-
   const Texture* CreateTextureInstance(const std::string& resource);
   const Texture* CreateFromResource(const std::string& resource);
+
+  std::unordered_map<std::string, const Texture*> m_TexturePtrs;
+
+  static TextureManager* instance;
+
 };

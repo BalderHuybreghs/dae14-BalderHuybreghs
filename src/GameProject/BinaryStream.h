@@ -76,13 +76,13 @@ public:
   void Load();
   void Clear();
 private:
+  void Read(char data[], size_t size); // Reads a given amount of bytes
+  void Write(char data[], size_t size);
+
   // This is general information, the RawData will be the main working horse of the binary streams
   std::string m_FilePath;
 
   // The main working horse of the stream
   std::vector<char> m_RawData;
   size_t m_Position;
-
-  void Read(char data[], size_t size); // Reads a given amount of bytes
-  void Write(char data[], size_t size);
 };

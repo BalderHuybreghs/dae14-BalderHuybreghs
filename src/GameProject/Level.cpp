@@ -12,10 +12,10 @@
 #include <vector>
 
 Level::Level(const std::string& name)
-  : m_Name(name), m_PlayerSpawn(Point2f()), m_ParallaxBackground(nullptr)
+  : m_Name(name), m_PlayerSpawn(Point2f()), m_ParallaxBackgroundPtr(nullptr)
 {
-  m_MusicStream = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
-  m_MusicStream->SetVolume(10);
+  m_MusicStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
+  m_MusicStreamPtr->SetVolume(10);
 
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
@@ -29,9 +29,9 @@ Level::Level(const std::string& name)
 
   // Create the particle emitters, copy the shapes and remove them afterwards
   // I'm not sure how to properly handle the shapes part since it's polymorphism, might ask the teachers (you who are reading my code), about it after the spring "vacation"
-  m_ParticleEmitterBack = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
-  m_ParticleEmitterMid = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
-  m_ParticleEmitterFront = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterBackPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterMidPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterFrontPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
 
   // ehhh, this is not particularly good...
   delete emissionZoneShape;
@@ -43,27 +43,27 @@ Level::Level(const std::string& name)
 Level::~Level()
 {
   // Stop the music from playing
-  m_MusicStream->Stop();
+  m_MusicStreamPtr->Stop();
 
   // Clear out the game objects
-  for (const GameObject* object : m_Objects) {
+  for (const GameObject* object : m_ObjectPtrs) {
     delete object;
   }
 
-  m_Objects.clear();
+  m_ObjectPtrs.clear();
 
   // Delete the particle emitters
-  delete m_ParticleEmitterBack;
-  delete m_ParticleEmitterMid;
-  delete m_ParticleEmitterFront;
+  delete m_ParticleEmitterBackPtr;
+  delete m_ParticleEmitterMidPtr;
+  delete m_ParticleEmitterFrontPtr;
 
   // Delete the tilemaps
   delete m_ForegroundTilemapPtr;
   delete m_BackgroundTilemapPtr;
 
-  delete m_ParallaxBackground;
+  delete m_ParallaxBackgroundPtr;
 
-  delete m_MusicStream;
+  delete m_MusicStreamPtr;
 }
 
 void Level::Build()
@@ -71,10 +71,10 @@ void Level::Build()
   std::cout << "Building level '" << m_Name << "'" << std::endl;
 
   // Create background
-  m_ParallaxBackground = new ParallaxBackground(m_Name);
+  m_ParallaxBackgroundPtr = new ParallaxBackground(m_Name);
 
   // Destroy any possible game objects
-  for (const GameObject* object : m_Objects) {
+  for (const GameObject* object : m_ObjectPtrs) {
     delete object;
   }
 
@@ -83,7 +83,7 @@ void Level::Build()
   }
 
   // Queue the music :-)
-  if (m_MusicStream->IsLoaded()) {
+  if (m_MusicStreamPtr->IsLoaded()) {
     // m_MusicStream->Play(true);
   }
 }
@@ -93,12 +93,12 @@ void Level::DrawBackground(Camera& camera, bool debug) const
   // Make sure the particle emitter is always on screen
   camera.PushMatrixInverse();
 
-  if (m_ParallaxBackground != nullptr) {
-    m_ParallaxBackground->Draw(camera, debug);
+  if (m_ParallaxBackgroundPtr != nullptr) {
+    m_ParallaxBackgroundPtr->Draw(camera, debug);
   }
 
   // Draw the back particle emitter
-  m_ParticleEmitterBack->Draw(debug);
+  m_ParticleEmitterBackPtr->Draw(debug);
   camera.PopMatrix();
 
   // Draw the background tilemap
@@ -108,11 +108,11 @@ void Level::DrawBackground(Camera& camera, bool debug) const
 void Level::DrawForeground(Camera& camera, bool debug) const
 {
   camera.PushMatrixInverse();
-  m_ParticleEmitterMid->Draw(debug); // Draw the middle particle emitter
+  m_ParticleEmitterMidPtr->Draw(debug); // Draw the middle particle emitter
   camera.PopMatrix();
 
   // Draw the objects in between the two tilemaps
-  for (const GameObject* object : m_Objects) {
+  for (const GameObject* object : m_ObjectPtrs) {
     object->Draw(debug);
   }
 
@@ -128,7 +128,7 @@ void Level::DrawForeground(Camera& camera, bool debug) const
 
   // Draw the front particle emitter
   camera.PushMatrixInverse();
-  m_ParticleEmitterFront->Draw(debug);
+  m_ParticleEmitterFrontPtr->Draw(debug);
   camera.PopMatrix();
 
   // Draw the player spawn position on top of everything in debug mode
@@ -152,7 +152,7 @@ void Level::DrawForeground(Camera& camera, bool debug) const
 void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
   // Update all the level gameobjects
-  for (GameObject* object : m_Objects) {
+  for (GameObject* object : m_ObjectPtrs) {
     object->Update(player, camera, elapsedSec);
   }
 
@@ -168,9 +168,9 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
     cameraPosition.y - WINDOW_HEIGHT / 2.f
   };
 
-  m_ParticleEmitterBack->Update(elapsedSec);
-  m_ParticleEmitterMid->Update(elapsedSec);
-  m_ParticleEmitterFront->Update(elapsedSec);
+  m_ParticleEmitterBackPtr->Update(elapsedSec);
+  m_ParticleEmitterMidPtr->Update(elapsedSec);
+  m_ParticleEmitterFrontPtr->Update(elapsedSec);
 
   // Check if the camera rect should be updated
   const Rectf playerCollider{ player.GetCollisionShape()->GetShape() };

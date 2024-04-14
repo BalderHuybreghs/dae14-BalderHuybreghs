@@ -29,7 +29,7 @@ void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
     m_FrameSize.y
   };
 
-  if (m_State.texture == nullptr) {
+  if (m_State.texturePtr == nullptr) {
     std::cout << "Sprite texture is null" << std::endl;
     return;
   }
@@ -43,7 +43,7 @@ void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
   glTranslatef(-dstRect.left - dstRect.width / 2, -dstRect.bottom - dstRect.height / 2, 0.f);
 
   // Draw the sprite
-  m_State.texture->Draw(dstRect, srcRect);
+  m_State.texturePtr->Draw(dstRect, srcRect);
 
   glPopMatrix();
 }
@@ -88,12 +88,12 @@ void Sprite::SetState(int state, bool reset)
 
 size_t Sprite::AddResource(const std::string& resource)
 {
-  const Texture* texture = TextureManager::Instance()->GetTexture(resource);
+  const Texture* texturePtr = TextureManager::GetInstance()->GetTexture(resource);
 
   const Sprite::StateInfo state{
     (int)m_States.size(),
-    texture,
-    int(texture->GetWidth() / m_FrameSize.x)
+    texturePtr,
+    int(texturePtr->GetWidth() / m_FrameSize.x)
   };
 
   m_States.push_back(state);

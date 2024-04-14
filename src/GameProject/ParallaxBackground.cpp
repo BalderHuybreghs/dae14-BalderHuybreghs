@@ -7,22 +7,21 @@
 ParallaxBackground::ParallaxBackground(const std::string& resource)
 {
 
-  TextureManager* textureManagerInstance{ TextureManager::Instance() };
+  TextureManager* textureManagerInstancePtr{ TextureManager::GetInstance() };
   const std::string resourceFull{ BACKGROUND_FOLDER + FS + resource };
 
   std::cout << "Creating parallax background for '" << resourceFull << '\'' << std::endl;
 
-  m_BackTexture = textureManagerInstance->GetTexture(resourceFull + BACKGROUND_SUFFIX_BACK);
-  m_MidTexture = textureManagerInstance->GetTexture(resourceFull + BACKGROUND_SUFFIX_MID);
-  m_FrontTexture = textureManagerInstance->GetTexture(resourceFull + BACKGROUND_SUFFIX_FRONT);
-
+  m_BackTexturePtr = textureManagerInstancePtr->GetTexture(resourceFull + BACKGROUND_SUFFIX_BACK);
+  m_MidTexturePtr = textureManagerInstancePtr->GetTexture(resourceFull + BACKGROUND_SUFFIX_MID);
+  m_FrontTexturePtr = textureManagerInstancePtr->GetTexture(resourceFull + BACKGROUND_SUFFIX_FRONT);
 }
 
 void ParallaxBackground::Draw(const Camera& camera, bool debug) const
 {
   const Rectf dstRect{ 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
-  m_BackTexture->Draw(dstRect);
-  m_MidTexture->Draw(dstRect);
-  m_FrontTexture->Draw(dstRect);
+  m_BackTexturePtr->Draw(dstRect);
+  m_MidTexturePtr->Draw(dstRect);
+  m_FrontTexturePtr->Draw(dstRect);
 }

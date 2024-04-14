@@ -30,12 +30,12 @@ private:
 
   // Limbs for hair sounds funny, but I called limb limb because it can be used in many
   // context for IK
-  Limb* m_HairLimb;
+  Limb* m_HairLimbPtr;
 
   // Since limbs are only there to keep track of the "mathematical" part of simulating hair,
   // we will need a way to draw these limbs. In the case of Celeste, this is a texture of a simple circle
   // in pixel art. Since the hair is only a single texture, only a single texture is required, it will draw in several sizes however
-  const Texture* m_HairTexture;
+  const Texture* m_HairTexturePtr;
 
-  Sprite* m_Bangs; // The bangs that will be rendered on the player
+  Sprite* m_BangsSpritePtr; // The bangs that will be rendered on the player
 };

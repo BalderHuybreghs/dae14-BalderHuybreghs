@@ -2,7 +2,7 @@
 #include "ObjectManager.h"
 #include <iostream>
 
-ObjectManager* ObjectManager::_instance = nullptr;
+ObjectManager* ObjectManager::instance = nullptr;
 
 ObjectManager::~ObjectManager()
 {
@@ -53,19 +53,19 @@ bool ObjectManager::ObjectWithIdExists(int id)
   return value != m_ObjectPtrs.end();
 }
 
-ObjectManager* ObjectManager::Instance()
+ObjectManager* ObjectManager::GetInstance()
 {
-  if (_instance == nullptr) {
+  if (instance == nullptr) {
     std::cout << "Creating object manager" << std::endl;
-    _instance = new ObjectManager();
+    instance = new ObjectManager();
   }
 
-  return _instance;
+  return instance;
 }
 
 void ObjectManager::DestroyInstance()
 {
   std::cout << "Destroying object manager" << std::endl;
-  delete _instance;
-  _instance = nullptr;
+  delete instance;
+  instance = nullptr;
 }

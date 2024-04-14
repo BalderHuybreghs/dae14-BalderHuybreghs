@@ -56,6 +56,7 @@ EditorScreen::~EditorScreen()
   delete m_LevelPtr;
   delete m_CameraPtr;
 
+  m_Tool = nullptr;
   for (EditTool* tool : m_Tools) {
     delete tool;
     tool = nullptr;

@@ -12,11 +12,11 @@ public:
 
   void Update(float elapsedSec, const Rectf& hoveringTile) override;
 private:
+  Rectf GetRect() const; // Gets the rectangle from both positions
+
   Level* m_LevelPtr;
 
   Point2f m_StartPosition; // The position where the user started drawing
   Point2f m_EndPosition; // The position where the user ended drawing
   bool m_IsDrawing; // Determine if the user is rawing
-
-  Rectf GetRect() const; // Gets the rectangle from both positions
 };

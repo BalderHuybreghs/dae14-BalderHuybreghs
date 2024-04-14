@@ -105,7 +105,7 @@ void Tilemap::SetTiles(const std::string resources[], int resourcesSize)
   for (int index = 0; index < resourcesSize; ++index)
   {
     // Grabs the tile from the tilemap folder
-    const Texture* texturePtr{ TextureManager::Instance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resources[index]))};
+    const Texture* texturePtr{ TextureManager::GetInstance()->GetTexture(ResourceUtils::ResourceToTilemapPath(resources[index]))};
 
     // The texture is invalid if it is not divisible by the size of each tile
     if ((int)texturePtr->GetWidth() % m_TileSize != 0 || (int)texturePtr->GetHeight() % m_TileSize != 0) {

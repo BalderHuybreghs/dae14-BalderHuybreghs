@@ -11,7 +11,7 @@ public:
   
   void Draw(const Camera& camera, bool debug = false) const;
 private:
-  const Texture* m_BackTexture;
-  const Texture* m_MidTexture;
-  const Texture* m_FrontTexture;
+  const Texture* m_BackTexturePtr;
+  const Texture* m_MidTexturePtr;
+  const Texture* m_FrontTexturePtr;
 };

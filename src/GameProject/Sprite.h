@@ -28,7 +28,7 @@ public:
   struct StateInfo
   {
     int id;
-    const Texture* texture; // No rule of 3 required despite having a pointer here, this because the manager takes care of cleaning up textures & the pointer here is const
+    const Texture* texturePtr; // No rule of 3 required despite having a pointer here, this because the manager takes care of cleaning up textures & the pointer here is const
     int frames;
   };
 protected:
