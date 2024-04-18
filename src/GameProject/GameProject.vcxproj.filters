@@ -163,6 +163,12 @@
     <ClCompile Include="CameraTool.cpp">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
+    <ClCompile Include="BackgroundTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -271,6 +277,12 @@
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
     <ClInclude Include="CameraTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleTool.h">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
   </ItemGroup>

@@ -158,6 +158,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlgoUtils.cpp" />
+    <ClCompile Include="BackgroundTool.cpp" />
     <ClCompile Include="BinaryStream.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraTool.cpp" />
@@ -172,6 +173,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="ParallaxBackground.cpp" />
     <ClCompile Include="PlayingScreen.cpp" />
+    <ClCompile Include="RectangleTool.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="EditorScreen.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -196,6 +198,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgoUtils.h" />
+    <ClInclude Include="BackgroundTool.h" />
     <ClInclude Include="BinaryStream.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraTool.h" />
@@ -210,6 +213,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="ParallaxBackground.h" />
     <ClInclude Include="PlayingScreen.h" />
+    <ClInclude Include="RectangleTool.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="EditorScreen.h" />
     <ClInclude Include="Game.h" />
