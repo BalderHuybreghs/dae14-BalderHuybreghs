@@ -8,12 +8,13 @@ using namespace MathUtils;
 ParticleEmitter::ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, std::vector<Shape*> spawnShapes)
   : m_EmissionZonePtr(emissionZone), m_SpawnShapePtrs(spawnShapes), m_SpawnInfo(spawnInfo)
 {
-  m_Delay = RandFloat(m_SpawnInfo.minDelay, m_SpawnInfo.maxDelay, 2);
-
   if (m_SpawnShapePtrs.empty()) {
     std::cout << "Particle Emitter spawn shapes vector is empty, cannot proceed with program" << std::endl;
     exit(-1);
   }
+
+  m_Delay = RandFloat(m_SpawnInfo.minDelay, m_SpawnInfo.maxDelay, 2);
+  m_ParticlePtrs.reserve(m_SpawnInfo.maxParticles); // Reserve the space for the maximum amount of particles 
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -134,9 +135,6 @@ void ParticleEmitter::SpawnBatch()
 
     m_ParticlePtrs.erase(m_ParticlePtrs.begin(), m_ParticlePtrs.begin() + particlesToRemove);
   }
-
-  // Preallocate space
-  m_ParticlePtrs.reserve(batchSize);
 
   // Actually create the particles
   for (int i = 0; i < batchSize; ++i) {

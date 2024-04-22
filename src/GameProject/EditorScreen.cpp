@@ -41,7 +41,7 @@ void EditorScreen::Initialize()
   TilemapTool* frontTilemapTool{ new TilemapTool(m_LevelPtr->GetFrontTilemap(), m_InputManagerPtr) };
   TilemapTool* backTilemapTool{ new TilemapTool(m_LevelPtr->GetBackTilemap(), m_InputManagerPtr) };
   CameraTool* cameraTool{ new CameraTool(m_LevelPtr, m_InputManagerPtr) };
-  BackgroundTool* backgroundTool{ new BackgroundTool(m_LevelPtr, m_InputManagerPtr) };
+  BackgroundTool* backgroundTool{ new BackgroundTool(m_LevelPtr->GetBackground(), m_InputManagerPtr)};
 
   m_Tools.push_back(frontTilemapTool);
   m_Tools.push_back(backTilemapTool);

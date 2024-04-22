@@ -38,6 +38,8 @@ public:
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
 
+  ParallaxBackground* GetBackground() const;
+
   void SetPlayerSpawn(const Point2f& position);
   Point2f GetPlayerSpawn() const;
 

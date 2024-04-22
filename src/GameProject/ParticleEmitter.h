@@ -27,8 +27,8 @@ public:
   ParticleEmitter(Shape* emissionZone, const EmitterSpawnInfo& spawnInfo, const std::vector<Shape*> spawnShapes);
 
   // Disable copying of a particle emitter
-  ParticleEmitter(const ParticleEmitter& other) = default;
-  ParticleEmitter& operator=(const ParticleEmitter& other) = default;
+  ParticleEmitter(const ParticleEmitter& other) = delete;
+  ParticleEmitter& operator=(const ParticleEmitter& other) = delete;
   virtual ~ParticleEmitter();
 
   void Draw(bool debug = false) const;

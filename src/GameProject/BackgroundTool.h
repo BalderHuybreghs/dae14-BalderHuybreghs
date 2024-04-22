@@ -1,14 +1,23 @@
 #include "RectangleTool.h"
+#include "ParallaxBackground.h"
 
 class BackgroundTool final : public RectangleTool
 {
 public:
-  BackgroundTool(Level* levelPtr, const InputManager* inputManagerPtr);
+  enum class BackgroundLayer
+  {
+    Middle,
+    Front
+  };
 
-  // void Update(float elapsedSec, const Rectf& hoveringTile) override;
+  BackgroundTool(ParallaxBackground* backgroundPtr, const InputManager* inputManagerPtr);
+
+  void OnMouseWheelEvent(const SDL_MouseWheelEvent& e) override;
 protected:
   void OnPaintRect(const Rectf& rect) override;
 
 private:
-  Level* m_LevelPtr;
+  ParallaxBackground* m_BackgroundPtr;
+
+  BackgroundLayer m_Layer;
 };

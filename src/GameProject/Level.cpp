@@ -12,7 +12,7 @@
 #include <vector>
 
 Level::Level(const std::string& name)
-  : m_Name(name), m_PlayerSpawn(Point2f()), m_ParallaxBackgroundPtr(nullptr)
+  : m_Name(name), m_PlayerSpawn(Point2f())
 {
   m_MusicStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
   m_MusicStreamPtr->SetVolume(10);
@@ -20,6 +20,8 @@ Level::Level(const std::string& name)
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
+
+  m_ParallaxBackgroundPtr = new ParallaxBackground(m_Name); // Set the parralax background
 
   Shape* emissionZoneShape{ new RectangleShape(Point2f{ SCREEN_EMISSION_ZONE_WIDTH, SCREEN_EMISSION_ZONE_HEIGHT }, Point2f{ WINDOW_WIDTH, 0.f }) };
 
@@ -70,9 +72,6 @@ void Level::Build()
 {
   std::cout << "Building level '" << m_Name << "'" << std::endl;
 
-  // Create background
-  m_ParallaxBackgroundPtr = new ParallaxBackground(m_Name);
-
   // Destroy any possible game objects
   for (const GameObject* object : m_ObjectPtrs) {
     delete object;
@@ -84,7 +83,7 @@ void Level::Build()
 
   // Queue the music :-)
   if (m_MusicStreamPtr->IsLoaded()) {
-    // m_MusicStream->Play(true);
+    m_MusicStreamPtr->Play(true);
   }
 }
 
@@ -93,9 +92,7 @@ void Level::DrawBackground(Camera& camera, bool debug) const
   // Make sure the particle emitter is always on screen
   camera.PushMatrixInverse();
 
-  if (m_ParallaxBackgroundPtr != nullptr) {
-    m_ParallaxBackgroundPtr->Draw(camera, debug);
-  }
+  m_ParallaxBackgroundPtr->Draw(camera, debug);
 
   // Draw the back particle emitter
   m_ParticleEmitterBackPtr->Draw(debug);
@@ -246,6 +243,11 @@ Tilemap* Level::GetBackTilemap() const
   return m_BackgroundTilemapPtr;
 }
 
+ParallaxBackground* Level::GetBackground() const
+{
+  return m_ParallaxBackgroundPtr;
+}
+
 void Level::SetPlayerSpawn(const Point2f& position)
 {
   m_PlayerSpawn = position;
@@ -267,6 +269,8 @@ void Level::Load()
 
   m_PlayerSpawn = stream->ReadPoint();
   m_CameraRects = stream->ReadRectVec();
+  m_ParallaxBackgroundPtr->SetMidRect(stream->ReadRect());
+  m_ParallaxBackgroundPtr->SetFrontRect(stream->ReadRect());
   m_BackgroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ForegroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ObjectBlueprints = stream->ReadBlueprintVec();
@@ -282,6 +286,8 @@ void Level::Save() const
 
   stream->Write(m_PlayerSpawn);
   stream->Write(m_CameraRects);
+  stream->Write(m_ParallaxBackgroundPtr->GetMidRect());
+  stream->Write(m_ParallaxBackgroundPtr->GetFrontRect());
   stream->Write(m_BackgroundTilemapPtr->ToRawTileData());
   stream->Write(m_ForegroundTilemapPtr->ToRawTileData());
   stream->Write(m_ObjectBlueprints);
