@@ -12,6 +12,7 @@ public:
   void Update(float elapsedSec, const Rectf& hoveringTile) override;
 
   void OnMouseWheelEvent(const SDL_MouseWheelEvent& e) override;
+  virtual void OnMouseDownEvent(const SDL_MouseButtonEvent& e) override;
 private:
   Level* m_LevelPtr;
 

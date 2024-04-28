@@ -14,21 +14,21 @@ void ObjectTool::Draw(const Camera* cameraPtr) const
 {
   EditTool::Draw(cameraPtr);
 
+  cameraPtr->PushMatrix();
+
   // Man I should really start implementing some UI drawing features
   // for some neater controls etc.. Soon :)
   if (m_CurrentObjectPtr != nullptr) {
     m_CurrentObjectPtr->Draw();
   }
+
+  cameraPtr->PopMatrix();
 }
 
 void ObjectTool::Update(float elapsedSec, const Rectf& hoveringTile)
 {
   if (m_CurrentObjectPtr != nullptr) {
     m_CurrentObjectPtr->SetPosition(Point2f{ hoveringTile.left, hoveringTile.bottom });
-  }
-
-  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT) && m_CurrentObjectPtr != nullptr) {
-    m_LevelPtr->AddBlueprint(ObjectBlueprint(*m_CurrentObjectPtr));
   }
 }
 
@@ -52,5 +52,12 @@ void ObjectTool::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
 
   if (ObjectManager::GetInstance()->ObjectWithIdExists(id)) {
     m_CurrentObjectPtr->SetObjectId(id);
+  }
+}
+
+void ObjectTool::OnMouseDownEvent(const SDL_MouseButtonEvent& e)
+{
+  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT) && m_CurrentObjectPtr != nullptr) {
+    m_LevelPtr->AddBlueprint(ObjectBlueprint(*m_CurrentObjectPtr));
   }
 }

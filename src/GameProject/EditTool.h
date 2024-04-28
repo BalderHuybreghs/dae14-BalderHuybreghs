@@ -18,7 +18,8 @@ public:
 
   // Edit tools can listen to the mousewheel
   virtual void OnMouseWheelEvent(const SDL_MouseWheelEvent& e) {};
-
+  virtual void OnMouseDownEvent(const SDL_MouseButtonEvent& e) {};
+  virtual void OnMouseUpEvent(const SDL_MouseButtonEvent& e) {};
 protected:
   // The name of the tool will be drawn on top of the screen
   EditTool(const std::string& name, const InputManager* inputManagerPtr);

@@ -87,8 +87,8 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
     const float direction{ atan2f(diff.y, diff.x) };
 
     const Vector2f velocity{
-      cos(direction) * distance * 2.f,
-      sin(direction) * distance * 2.f
+      cos(direction) * distance * 5.f,
+      sin(direction) * distance * 5.f
     };
 
     m_Velocity = velocity; // Move the berry towards the player

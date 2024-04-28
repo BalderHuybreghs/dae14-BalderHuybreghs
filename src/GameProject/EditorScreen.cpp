@@ -195,11 +195,16 @@ void EditorScreen::OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
 
 void EditorScreen::OnMouseDownEvent(const SDL_MouseButtonEvent& e)
 {
-
+  if (m_Tool != nullptr) {
+    m_Tool->OnMouseDownEvent(e);
+  }
 }
 
 void EditorScreen::OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 {
+  if (m_Tool != nullptr) {
+    m_Tool->OnMouseUpEvent(e);
+  }
 }
 
 void EditorScreen::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
