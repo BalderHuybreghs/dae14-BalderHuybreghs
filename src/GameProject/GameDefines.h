@@ -30,6 +30,10 @@ static const std::string CHARACTER_FOLDER{ GAMEPLAY_RESOURCE + FS + "character" 
 static const std::string PLAYER_FOLDER{ CHARACTER_FOLDER + FS + "player" };
 static const std::string HAIR_FOLDER{ PLAYER_FOLDER + FS + "hair" };
 static const std::string BACKGROUND_FOLDER{ GAMEPLAY_RESOURCE + FS + "background" };
+static const std::string COLLECTABLE_FOLDER{ GAMEPLAY_RESOURCE + FS + "collectable" };
+static const std::string STRAWBERRY_FOLDER{ COLLECTABLE_FOLDER + FS + "strawberry" };
+static const std::string STRAWBERRY_IDLE{ STRAWBERRY_FOLDER + FS + "idle" };
+static const std::string STRAWBERRY_CONSUMING{ STRAWBERRY_FOLDER + FS + "consuming" };
 
 static const std::string BACKGROUND_SUFFIX_FRONT{ "_f" };
 static const std::string BACKGROUND_SUFFIX_MID{ "_m" };

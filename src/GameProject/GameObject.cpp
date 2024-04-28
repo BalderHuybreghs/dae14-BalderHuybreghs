@@ -10,3 +10,8 @@ Point2f GameObject::GetPosition() const
 {
     return m_Position;
 }
+
+GameObject::GameObject(const Point2f& position)
+  : m_Position(position)
+{
+}

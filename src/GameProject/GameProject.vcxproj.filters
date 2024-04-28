@@ -53,6 +53,9 @@
     <Filter Include="Source Files\Level\EditorTool">
       <UniqueIdentifier>{fe0ce7ce-3bc1-4000-9f80-f3b5308764c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity\Collectable">
+      <UniqueIdentifier>{952fcc7a-5ef7-4b3d-9a50-b3df5e72dfbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -169,6 +172,15 @@
     <ClCompile Include="RectangleTool.cpp">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
+    <ClCompile Include="Strawberry.cpp">
+      <Filter>Source Files\Entity\Collectable</Filter>
+    </ClCompile>
+    <ClCompile Include="DeathZoneTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -283,6 +295,15 @@
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
     <ClInclude Include="RectangleTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="Strawberry.h">
+      <Filter>Source Files\Entity\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathZoneTool.h">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
   </ItemGroup>

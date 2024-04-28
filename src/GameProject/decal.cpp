@@ -9,7 +9,7 @@ void Decal::Update(Player& player, Camera& camera, float elapsedSec)
 {
 }
 
-void Decal::Draw(Point2f position, bool debug) const
+void Decal::Draw(const Point2f& position, bool debug) const
 {
 }
 

@@ -25,6 +25,8 @@ public:
 
   void SetFrame(int frame);
 
+  bool IsAnimationDone() const;
+
   struct StateInfo
   {
     int id;

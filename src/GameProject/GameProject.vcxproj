@@ -163,6 +163,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraTool.cpp" />
     <ClCompile Include="CircleShape.cpp" />
+    <ClCompile Include="DeathZoneTool.cpp" />
     <ClCompile Include="Decal.cpp" />
     <ClCompile Include="EditTool.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -171,6 +172,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="ObjectBlueprint.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ObjectTool.cpp" />
     <ClCompile Include="ParallaxBackground.cpp" />
     <ClCompile Include="PlayingScreen.cpp" />
     <ClCompile Include="RectangleTool.cpp" />
@@ -191,6 +193,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Strawberry.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="ResourceUtils.cpp" />
     <ClCompile Include="Tilemap.cpp" />
@@ -203,6 +206,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraTool.h" />
     <ClInclude Include="CircleShape.h" />
+    <ClInclude Include="DeathZoneTool.h" />
     <ClInclude Include="Decal.h" />
     <ClInclude Include="EditTool.h" />
     <ClInclude Include="GameObject.h" />
@@ -211,6 +215,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ObjectBlueprint.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ObjectTool.h" />
     <ClInclude Include="ParallaxBackground.h" />
     <ClInclude Include="PlayingScreen.h" />
     <ClInclude Include="RectangleTool.h" />
@@ -231,6 +236,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Strawberry.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="ResourceUtils.h" />
     <ClInclude Include="Tilemap.h" />

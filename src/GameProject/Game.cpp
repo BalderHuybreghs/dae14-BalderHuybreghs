@@ -3,6 +3,7 @@
 #include "ObjectManager.h"
 #include "TextureManager.h"
 #include "GameDefines.h"
+#include "ObjectFactory.h"
 
 Game::Game(const Window& window, GameScreen* initialScreenPtr)
 	: BaseGame{ window }
@@ -17,6 +18,9 @@ Game::~Game()
 
 void Game::Initialize(GameScreen* initialScreenPtr)
 {
+  // Register game objects
+  ObjectFactory::RegisterGameObjects();
+
   m_ScreenManagerPtr = new ScreenManager();
   m_ScreenManagerPtr->SetScreen(initialScreenPtr);
 }

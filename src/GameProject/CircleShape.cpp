@@ -18,7 +18,7 @@ CircleShape::CircleShape(const CircleShape& other)
   m_Radius = circle.radius;
 }
 
-bool CircleShape::CollidesWith(const Shape& shape)
+bool CircleShape::CollidesWith(const Shape& shape) const
 {
   if (!ShouldTestCollisionWith(shape)) {
     return false;
@@ -41,7 +41,7 @@ bool CircleShape::CollidesWith(const Shape& shape)
   return false;
 }
 
-bool CircleShape::IsPointInside(const Point2f& point)
+bool CircleShape::IsPointInside(const Point2f& point) const
 {
   return utils::IsPointInCircle(point, GetShape());
 }
@@ -51,7 +51,7 @@ void CircleShape::Draw() const
   utils::SetColor(m_Color);
 
   if (m_Filled) {
-    utils::DrawEllipse(m_Position.x, m_Position.y, m_Radius, m_Radius);
+    utils::FillEllipse(m_Position.x, m_Position.y, m_Radius, m_Radius);
   } else {
     utils::DrawEllipse(m_Position.x, m_Position.y, m_Radius, m_Radius);
   }

@@ -12,7 +12,7 @@ public:
   virtual ~GameObject() = default;
 
   // Objects should have the ability to be drawn at any given position regadless of their own
-  virtual void Draw(Point2f position, bool debug = false) const = 0;
+  virtual void Draw(const Point2f& position, bool debug = false) const = 0;
   virtual void Draw(bool debug = false) const = 0;
 
   // All objects get information about the player and may manipulate the player as desired
@@ -25,10 +25,10 @@ public:
   // Allows for cloning the given gameobject
   virtual GameObject* Clone() const = 0;
  
-  void SetPosition(const Point2f& position);
+  virtual void SetPosition(const Point2f& position);
   Point2f GetPosition() const;
 protected:
-  GameObject(Point2f position) {};
+  GameObject(const Point2f& position);
 
   Point2f m_Position;
 };

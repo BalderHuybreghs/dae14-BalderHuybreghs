@@ -13,12 +13,12 @@ ObjectBlueprint::ObjectBlueprint(int objectId, Point2f position)
 void ObjectBlueprint::Draw() const
 {
   // Blueprints will draw with debug info by default
-  ObjectManager::GetInstance()->GetBlueprintObject(m_ObjectId)->Draw(true);
+  ObjectManager::GetInstance()->GetBlueprintObject(m_ObjectId)->Draw(m_Position, true);
 }
 
 GameObject* ObjectBlueprint::Construct() const
 {
-  std::cout << "Constructing object '" << m_ObjectId << "' at (" << m_Position.x << ', ' << m_Position.y << ")" << std::endl;
+  std::cout << "Constructing object '" << m_ObjectId << "' at (" << m_Position.x << ", " << m_Position.y << ")" << std::endl;
   GameObject* obj{ ObjectManager::GetInstance()->CloneObject(m_ObjectId) };
   obj->SetPosition(m_Position);
   return obj;

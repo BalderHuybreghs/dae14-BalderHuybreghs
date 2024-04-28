@@ -6,8 +6,8 @@ class Shape
 public:
   virtual ~Shape() = default;
 
-  virtual bool CollidesWith(const Shape& shape) = 0;
-  virtual bool IsPointInside(const Point2f& point) = 0;
+  virtual bool CollidesWith(const Shape& shape) const = 0;
+  virtual bool IsPointInside(const Point2f& point) const = 0;
 
   virtual void Draw() const = 0;
 

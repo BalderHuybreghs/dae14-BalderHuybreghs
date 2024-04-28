@@ -4,9 +4,7 @@
 // The object factory simplifies object creation behind functions
 namespace ObjectFactory
 {
-  GameObject* CreateSpikes();
-  GameObject* CreateTilemapForsakenCity();
-  GameObject* CreateSpriteCheckpoint();
+  GameObject* CreateStrawberry();
 
   // Registers all the gameobjects with the object manager
   void RegisterGameObjects();

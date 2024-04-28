@@ -7,10 +7,9 @@
 class ParallaxBackground
 {
 public:
-  ParallaxBackground(const std::string& resource, const Rectf& midRect, const Rectf& frontRect); // Loads both a foreground AND a background texture
+  ParallaxBackground(const std::string& resource, const Rectf& backRect, const Rectf& frontRect); // Loads both a foreground AND a background texture
   ParallaxBackground(const std::string& resource);
 
-  
   void Draw(const Camera& camera, bool debug = false) const;
 
   Rectf GetMidRect() const;
@@ -20,10 +19,9 @@ public:
   void SetFrontRect(const Rectf& rect);
 private:
   // Rectangles for relativistic background movement
-  Rectf m_MidRectangle;
+  Rectf m_BackRectangle;
   Rectf m_FrontRectangle;
 
   const Texture* m_BackTexturePtr;
-  const Texture* m_MidTexturePtr;
   const Texture* m_FrontTexturePtr;
 };

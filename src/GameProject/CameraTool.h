@@ -10,10 +10,8 @@ public:
 
   void Update(float elapsedSec, const Rectf& hoveringTile) override;
 
-protected:
-  void OnPaintRect(const Rectf& rect) override;
-
 private:
+  void OnPaintRect(const Rectf& rect) override;
 
   Level* m_LevelPtr;
 };

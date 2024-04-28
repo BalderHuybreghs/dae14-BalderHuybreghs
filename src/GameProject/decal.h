@@ -13,7 +13,7 @@ public:
 
 private:
   // Inherited via GameObject
-  void Draw(Point2f position, bool debug) const override;
+  void Draw(const Point2f& position, bool debug) const override;
   GameObject* Clone() const override;
 
   Texture* m_TexturePtr;

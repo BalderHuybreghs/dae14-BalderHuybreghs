@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "RectangleShape.h"
 #include "BinaryStream.h"
+#include "ObjectManager.h"
 
 #include <iostream>
 #include <fstream>
@@ -78,7 +79,12 @@ void Level::Build()
   }
 
   for (const ObjectBlueprint objectBlueprint : m_ObjectBlueprints) {
-    objectBlueprint.Construct();
+    if (!ObjectManager::GetInstance()->ObjectWithIdExists(objectBlueprint.GetObjectId())) {
+      std::cerr << "Object with ID " << objectBlueprint.GetObjectId() << " does not exist in registry, skipping" << std::endl;
+      continue;
+    }
+
+    m_ObjectPtrs.push_back(objectBlueprint.Construct());
   }
 
   // Queue the music :-)
@@ -108,16 +114,16 @@ void Level::DrawForeground(Camera& camera, bool debug) const
   m_ParticleEmitterMidPtr->Draw(debug); // Draw the middle particle emitter
   camera.PopMatrix();
 
-  // Draw the objects in between the two tilemaps
-  for (const GameObject* object : m_ObjectPtrs) {
-    object->Draw(debug);
-  }
-
   // Draw all the object blueprints in debug mode
   if (debug) {
     for (const ObjectBlueprint objectBlueprint : m_ObjectBlueprints) {
       objectBlueprint.Draw();
     }
+  }
+
+  // Draw the objects in between the two tilemaps
+  for (const GameObject* object : m_ObjectPtrs) {
+    object->Draw(debug);
   }
 
   // Draw the foreground tilemap

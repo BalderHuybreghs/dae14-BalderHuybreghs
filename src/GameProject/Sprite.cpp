@@ -62,7 +62,7 @@ void Sprite::Draw(const Point2f& position, float scale, bool flipped, bool debug
 
 void Sprite::Draw(const Point2f& position, bool flipped, bool debug) const
 {
-  Draw(position, 1.f, flipped, debug);
+  Draw(position, PIXEL_SCALE, flipped, debug);
 }
 
 void Sprite::Update(float elapsedSec)
@@ -108,4 +108,9 @@ void Sprite::SetFrame(int frame)
   }
 
   m_Frame = frame;
+}
+
+bool Sprite::IsAnimationDone() const
+{
+    return m_Frame >= m_State.frames -1;
 }

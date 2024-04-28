@@ -18,7 +18,7 @@ RectangleShape::RectangleShape(const RectangleShape& other)
   m_Size = Point2f{ shape.width, shape.height };
 }
 
-bool RectangleShape::CollidesWith(const Shape& shape)
+bool RectangleShape::CollidesWith(const Shape& shape) const
 {
   if (!ShouldTestCollisionWith(shape)) {
     return false;
@@ -41,7 +41,7 @@ bool RectangleShape::CollidesWith(const Shape& shape)
   return false;
 }
 
-bool RectangleShape::IsPointInside(const Point2f& point)
+bool RectangleShape::IsPointInside(const Point2f& point) const
 {
   return utils::IsPointInRect(point, GetShape());
 }

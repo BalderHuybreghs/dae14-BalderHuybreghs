@@ -10,9 +10,9 @@ public:
   RectangleShape& operator=(const RectangleShape& other) = delete;
   virtual ~RectangleShape() override = default;
 
-  virtual bool CollidesWith(const Shape& shape) override;
+  virtual bool CollidesWith(const Shape& shape) const override;
 
-  virtual bool IsPointInside(const Point2f& point) override;
+  virtual bool IsPointInside(const Point2f& point) const override;
 
   virtual void Draw() const override;
 
