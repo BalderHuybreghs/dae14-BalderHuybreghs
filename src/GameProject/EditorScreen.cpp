@@ -10,6 +10,7 @@
 #include "CameraTool.h"
 #include "BackgroundTool.h"
 #include "ObjectTool.h"
+#include "DeathZoneTool.h"
 
 using namespace utils;
 
@@ -39,19 +40,21 @@ void EditorScreen::Initialize()
   }
 
   // Create the tools
-  m_Tools.reserve(5);
+  m_Tools.reserve(6);
 
   TilemapTool* frontTilemapTool{ new TilemapTool(m_LevelPtr->GetFrontTilemap(), m_InputManagerPtr) };
   TilemapTool* backTilemapTool{ new TilemapTool(m_LevelPtr->GetBackTilemap(), m_InputManagerPtr) };
   CameraTool* cameraTool{ new CameraTool(m_LevelPtr, m_InputManagerPtr) };
   BackgroundTool* backgroundTool{ new BackgroundTool(m_LevelPtr->GetBackground(), m_InputManagerPtr)};
   ObjectTool* objectTool{ new ObjectTool(m_LevelPtr, m_InputManagerPtr) };
+  DeathZoneTool* deathZoneTool{ new DeathZoneTool(m_LevelPtr, m_InputManagerPtr) };
 
   m_Tools.push_back(frontTilemapTool);
   m_Tools.push_back(backTilemapTool);
   m_Tools.push_back(cameraTool);
   m_Tools.push_back(backgroundTool);
   m_Tools.push_back(objectTool);
+  m_Tools.push_back(deathZoneTool);
 
   m_Tool = m_Tools.front();
 }

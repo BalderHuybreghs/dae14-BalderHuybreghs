@@ -19,7 +19,8 @@ public:
     Crouching,
     Falling,
     Jumping,
-    Pushing
+    Pushing,
+    Dead
   };
 
   Player(const Point2f& position);
@@ -64,6 +65,8 @@ public:
   State GetState() const;
 
   bool IsGrounded() const;
+
+  void Kill(); // Instantly kills the player (as Celeste does not work with a health / damage system)
 private:
   // Collision handling stuff
   void HandleCollision(float elapsedSec, const Tilemap& tilemap);

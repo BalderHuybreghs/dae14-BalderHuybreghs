@@ -144,11 +144,18 @@ void Level::DrawForeground(Camera& camera, bool debug) const
   utils::FillRect(Point2f{
       m_PlayerSpawn.x,
       m_PlayerSpawn.y
-                  }, PLAYER_SCALE, PLAYER_SCALE);
+  }, PLAYER_SCALE, PLAYER_SCALE);
+
+  // Draw the death zones
+  for (const Rectf& rect : m_DeathZones) {
+    utils::SetColor(Color4f{ 0.8f, 0.f, 0.f, 0.5f });
+    utils::FillRect(rect);
+  }
 
   // Draw all the camera rects
   for (const Rectf& rect : m_CameraRects) {
-    utils::DrawRect(rect);
+    utils::SetColor(Color4f{ 0.f, 0.f, 1.f, 1.f });
+    utils::DrawRect(rect, 2.f);
   }
 }
 
@@ -215,7 +222,6 @@ bool Level::RemoveBlueprint(const Point2f& position)
     const Rectf blueprintRect = m_ForegroundTilemapPtr->GetTileRect(blueprint.GetPosition());
 
     if (IsPointInRect(position, blueprintRect)) {
-      // Remove this value from camerarects
       m_ObjectBlueprints.erase(it);
       return true;
     }
@@ -230,11 +236,11 @@ void Level::AddCameraRect(const Rectf& rect)
   m_CameraRects.push_back(rect);
 }
 
-bool Level::RemoveCameraRect(const Point2f& point)
+bool Level::RemoveCameraRect(const Point2f& position)
 {
   for (std::vector<Rectf>::iterator it = m_CameraRects.begin(); it != m_CameraRects.end(); ++it) {
     const Rectf& rect = *it;
-    if (IsPointInRect(point, rect)) {
+    if (IsPointInRect(position, rect)) {
       // Remove this value from camerarects
       m_CameraRects.erase(it);
       return true;
@@ -255,6 +261,25 @@ Rectf Level::GetCameraRect(const Player& player)
   }
 
   return player.GetCollisionShape()->GetShape();
+}
+
+void Level::AddDeathZone(const Rectf& rect)
+{
+  m_DeathZones.push_back(rect);
+}
+
+bool Level::RemoveDeathZone(const Point2f position)
+{
+  for (std::vector<Rectf>::iterator it = m_DeathZones.begin(); it != m_DeathZones.end(); ++it) {
+    const Rectf& rect = *it;
+    if (IsPointInRect(position, rect)) {
+      // Remove this value from the deathzones
+      m_DeathZones.erase(it);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 Tilemap* Level::GetFrontTilemap() const
@@ -293,6 +318,7 @@ void Level::Load()
 
   m_PlayerSpawn = stream->ReadPoint();
   m_CameraRects = stream->ReadRectVec();
+  m_DeathZones = stream->ReadRectVec();
   m_ParallaxBackgroundPtr->SetMidRect(stream->ReadRect());
   m_ParallaxBackgroundPtr->SetFrontRect(stream->ReadRect());
   m_BackgroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
@@ -310,6 +336,7 @@ void Level::Save() const
 
   stream->Write(m_PlayerSpawn);
   stream->Write(m_CameraRects);
+  stream->Write(m_DeathZones);
   stream->Write(m_ParallaxBackgroundPtr->GetMidRect());
   stream->Write(m_ParallaxBackgroundPtr->GetFrontRect());
   stream->Write(m_BackgroundTilemapPtr->ToRawTileData());

@@ -290,6 +290,11 @@ bool Player::IsGrounded() const
   return m_IsGrounded;
 }
 
+void Player::Kill()
+{
+  m_State = State::Dead; // No matter the state, when the player is killed, they die... Who would have thought?
+}
+
 void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
 {
   const Point2f nextPlayerPos{

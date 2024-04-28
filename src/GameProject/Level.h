@@ -33,8 +33,12 @@ public:
   // Adds a camera position if it isn't overlapping with an existing one
   // Returns true if the camera managed to add the rect
   void AddCameraRect(const Rectf& rect); 
-  bool RemoveCameraRect(const Point2f& point); // Removes a camera rect at a point, returns if it found a rect to remove
+  bool RemoveCameraRect(const Point2f& position); // Removes a camera rect at a point, returns if it found a rect to remove
   Rectf GetCameraRect(const Player& player); // Gets the camera rect the player is in
+
+  // For adding and removing death zones
+  void AddDeathZone(const Rectf& rect);
+  bool RemoveDeathZone(const Point2f position);
 
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
@@ -61,6 +65,9 @@ private:
   // A list of valid camera rects, when the player enters the rect
   // the camera will lerp over to it's position
   std::vector<Rectf> m_CameraRects;
+
+  // A list of zones in which when the player enters them, they die
+  std::vector<Rectf> m_DeathZones;
 
   // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBackPtr;

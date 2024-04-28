@@ -82,9 +82,9 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
 
   // Hacky debug thingamabob
   camera.PushMatrix();
-  utils::SetColor(Color4f{0.f, 0.f, 1.f, 1.f});
-  utils::DrawRect(m_BackRectangle);
-  utils::DrawRect(m_FrontRectangle);
+  utils::SetColor(Color4f{0.f, 0.4f, 0.f, 1.f});
+  utils::DrawRect(m_BackRectangle, 4.f);
+  utils::DrawRect(m_FrontRectangle, 4.f);
   camera.PopMatrix();
 }
 
