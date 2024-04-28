@@ -26,6 +26,7 @@ Player::Player(const Point2f& position)
   m_SpritePtr->AddResource(PLAYER_FALL_RESOURCE);
   m_SpritePtr->AddResource(PLAYER_JUMP_RESOURCE);
   m_SpritePtr->AddResource(PLAYER_PUSH_RESOURCE);
+  m_SpritePtr->AddResource(PLAYER_DEATH_RESOURCE);
 
   m_HairPtr = new Hair(m_Position, 3, HAIR_SCALE);
 

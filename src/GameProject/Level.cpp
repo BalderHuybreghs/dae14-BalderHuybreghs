@@ -161,6 +161,14 @@ void Level::DrawForeground(Camera& camera, bool debug) const
 
 void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
+  // Check if the player hit any death zones
+  for (const Rectf& zone : m_DeathZones) {
+    if (IsOverlapping(player.GetCollisionShape()->GetShape(), zone)) {
+      player.Kill();
+      break;
+    }
+  }
+
   // Update all the level gameobjects
   for (GameObject* object : m_ObjectPtrs) {
     object->Update(player, camera, elapsedSec);

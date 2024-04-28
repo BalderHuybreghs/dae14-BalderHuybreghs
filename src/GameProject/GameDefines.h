@@ -53,6 +53,7 @@ static const std::string PLAYER_CLIMB_RESOURCE{ PLAYER_FOLDER + FS + "climb" };
 static const std::string PLAYER_RUN_RESOURCE{ PLAYER_FOLDER + FS + "run_fast" };
 static const std::string PLAYER_WALK_RESOURCE{ PLAYER_FOLDER + FS + "walk" };
 static const std::string PLAYER_PUSH_RESOURCE{ PLAYER_FOLDER + FS + "push" };
+static const std::string PLAYER_DEATH_RESOURCE{ PLAYER_FOLDER + FS + "death" };
 
 static const std::string BANGS_RESOURCE{ HAIR_FOLDER + FS + "bangs" };
 static const std::string HAIR_RESOURCE{ HAIR_FOLDER + FS + "hair" };
