@@ -2,7 +2,7 @@
 #include "RectangleTool.h"
 
 RectangleTool::RectangleTool(const std::string& name, const InputManager* inputManagerPtr)
-  : EditTool(name, inputManagerPtr), m_IsDrawing(false), m_StartPosition(Point2f()), m_EndPosition(Point2f())
+  : EditTool(name, inputManagerPtr), m_IsDrawing(false), m_BottomLeft(Point2f()), m_TopRight(Point2f())
 {
 }
 
@@ -13,7 +13,7 @@ void RectangleTool::Draw(const Camera* cameraPtr) const
   // Draw the current rect if the user is drawing
   if (m_IsDrawing) {
     cameraPtr->PushMatrix();
-    utils::SetColor(Color4f{ 0.5f, 1.f, 1.f, 1.f }); // Random color lol
+    utils::SetColor(Color4f{ 0.5f, 0.5f, 0.5f, 1.f }); // Random color lol
     utils::DrawRect(GetRect());
     cameraPtr->PopMatrix();
   }
@@ -24,11 +24,21 @@ void RectangleTool::Update(float elapsedSec, const Rectf& hoveringTile)
   if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT)) {
     if (m_IsDrawing) {
       const Point2f position{
-        hoveringTile.left + hoveringTile.width,
-        hoveringTile.bottom + hoveringTile.height
+        hoveringTile.left,
+        hoveringTile.bottom
       };
 
-      m_EndPosition = position;
+      // Take the biggest values as the end position and the smallest values as the start position
+      m_TopRight = Point2f{
+        std::max(position.x + hoveringTile.width, std::max(m_BottomLeft.x, m_TopRight.x)),
+        std::max(position.y + hoveringTile.height, std::max(m_BottomLeft.y, m_TopRight.y))
+      };
+
+      m_BottomLeft = Point2f{
+        std::min(position.x - hoveringTile.width, std::min(m_BottomLeft.x, m_TopRight.x)),
+        std::min(position.y - hoveringTile.height, std::min(m_BottomLeft.y, m_TopRight.x))
+      };
+
       return;
     }
 
@@ -37,7 +47,8 @@ void RectangleTool::Update(float elapsedSec, const Rectf& hoveringTile)
       hoveringTile.bottom
     };
 
-    m_StartPosition = position;
+    m_TopRight = position;
+    m_BottomLeft = position;
     m_IsDrawing = true;
   } else {
     if (m_IsDrawing) {
@@ -51,9 +62,9 @@ void RectangleTool::Update(float elapsedSec, const Rectf& hoveringTile)
 Rectf RectangleTool::GetRect() const
 {
   return Rectf(
-    m_StartPosition.x,
-    m_StartPosition.y,
-    m_EndPosition.x - m_StartPosition.x,
-    m_EndPosition.y - m_StartPosition.y
+    m_BottomLeft.x,
+    m_BottomLeft.y,
+    m_TopRight.x - m_BottomLeft.x,
+    m_TopRight.y - m_BottomLeft.y
   );
 }

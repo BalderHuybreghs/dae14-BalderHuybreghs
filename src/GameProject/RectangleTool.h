@@ -21,8 +21,8 @@ private:
   // These are specific to the rectangle tool, inheriting tools do not need to know of them
   Rectf GetRect() const; // Gets the rectangle from both positions
 
-  Point2f m_StartPosition; // The position where the user started drawing
-  Point2f m_EndPosition; // The position where the user ended drawing
+  Point2f m_BottomLeft; // The position where the user started drawing
+  Point2f m_TopRight; // The position where the user ended drawing
   bool m_IsDrawing; // Determine if the user is rawing
 };
 
