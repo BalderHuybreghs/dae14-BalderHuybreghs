@@ -11,7 +11,7 @@ Strawberry::Strawberry(const Point2f& position)
   m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, STRAWBERRY_IDLE);
   m_SpritePtr->AddResource(STRAWBERRY_CONSUMING);
 
-  m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f}, true );
+  m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f}, true);
 }
 
 // Only the position is relevant for strawberries

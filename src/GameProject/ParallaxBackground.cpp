@@ -68,8 +68,8 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
     frontPosition.y / (m_FrontRectangle.height - WINDOW_HEIGHT)
   };
 
-  const Rectf srcRectBack{ backProgress.x * m_BackTexturePtr->GetWidth(), backProgress.y * m_BackTexturePtr->GetHeight(), m_BackTexturePtr->GetWidth() * backScale.x, m_BackTexturePtr->GetHeight() * backScale.y };
-  const Rectf srcRectFront{ frontProgress.x * m_BackTexturePtr->GetWidth(), frontProgress.y * m_BackTexturePtr->GetHeight(), WINDOW_WIDTH * frontScale.x, WINDOW_HEIGHT * frontScale.y };
+  const Rectf srcRectBack{ backProgress.x * m_BackTexturePtr->GetWidth(), backProgress.y * m_BackTexturePtr->GetHeight(), m_BackTexturePtr->GetWidth(), m_BackTexturePtr->GetHeight() };
+  const Rectf srcRectFront{ frontProgress.x * m_BackTexturePtr->GetWidth(), frontProgress.y * m_BackTexturePtr->GetHeight(), m_BackTexturePtr->GetWidth(), m_BackTexturePtr->GetHeight() };
 
   const Rectf dstRect{ 0.f, 0.f, WINDOW_WIDTH, WINDOW_HEIGHT};
 

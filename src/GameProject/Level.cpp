@@ -161,6 +161,11 @@ void Level::DrawForeground(Camera& camera, bool debug) const
 
 void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
+  // The player dies if below Y 0, this in case the player ever gets out of bounds somehow
+  if (player.GetPosition().y < 0) {
+    player.Kill();
+  }
+
   // Check if the player hit any death zones
   for (const Rectf& zone : m_DeathZones) {
     if (IsOverlapping(player.GetCollisionShape()->GetShape(), zone)) {
