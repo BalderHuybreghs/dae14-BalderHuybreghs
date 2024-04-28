@@ -206,6 +206,24 @@ void Level::AddBlueprint(const ObjectBlueprint& blueprint)
   m_ObjectBlueprints.push_back(blueprint);
 }
 
+bool Level::RemoveBlueprint(const Point2f& position)
+{
+  for (std::vector<ObjectBlueprint>::iterator it = m_ObjectBlueprints.begin(); it != m_ObjectBlueprints.end(); ++it) {
+    const ObjectBlueprint& blueprint = *it;
+
+    // Get the tilemap position of the blueprint
+    const Rectf blueprintRect = m_ForegroundTilemapPtr->GetTileRect(blueprint.GetPosition());
+
+    if (IsPointInRect(position, blueprintRect)) {
+      // Remove this value from camerarects
+      m_ObjectBlueprints.erase(it);
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void Level::AddCameraRect(const Rectf& rect)
 {
   // Check if the rect is not colliding with any other camera rects

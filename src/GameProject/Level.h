@@ -28,6 +28,7 @@ public:
    
   // Adds an object by pointer
   void AddBlueprint(const ObjectBlueprint& blueprint);
+  bool RemoveBlueprint(const Point2f& position); // Removes a blueprint
 
   // Adds a camera position if it isn't overlapping with an existing one
   // Returns true if the camera managed to add the rect

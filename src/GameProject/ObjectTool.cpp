@@ -30,6 +30,10 @@ void ObjectTool::Update(float elapsedSec, const Rectf& hoveringTile)
   if (m_CurrentObjectPtr != nullptr) {
     m_CurrentObjectPtr->SetPosition(Point2f{ hoveringTile.left, hoveringTile.bottom });
   }
+
+  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_RIGHT)) {
+    m_LevelPtr->RemoveBlueprint(hoveringTile.Center());
+  }
 }
 
 void ObjectTool::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
@@ -57,7 +61,11 @@ void ObjectTool::OnMouseWheelEvent(const SDL_MouseWheelEvent& e)
 
 void ObjectTool::OnMouseDownEvent(const SDL_MouseButtonEvent& e)
 {
-  if (m_InputManagerPtr->IsMouseDown(SDL_BUTTON_LEFT) && m_CurrentObjectPtr != nullptr) {
-    m_LevelPtr->AddBlueprint(ObjectBlueprint(*m_CurrentObjectPtr));
+  switch (e.button) {
+  case SDL_BUTTON_LEFT:
+    if (m_CurrentObjectPtr != nullptr) {
+      m_LevelPtr->AddBlueprint(ObjectBlueprint(*m_CurrentObjectPtr));
+    }
+    break;
   }
 }
