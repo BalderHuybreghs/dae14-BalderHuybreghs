@@ -163,6 +163,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraTool.cpp" />
     <ClCompile Include="CircleShape.cpp" />
+    <ClCompile Include="DashRefill.cpp" />
     <ClCompile Include="DeathZoneTool.cpp" />
     <ClCompile Include="Decal.cpp" />
     <ClCompile Include="EditTool.cpp" />
@@ -206,6 +207,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraTool.h" />
     <ClInclude Include="CircleShape.h" />
+    <ClInclude Include="DashRefill.h" />
     <ClInclude Include="DeathZoneTool.h" />
     <ClInclude Include="Decal.h" />
     <ClInclude Include="EditTool.h" />

@@ -6,7 +6,7 @@
 #include "utils.h"
 
 Strawberry::Strawberry(const Point2f& position)
-  : GameObject::GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
+  : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
 {
   m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, STRAWBERRY_IDLE);
   m_SpritePtr->AddResource(STRAWBERRY_CONSUMING);
@@ -16,12 +16,8 @@ Strawberry::Strawberry(const Point2f& position)
 
 // Only the position is relevant for strawberries
 Strawberry::Strawberry(const Strawberry& other)
-  : GameObject::GameObject(other.GetPosition()), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
+  : Strawberry(other.GetPosition())
 {
-  m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, STRAWBERRY_IDLE);
-  m_SpritePtr->AddResource(STRAWBERRY_CONSUMING);
-
-  m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f }, true);
 }
 
 Strawberry::~Strawberry()

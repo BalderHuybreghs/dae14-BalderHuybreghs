@@ -181,6 +181,9 @@
     <ClCompile Include="DeathZoneTool.cpp">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
+    <ClCompile Include="DashRefill.cpp">
+      <Filter>Source Files\Entity\Collectable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -305,6 +308,9 @@
     </ClInclude>
     <ClInclude Include="DeathZoneTool.h">
       <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="DashRefill.h">
+      <Filter>Source Files\Entity\Collectable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

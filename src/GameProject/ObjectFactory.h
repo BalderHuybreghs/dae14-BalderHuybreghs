@@ -5,6 +5,7 @@
 namespace ObjectFactory
 {
   GameObject* CreateStrawberry();
+  GameObject* CreateDashRefill();
 
   // Registers all the gameobjects with the object manager
   void RegisterGameObjects();
