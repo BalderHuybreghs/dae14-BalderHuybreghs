@@ -31,7 +31,9 @@ private:
   State m_State;
 
   int m_Size;               // The size of the cumbleblock
-  float m_CrumbleTime; // The time it takes for the block to crumble
-  float m_Time;        // The general timer variable used to detect when the block should fall appart
+  float m_CrumbleTime;      // The time it takes for the block to crumble
+  float m_Time;             // The general timer variable used to detect when the block should fall appart
+
+  Point2f m_PlayerPosBeforeCollision; // The player position before collision
 };
 

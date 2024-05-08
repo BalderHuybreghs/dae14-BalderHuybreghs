@@ -5,7 +5,7 @@
 #include "MathUtils.h"
 
 CrumbleBlock::CrumbleBlock(const Point2f& position, int size, float crumbleTime, const std::string& resource)
-  : GameObject(position), m_Size(size), m_CrumbleTime(crumbleTime), m_Resource(resource), m_Time(0), m_State(State::Stable)
+  : GameObject(position), m_Size(size), m_CrumbleTime(crumbleTime), m_Resource(resource), m_Time(0), m_State(State::Stable), m_PlayerPosBeforeCollision(Point2f{})
 {
   m_Texture = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + resource);
   m_OutlineTexture = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + CRUMBLE_BLOCK_OUTLINE);
@@ -18,16 +18,16 @@ CrumbleBlock::CrumbleBlock(const CrumbleBlock& other)
 
 void CrumbleBlock::Draw(const Point2f& position, bool debug) const
 {
-  // Create the sourcerect
-  const Rectf srcRect{
-    0.f,
-    0.f,
-    TILE_SIZE,
-    TILE_SIZE
-  };
-
   // Draw all the tiles of the crumbleblock
   for (size_t tile{ 0 }; tile < m_Size; ++tile) {
+    // Create the sourcerect
+    const Rectf srcRect{
+      tile > 0 ? TILE_SIZE : (tile == m_Size -1 ? TILE_SIZE * 2 : 0.f),
+      0.f,
+      TILE_SIZE,
+      TILE_SIZE
+    };
+
     Rectf dstRect{
       position.x + (TILE_SIZE * PIXEL_SCALE * tile),
       position.y,
@@ -65,9 +65,17 @@ void CrumbleBlock::Update(Player& player, Camera& camera, float elapsedSec)
     TILE_SIZE* PIXEL_SCALE
   };
 
+  bool collided{ IsOverlapping(collisionRect, player.GetCollisionShape()->GetShape()) };
+  if (collided && m_State != State::Gone) {
+    player.SetPosition(m_PlayerPosBeforeCollision);
+    player.SetVelocity(Vector2f(player.GetVelocity().x, 0.f));
+  } else {
+    m_PlayerPosBeforeCollision = player.GetPosition();
+  }
+
   switch (m_State) {
   case State::Stable:
-    if (player.IsGrounded() && IsOverlapping(collisionRect, player.GetCollisionShape()->GetShape())) {
+    if (collided && player.GetPosition().y >= collisionRect.bottom + collisionRect.height) {
       m_State = State::Unstable;
     }
     break;
