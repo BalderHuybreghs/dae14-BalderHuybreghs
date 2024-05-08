@@ -33,12 +33,15 @@ static const std::string BACKGROUND_FOLDER{ GAMEPLAY_RESOURCE + FS + "background
 static const std::string COLLECTABLE_FOLDER{ GAMEPLAY_RESOURCE + FS + "collectable" };
 static const std::string OBJECTS_FOLDER{ GAMEPLAY_RESOURCE + FS + "objects" };
 static const std::string STRAWBERRY_FOLDER{ COLLECTABLE_FOLDER + FS + "strawberry" };
+static const std::string CRUMBLE_BLOCK_FOLDER{ OBJECTS_FOLDER + FS + "crumbleBlock" };
 static const std::string REFILL_FOLDER{ OBJECTS_FOLDER + FS + "refill" };
 static const std::string REFILL_IDLE{ REFILL_FOLDER + FS + "idle" };
 static const std::string REFILL_OUTLINE{ REFILL_FOLDER + FS + "outline" };
 static const std::string REFILL_FLASH{ REFILL_FOLDER + FS + "flash" };
 static const std::string STRAWBERRY_IDLE{ STRAWBERRY_FOLDER + FS + "idle" };
 static const std::string STRAWBERRY_CONSUMING{ STRAWBERRY_FOLDER + FS + "consuming" };
+static const std::string CRUMBLE_BLOCK_DEFAULT{ "default" };
+static const std::string CRUMBLE_BLOCK_OUTLINE{ "outline" };
 
 static const std::string BACKGROUND_SUFFIX_FRONT{ "_f" };
 static const std::string BACKGROUND_SUFFIX_MID{ "_m" };

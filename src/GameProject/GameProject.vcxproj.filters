@@ -14,14 +14,8 @@
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{c5d35db0-8435-45b8-88eb-3213502cafde}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entity">
-      <UniqueIdentifier>{a9146af0-4597-4024-94a8-bd808bcf8b67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Core\Manager">
       <UniqueIdentifier>{ae7c9620-de64-4107-baa0-66a41c9a7fe7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entity\Player">
-      <UniqueIdentifier>{3b4f960d-5642-474c-9747-50dbff1a4c03}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Core\Kinematics">
       <UniqueIdentifier>{e21de479-8885-4c02-913e-08fdfbe30441}</UniqueIdentifier>
@@ -53,8 +47,17 @@
     <Filter Include="Source Files\Level\EditorTool">
       <UniqueIdentifier>{fe0ce7ce-3bc1-4000-9f80-f3b5308764c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entity\Collectable">
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{ec8a92e3-7bc0-4375-86a1-c5b0c4a3678e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Collectable">
       <UniqueIdentifier>{952fcc7a-5ef7-4b3d-9a50-b3df5e72dfbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Player">
+      <UniqueIdentifier>{3b4f960d-5642-474c-9747-50dbff1a4c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Interactable">
+      <UniqueIdentifier>{226c5568-1973-48c1-aaae-f218314d156d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -101,10 +104,10 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source Files\Entity\Player</Filter>
+      <Filter>Source Files\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="Hair.cpp">
-      <Filter>Source Files\Entity\Player</Filter>
+      <Filter>Source Files\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="Joint.cpp">
       <Filter>Source Files\Core\Kinematics</Filter>
@@ -176,13 +179,16 @@
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
     <ClCompile Include="Strawberry.cpp">
-      <Filter>Source Files\Entity\Collectable</Filter>
+      <Filter>Source Files\Object\Collectable</Filter>
     </ClCompile>
     <ClCompile Include="DeathZoneTool.cpp">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
     <ClCompile Include="DashRefill.cpp">
-      <Filter>Source Files\Entity\Collectable</Filter>
+      <Filter>Source Files\Object\Collectable</Filter>
+    </ClCompile>
+    <ClCompile Include="CrumbleBlock.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,10 +235,10 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Source Files\Entity\Player</Filter>
+      <Filter>Source Files\Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="Hair.h">
-      <Filter>Source Files\Entity\Player</Filter>
+      <Filter>Source Files\Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="Joint.h">
       <Filter>Source Files\Core\Kinematics</Filter>
@@ -304,13 +310,16 @@
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
     <ClInclude Include="Strawberry.h">
-      <Filter>Source Files\Entity\Collectable</Filter>
+      <Filter>Source Files\Object\Collectable</Filter>
     </ClInclude>
     <ClInclude Include="DeathZoneTool.h">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
     <ClInclude Include="DashRefill.h">
-      <Filter>Source Files\Entity\Collectable</Filter>
+      <Filter>Source Files\Object\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="CrumbleBlock.h">
+      <Filter>Source Files\Object\Interactable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
