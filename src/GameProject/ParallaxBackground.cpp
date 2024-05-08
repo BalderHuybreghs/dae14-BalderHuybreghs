@@ -38,13 +38,13 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
   const Point2f cameraPosition{ camera.GetPosition() };
 
   const Point2f backPosition{
-    m_BackRectangle.left   - cameraPosition.x,
-    m_BackRectangle.bottom - cameraPosition.y,
+    cameraPosition.x - m_BackRectangle.left,
+    cameraPosition.y - m_BackRectangle.bottom,
   };
 
   const Point2f frontPosition{
-    m_FrontRectangle.left   - cameraPosition.x,
-    m_FrontRectangle.bottom - cameraPosition.y,
+    cameraPosition.x - m_FrontRectangle.left,
+    cameraPosition.y - m_FrontRectangle.bottom,
   };
 
   const Point2f backScale{
@@ -59,12 +59,12 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
 
   // Calculate the progression percentage
   const Point2f backProgress{
-    backPosition.x / (m_BackRectangle.width - WINDOW_WIDTH),
+    backPosition.x / (m_BackRectangle.width  - WINDOW_WIDTH),
     backPosition.y / (m_BackRectangle.height - WINDOW_HEIGHT)
   };
 
   const Point2f frontProgress{
-    frontPosition.x / (m_FrontRectangle.width - WINDOW_WIDTH),
+    frontPosition.x / (m_FrontRectangle.width  - WINDOW_WIDTH),
     frontPosition.y / (m_FrontRectangle.height - WINDOW_HEIGHT)
   };
 
@@ -83,27 +83,27 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
 
   // The amount the position needs to move
   const Point2f backTextureMove{
-    m_BackTexturePtr->GetWidth() - frontTextureScale.x,
-    m_BackTexturePtr->GetHeight() - frontTextureScale.y,
+    m_BackTexturePtr->GetWidth()  - backTextureScale.x,
+    m_BackTexturePtr->GetHeight() - backTextureScale.y,
   };
 
   const Point2f frontTextureMove{
-    m_FrontTexturePtr->GetWidth() - frontTextureScale.x,
+    m_FrontTexturePtr->GetWidth()  - frontTextureScale.x,
     m_FrontTexturePtr->GetHeight() - frontTextureScale.y,
   };
 
   const Rectf srcRectBack{ 
     backProgress.x * backTextureMove.x, 
-    backProgress.x * backTextureMove.y,
+    (1 - frontProgress.y) * backProgress.y * backTextureMove.y,
     backTextureScale.x, 
     backTextureScale.y
   };
 
   const Rectf srcRectFront{ 
     frontProgress.x * frontTextureMove.x,
-    frontProgress.y * frontTextureMove.y,
-    backTextureScale.x,
-    backTextureScale.y
+    (1 - frontProgress.y) * frontTextureMove.y,
+    frontTextureScale.x,
+    frontTextureScale.y
   };
 
   const Rectf dstRect{ 0.f, 0.f, WINDOW_WIDTH, WINDOW_HEIGHT};
