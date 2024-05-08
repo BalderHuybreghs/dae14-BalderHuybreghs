@@ -68,8 +68,43 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
     frontPosition.y / (m_FrontRectangle.height - WINDOW_HEIGHT)
   };
 
-  const Rectf srcRectBack{ backProgress.x * m_BackTexturePtr->GetWidth(), backProgress.y * m_BackTexturePtr->GetHeight(), m_BackTexturePtr->GetWidth(), m_BackTexturePtr->GetHeight() };
-  const Rectf srcRectFront{ frontProgress.x * m_BackTexturePtr->GetWidth(), frontProgress.y * m_BackTexturePtr->GetHeight(), m_BackTexturePtr->GetWidth(), m_BackTexturePtr->GetHeight() };
+  // To move the textures only very little
+  const float scale{ 1 - BACKGROUND_DOWNSCALE };
+
+  const Point2f backTextureScale{
+    m_BackTexturePtr->GetWidth()  * scale,
+    m_BackTexturePtr->GetHeight() * scale
+  };
+
+  const Point2f frontTextureScale{
+    m_FrontTexturePtr->GetWidth()  * scale,
+    m_FrontTexturePtr->GetHeight() * scale
+  };
+
+  // The amount the position needs to move
+  const Point2f backTextureMove{
+    m_BackTexturePtr->GetWidth() - frontTextureScale.x,
+    m_BackTexturePtr->GetHeight() - frontTextureScale.y,
+  };
+
+  const Point2f frontTextureMove{
+    m_FrontTexturePtr->GetWidth() - frontTextureScale.x,
+    m_FrontTexturePtr->GetHeight() - frontTextureScale.y,
+  };
+
+  const Rectf srcRectBack{ 
+    backProgress.x * backTextureMove.x, 
+    backProgress.x * backTextureMove.y,
+    backTextureScale.x, 
+    backTextureScale.y
+  };
+
+  const Rectf srcRectFront{ 
+    frontProgress.x * frontTextureMove.x,
+    frontProgress.y * frontTextureMove.y,
+    backTextureScale.x,
+    backTextureScale.y
+  };
 
   const Rectf dstRect{ 0.f, 0.f, WINDOW_WIDTH, WINDOW_HEIGHT};
 

@@ -146,6 +146,7 @@ static const int PLAYER_FRAME_SIZE{ 32 };
 static const int HAIR_FRAME_SIZE{ 10 };
 static const int BANGS_FRAME_SIZE{ 10 };
 static const float FRAMES_PER_SECOND{ 1 / 8.f };
+static const float BACKGROUND_DOWNSCALE{ 0.1f }; // How much to scale the background down to allow for movement
 
 // Playing information
 static const Vector2f GRAVITY{0.f, -2000.f};
