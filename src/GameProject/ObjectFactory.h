@@ -9,6 +9,10 @@ namespace ObjectFactory
   GameObject* CreateCrumbleBlockSmall();
   GameObject* CreateCrumbleBlockMedium();
   GameObject* CreateCrumbleBlockLarge();
+  GameObject* CreateSpringBottom();
+  GameObject* CreateSpringLeft();
+  GameObject* CreateSpringRight();
+  GameObject* CreateSpringTop();
 
   // Registers all the gameobjects with the object manager
   void RegisterGameObjects();

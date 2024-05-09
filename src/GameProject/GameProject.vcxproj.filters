@@ -190,6 +190,9 @@
     <ClCompile Include="CrumbleBlock.cpp">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
+    <ClCompile Include="Spring.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -319,6 +322,9 @@
       <Filter>Source Files\Object\Collectable</Filter>
     </ClInclude>
     <ClInclude Include="CrumbleBlock.h">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClInclude>
+    <ClInclude Include="Spring.h">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClInclude>
   </ItemGroup>

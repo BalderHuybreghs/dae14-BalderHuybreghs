@@ -194,6 +194,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Spring.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Strawberry.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -239,6 +240,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Spring.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Strawberry.h" />
     <ClInclude Include="TextureManager.h" />

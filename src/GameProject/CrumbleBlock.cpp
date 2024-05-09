@@ -7,8 +7,8 @@
 CrumbleBlock::CrumbleBlock(const Point2f& position, int size, float crumbleTime, const std::string& resource)
   : GameObject(position), m_Size(size), m_CrumbleTime(crumbleTime), m_Resource(resource), m_Time(0), m_State(State::Stable), m_PlayerPosBeforeCollision(Point2f{})
 {
-  m_Texture = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + resource);
-  m_OutlineTexture = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + CRUMBLE_BLOCK_OUTLINE);
+  m_TexturePtr = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + resource);
+  m_OutlineTexturePtr = TextureManager::GetInstance()->GetTexture(CRUMBLE_BLOCK_FOLDER + FS + CRUMBLE_BLOCK_OUTLINE);
 }
 
 CrumbleBlock::CrumbleBlock(const CrumbleBlock& other)
@@ -37,15 +37,15 @@ void CrumbleBlock::Draw(const Point2f& position, bool debug) const
 
     switch (m_State) {
     case State::Stable:
-      m_Texture->Draw(dstRect, srcRect);
+      m_TexturePtr->Draw(dstRect, srcRect);
       break;
     case State::Unstable:
       dstRect.left   += MathUtils::RandFloat(-10.f, 10.f, 2);
       dstRect.bottom += MathUtils::RandFloat(-10.f, 10.f, 2);
-      m_Texture->Draw(dstRect, srcRect);
+      m_TexturePtr->Draw(dstRect, srcRect);
       break;
     case State::Gone:
-      m_OutlineTexture->Draw(dstRect, srcRect); // Draw only the outline if the block is gone
+      m_OutlineTexturePtr->Draw(dstRect, srcRect); // Draw only the outline if the block is gone
     }
   }
 }

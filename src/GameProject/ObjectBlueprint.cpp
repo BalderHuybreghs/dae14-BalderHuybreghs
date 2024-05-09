@@ -6,7 +6,7 @@
 ObjectBlueprint::ObjectBlueprint(int objectId, Point2f position)
   : m_ObjectId(0), m_Position(position)
 {
-  std::cout << "Creating Blueprint '" << m_ObjectId << "' at (" << m_Position.x << ', ' << m_Position.y << ")" << std::endl;
+  std::cout << "Creating Blueprint '" << m_ObjectId << "' at (" << m_Position.x << ", " << m_Position.y << ")" << std::endl;
   SetObjectId(objectId);
 }
 

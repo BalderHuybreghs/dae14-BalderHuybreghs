@@ -25,8 +25,8 @@ public:
   std::string GetResource() const;
 private:
   const std::string m_Resource;
-  const Texture* m_Texture; // The texture that will be used
-  const Texture* m_OutlineTexture; // The outline texture of the block
+  const Texture* m_TexturePtr; // The texture that will be used
+  const Texture* m_OutlineTexturePtr; // The outline texture of the block
 
   State m_State;
 
