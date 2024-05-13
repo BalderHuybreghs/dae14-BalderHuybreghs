@@ -2,7 +2,7 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager()
-  : m_ParentPtr(nullptr), m_PreviousScreenPtr(nullptr), m_CurrentScreenPtr(nullptr)
+  : m_ParentPtr(nullptr), m_CurrentScreenPtr(nullptr)
 {
 }
 

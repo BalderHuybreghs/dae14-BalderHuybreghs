@@ -42,6 +42,7 @@ Level::Level(const std::string& name)
   delete shape1;
   delete shape2;
   delete shape3;
+  delete shape4;
 }
 
 Level::~Level()
@@ -50,7 +51,7 @@ Level::~Level()
   m_MusicStreamPtr->Stop();
 
   // Clear out the game objects
-  for (const GameObject* object : m_ObjectPtrs) {
+  for (GameObject* object : m_ObjectPtrs) {
     delete object;
   }
 

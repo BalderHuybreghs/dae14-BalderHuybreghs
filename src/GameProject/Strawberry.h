@@ -16,7 +16,7 @@ public:
 
   Strawberry(const Point2f& position);
   Strawberry(const Strawberry& other);
-  ~Strawberry() override;
+  ~Strawberry();
 
   // Application of rule of 5
   Strawberry(const Strawberry&& other) = delete;

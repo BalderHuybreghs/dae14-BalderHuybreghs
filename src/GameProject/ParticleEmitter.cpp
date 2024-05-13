@@ -23,6 +23,11 @@ ParticleEmitter::~ParticleEmitter()
   delete m_EmissionZonePtr;
   m_EmissionZonePtr = nullptr;
 
+  for (Shape* shape : m_SpawnShapePtrs) {
+    delete shape;
+    shape = nullptr;
+  }
+
   // Delete all the particles that have been spawned
   for (Particle* particle : m_ParticlePtrs) {
     delete particle;

@@ -27,7 +27,6 @@ public:
 
 private:
   ScreenManager* m_ParentPtr;
-  GameScreen* m_PreviousScreenPtr;
   GameScreen* m_CurrentScreenPtr;
 };
 

@@ -14,7 +14,7 @@ public:
 
   DashRefill(const Point2f& position);
   DashRefill(const DashRefill& other);
-  ~DashRefill() override;
+  ~DashRefill();
 
   // Application of rule of 5
   DashRefill(const DashRefill&& other) = delete;

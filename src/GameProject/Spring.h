@@ -25,7 +25,7 @@ public:
 
   Spring(const Point2f& position, const Vector2f& force, Orientation orientation, float rewindTime);
   Spring(const Spring& other);
-  ~Spring() override;
+  ~Spring();
 
   // Application of rule of 5
   Spring(const Spring&& other) = delete;

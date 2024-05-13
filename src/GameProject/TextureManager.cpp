@@ -70,7 +70,7 @@ const Texture* TextureManager::GetTexture(const std::string& resource)
   }
 
   // Texture not found, create and insert new shared_ptr
-  std::cout << "Loading resource from disk: " << resource << std::endl;
+  std::cout << "Loading texture from disk: " << resource << std::endl;
   return CreateFromResource(resource);
 }
 

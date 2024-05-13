@@ -28,7 +28,7 @@ const GameObject* ObjectManager::GetBlueprintObject(int id)
 {
   std::unordered_map<int, const GameObject*>::iterator value{ m_ObjectPtrs.find(id) };
   if (value != m_ObjectPtrs.end()) {
-    return value->second->Clone();
+    return value->second;
   }
 
   std::cout << "Could not find registered object with ID: " << id << std::endl;
