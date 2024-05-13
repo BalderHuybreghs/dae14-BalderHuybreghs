@@ -126,15 +126,13 @@ float Spring::GetAngle() const
   switch (m_Orientation) {
   case Orientation::Bottom:
     return 0.f;
-    break;
   case Orientation::Right:
     return 90.f;
-    break;
   case Orientation::Top:
-    return 180.f;;
-    break;
+    return 180.f;
   case Orientation::Left:
     return 270.f;
-    break;
+  default:
+    return 0.f;
   }
 }

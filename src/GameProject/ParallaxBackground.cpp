@@ -47,16 +47,6 @@ void ParallaxBackground::Draw(const Camera& camera, bool debug) const
     cameraPosition.y - m_FrontRectangle.bottom,
   };
 
-  const Point2f backScale{
-    WINDOW_WIDTH  / m_BackRectangle.width,
-    WINDOW_HEIGHT / m_BackRectangle.height
-  };
-
-  const Point2f frontScale{
-    WINDOW_WIDTH / m_FrontRectangle.width,
-    WINDOW_HEIGHT / m_FrontRectangle.height
-  };
-
   // Calculate the progression percentage
   const Point2f backProgress{
     backPosition.x / (m_BackRectangle.width  - WINDOW_WIDTH),

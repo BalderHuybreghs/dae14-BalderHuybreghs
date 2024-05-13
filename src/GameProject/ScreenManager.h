@@ -16,6 +16,9 @@ public:
   ScreenManager& operator=(const ScreenManager& other) = delete;
   ~ScreenManager();
 
+  ScreenManager(const ScreenManager&& other) = delete;
+  ScreenManager& operator=(const ScreenManager&& other) = delete;
+
   void        SetScreen(GameScreen* newScreenPtr);
   void        SetParent(ScreenManager* parentPtr);
 

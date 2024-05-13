@@ -18,6 +18,9 @@ public:
   Strawberry(const Strawberry& other);
   ~Strawberry() override;
 
+  // Application of rule of 5
+  Strawberry(const Strawberry&& other) = delete;
+  Strawberry& operator=(const Strawberry&& other) = delete;
   Strawberry& operator=(const Strawberry& other) = delete;
 
   // Inherited via GameObject

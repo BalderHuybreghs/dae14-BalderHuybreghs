@@ -15,6 +15,9 @@ public:
   ObjectManager& operator=(const ObjectManager& other) = delete;
   ~ObjectManager();
 
+  ObjectManager(const ObjectManager&& other) = delete;
+  ObjectManager& operator=(const ObjectManager&& other) = delete;
+
   // Gets the object with a given ID
   GameObject* CloneObject(int id);
 

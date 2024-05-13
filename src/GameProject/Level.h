@@ -14,10 +14,13 @@ public:
   // Level with name loads a level
   Level(const std::string& name);
 
-  // Rule of 3 applied, why would we need the ability to copy a level? (I'm too lazy to implement these)
+  // Rule of 5 applied, why would we need the ability to copy a level? (I'm too lazy to implement these)
   Level(const Level& other) = delete;
   Level& operator=(const Level& other) = delete;
   virtual ~Level();
+
+  Level(const Level&& other) = delete;
+  Level& operator=(const Level&& other) = delete;
 
   // Builds the level and all of its objects from the blueprint
   void Build();

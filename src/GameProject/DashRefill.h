@@ -16,7 +16,10 @@ public:
   DashRefill(const DashRefill& other);
   ~DashRefill() override;
 
+  // Application of rule of 5
+  DashRefill(const DashRefill&& other) = delete;
   DashRefill& operator=(const DashRefill& other) = delete;
+  DashRefill& operator=(const DashRefill&& other) = delete;
 
   // Inherited via GameObject
   void Draw(const Point2f& position, bool debug) const override;

@@ -9,8 +9,11 @@ public:
   LoadingScreen(GameScreen* nextScreenPtr, float loadingTime);
 
   LoadingScreen(const LoadingScreen& other) = delete;
+  LoadingScreen(const LoadingScreen&& other) = delete;
   LoadingScreen& operator=(const LoadingScreen& other) = delete;
+  LoadingScreen& operator=(const LoadingScreen&& other) = delete;
   ~LoadingScreen();
+
 
   void Initialize() override;
 

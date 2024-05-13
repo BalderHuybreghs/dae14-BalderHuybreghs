@@ -7,8 +7,11 @@ public:
   MenuScreen();
 
   MenuScreen(const MenuScreen& other) = delete;
+  MenuScreen(const MenuScreen&& other) = delete;
   MenuScreen& operator=(const MenuScreen& other) = delete;
+  MenuScreen& operator=(const MenuScreen&& other) = delete;
   ~MenuScreen();
+
 
   void Initialize() override;
 

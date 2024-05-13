@@ -17,6 +17,10 @@ public:
   Limb& operator=(const Limb& other);
   virtual ~Limb();
 
+  // Rule of 5
+  Limb(const Limb&& other) = delete;
+  Limb& operator=(const Limb&& other) = delete;
+
   // Draw should only be used in a debug context
   void     Draw();
 

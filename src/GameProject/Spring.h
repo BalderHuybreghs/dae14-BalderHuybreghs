@@ -27,6 +27,11 @@ public:
   Spring(const Spring& other);
   ~Spring() override;
 
+  // Application of rule of 5
+  Spring(const Spring&& other) = delete;
+  Spring& operator=(const Spring& other) = delete;
+  Spring& operator=(const Spring&& other) = delete;
+
   // Inherited via GameObject
   void Draw(const Point2f& position, bool debug) const override;
 

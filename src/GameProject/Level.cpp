@@ -29,12 +29,13 @@ Level::Level(const std::string& name)
   Shape* shape1{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR1, true) };
   Shape* shape2{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR2, true) };
   Shape* shape3{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR3, true) };
+  Shape* shape4{ new RectangleShape(Point2f{ SNOW_PARTICLE_SIZE, SNOW_PARTICLE_SIZE }, Point2f{}, SNOW_PARTICLE_COLOR4, true) };
 
   // Create the particle emitters, copy the shapes and remove them afterwards
   // I'm not sure how to properly handle the shapes part since it's polymorphism, might ask the teachers (you who are reading my code), about it after the spring "vacation"
-  m_ParticleEmitterBackPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
-  m_ParticleEmitterMidPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
-  m_ParticleEmitterFrontPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO, std::vector<Shape*>{ shape1->Copy(), shape2->Copy(), shape3->Copy() });
+  m_ParticleEmitterBackPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO_BACK, std::vector<Shape*>{ shape2->Copy(), shape3->Copy(), shape4->Copy() });
+  m_ParticleEmitterMidPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO_MID, std::vector<Shape*>{ shape1->Copy(), shape3->Copy(), shape4->Copy() });
+  m_ParticleEmitterFrontPtr = new ParticleEmitter(emissionZoneShape->Copy(), SNOW_PARTICLE_INFO_FRONT, std::vector<Shape*>{ shape1->Copy(), shape2->Copy() });
 
   // ehhh, this is not particularly good...
   delete emissionZoneShape;

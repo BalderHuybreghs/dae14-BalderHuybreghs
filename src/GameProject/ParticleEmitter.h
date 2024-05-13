@@ -31,6 +31,10 @@ public:
   ParticleEmitter& operator=(const ParticleEmitter& other) = delete;
   virtual ~ParticleEmitter();
 
+  // Move operators aren't required
+  ParticleEmitter(const ParticleEmitter&& other) = delete;
+  ParticleEmitter& operator=(const ParticleEmitter&& other) = delete;
+
   void Draw(bool debug = false) const;
   void Update(float elapsedSec);
 

@@ -10,6 +10,9 @@ public:
   CircleShape& operator=(const CircleShape& other) = delete;
   virtual ~CircleShape() override = default;
 
+  CircleShape(const CircleShape&& other) = delete;
+  CircleShape& operator=(const CircleShape&& other) = delete;
+
   virtual bool CollidesWith(const Shape& shape) const override;
 
   virtual bool IsPointInside(const Point2f& point) const override;

@@ -94,5 +94,5 @@ Point2f Camera::GetWorldPosition(const Point2f& screenPosition) const
 
 int Camera::GoalCount() const
 {
-  return m_AnimationGoals.size();
+  return (int)m_AnimationGoals.size();
 }

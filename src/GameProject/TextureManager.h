@@ -14,6 +14,9 @@ public:
   TextureManager& operator=(const TextureManager& other) = delete;
   ~TextureManager();
 
+  TextureManager(const TextureManager&& other) = delete;
+  TextureManager& operator=(const TextureManager&& other) = delete;
+
   const Texture* GetTexture(const std::string& resource);
 
   static TextureManager* GetInstance();

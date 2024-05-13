@@ -8,6 +8,12 @@ class EditTool
 public:
   virtual ~EditTool();
 
+  // Application of rule of 5
+  EditTool(const EditTool& other) = delete;
+  EditTool(const EditTool&& other) = delete;
+  EditTool& operator=(const EditTool& other) = delete;
+  EditTool& operator=(const EditTool&& other) = delete;
+
   // An editor tool can obviously draw some information about itself
   // the tool gets the camera so it can handle the matrices right for UI and world stuff
   // The default implementation just draws it's own name

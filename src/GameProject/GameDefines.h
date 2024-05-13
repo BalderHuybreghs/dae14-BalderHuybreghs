@@ -200,10 +200,39 @@ static const float SNOW_PARTICLE_SIZE{ PIXEL_SCALE };
 static const Color4f SNOW_PARTICLE_COLOR1{ 1.f, 1.f, 1.f, 1.f };
 static const Color4f SNOW_PARTICLE_COLOR2{ 0.f, 0.f, 0.2f, 1.f };
 static const Color4f SNOW_PARTICLE_COLOR3{ 0.5f, 0.5f, 0.5f, 1.f };
+static const Color4f SNOW_PARTICLE_COLOR4{ 0.2f, 0.2f, 0.6f, 1.f };
 
-static const EmitterSpawnInfo SNOW_PARTICLE_INFO{
+static const EmitterSpawnInfo SNOW_PARTICLE_INFO_FRONT{
+    800.f,     // The minimum force on a particle
+    1200.f,    // The maximum force on a particle
+    3.f, // The minimum rotation in radians
+    5.f, // The maximum rotation in radians
+    10.f,     // The minimum lifetime for a particle in seconds
+    10.f,     // The maximum lifetime for a particle in seconds
+    5,        // The minimum amount of particles to spawn in a run
+    10,        // The maximum amount of particles to spawn in a run
+    500,      // The maximum amount of particles allowed at a time
+    .1f,      // The minimum spawning delay in seconds
+    .5f       // The maximum spawning delay in seconds
+};
+
+static const EmitterSpawnInfo SNOW_PARTICLE_INFO_MID{
     600.f,     // The minimum force on a particle
     1000.f,    // The maximum force on a particle
+    3.f, // The minimum rotation in radians
+    5.f, // The maximum rotation in radians
+    10.f,     // The minimum lifetime for a particle in seconds
+    10.f,     // The maximum lifetime for a particle in seconds
+    5,        // The minimum amount of particles to spawn in a run
+    10,        // The maximum amount of particles to spawn in a run
+    500,      // The maximum amount of particles allowed at a time
+    .1f,      // The minimum spawning delay in seconds
+    .5f       // The maximum spawning delay in seconds
+};
+
+static const EmitterSpawnInfo SNOW_PARTICLE_INFO_BACK{
+    400.f,     // The minimum force on a particle
+    800.f,    // The maximum force on a particle
     3.f, // The minimum rotation in radians
     5.f, // The maximum rotation in radians
     10.f,     // The minimum lifetime for a particle in seconds

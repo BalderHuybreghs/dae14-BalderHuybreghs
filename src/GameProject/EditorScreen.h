@@ -15,7 +15,9 @@ public:
   void Initialize() override;
 
   EditorScreen(const EditorScreen& other) = delete;
+  EditorScreen(const EditorScreen&& other) = delete;
   EditorScreen& operator=(const EditorScreen& other) = delete;
+  EditorScreen& operator=(const EditorScreen&& other) = delete;
   ~EditorScreen();
 
   // General game functions
