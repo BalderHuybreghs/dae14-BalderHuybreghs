@@ -59,11 +59,14 @@
     <Filter Include="Source Files\Object\Interactable">
       <UniqueIdentifier>{226c5568-1973-48c1-aaae-f218314d156d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Object\Danger">
+      <UniqueIdentifier>{75c23c6c-e061-4060-b3cb-6bf6234d1066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Other">
+      <UniqueIdentifier>{2e130e5e-f961-4179-b7ac-7b137ca601cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuScreen.cpp">
       <Filter>Source Files\Screens</Filter>
     </ClCompile>
@@ -127,9 +130,6 @@
     <ClCompile Include="ObjectBlueprint.cpp">
       <Filter>Source Files\Core\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Decal.cpp">
-      <Filter>Source Files\Core\Render\World</Filter>
-    </ClCompile>
     <ClCompile Include="ParallaxBackground.cpp">
       <Filter>Source Files\Core\Render\World</Filter>
     </ClCompile>
@@ -191,6 +191,21 @@
       <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
     <ClCompile Include="Spring.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
+    <ClCompile Include="Spike.cpp">
+      <Filter>Source Files\Object\Danger</Filter>
+    </ClCompile>
+    <ClCompile Include="Decal.cpp">
+      <Filter>Source Files\Object\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
+    <ClCompile Include="Jumpthru.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficLight.cpp">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
   </ItemGroup>
@@ -267,9 +282,6 @@
     <ClInclude Include="ParallaxBackground.h">
       <Filter>Source Files\Core\Render\World</Filter>
     </ClInclude>
-    <ClInclude Include="Decal.h">
-      <Filter>Source Files\Core\Render\World</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Source Files\Core\Render</Filter>
     </ClInclude>
@@ -325,6 +337,18 @@
       <Filter>Source Files\Object\Interactable</Filter>
     </ClInclude>
     <ClInclude Include="Spring.h">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClInclude>
+    <ClInclude Include="Spike.h">
+      <Filter>Source Files\Object\Danger</Filter>
+    </ClInclude>
+    <ClInclude Include="Decal.h">
+      <Filter>Source Files\Object\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Jumpthru.h">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClInclude>
+    <ClInclude Include="TrafficLight.h">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClInclude>
   </ItemGroup>

@@ -170,6 +170,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="EditTool.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Jumpthru.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="ObjectBlueprint.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
@@ -194,6 +195,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Spike.cpp" />
     <ClCompile Include="Spring.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Strawberry.cpp" />
@@ -201,6 +203,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="ResourceUtils.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
+    <ClCompile Include="TrafficLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgoUtils.h" />
@@ -216,6 +219,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="EditTool.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Jumpthru.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="ObjectBlueprint.h" />
     <ClInclude Include="ObjectFactory.h" />
@@ -240,6 +244,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Spike.h" />
     <ClInclude Include="Spring.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Strawberry.h" />
@@ -247,6 +252,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ResourceUtils.h" />
     <ClInclude Include="Tilemap.h" />
     <ClInclude Include="TilemapTool.h" />
+    <ClInclude Include="TrafficLight.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
