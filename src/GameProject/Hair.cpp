@@ -15,7 +15,7 @@ Hair::Hair(const Point2f& position, int parts, float startingSize)
     m_HairLimbPtr->AddJoint(new Joint(position, length * (1 - i / float(parts))));
   }
 
-  m_BangsSpritePtr = new Sprite(Point2f{ BANGS_FRAME_SIZE, BANGS_FRAME_SIZE }, 0, BANGS_RESOURCE);
+  m_BangsSpritePtr = new Sprite(Point2f{ BANGS_FRAME_SIZE, BANGS_FRAME_SIZE }, 0, "bags", BANGS_RESOURCE);
 }
 
 Hair::~Hair()

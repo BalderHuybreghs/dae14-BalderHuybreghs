@@ -28,7 +28,7 @@ void PlayingScreen::Initialize()
   // Load the level from disk
   m_LevelPtr->Load();
 
-  m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn());
+  m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn(), m_InputManagerPtr);
 
   // Calculate the right starting positions
   const Point2f playerPos{ m_PlayerPtr->GetCenter() };

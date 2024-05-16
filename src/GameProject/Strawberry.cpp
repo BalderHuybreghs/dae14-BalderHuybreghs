@@ -8,8 +8,8 @@
 Strawberry::Strawberry(const Point2f& position)
   : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
 {
-  m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, STRAWBERRY_IDLE);
-  m_SpritePtr->AddResource(STRAWBERRY_CONSUMING);
+  m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, "idle", STRAWBERRY_IDLE);
+  m_SpritePtr->AddState("consume", STRAWBERRY_CONSUMING);
 
   m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f}, true);
 }
@@ -56,7 +56,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
   switch (m_State) {
   case State::Idle:
   {
-    m_SpritePtr->SetState(0);
+    m_SpritePtr->SetState("idle");
 
     if (player.GetCollisionShape()->CollidesWith(*m_ColliderPtr)) {
       m_State = State::Following;
@@ -66,7 +66,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
   }
   case State::Following:
   {
-    m_SpritePtr->SetState(0);
+    m_SpritePtr->SetState("idle");
 
     if (player.IsGrounded()) {
       m_State = State::Consuming;
@@ -93,7 +93,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 
   case State::Consuming:
   {
-    m_SpritePtr->SetState(1);
+    m_SpritePtr->SetState("consume");
     m_Velocity = Vector2f{}; // Reset the velocity
 
     if (m_SpritePtr->IsAnimationDone()) {

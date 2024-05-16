@@ -9,24 +9,23 @@
 
 using namespace utils;
 
-Player::Player(const Point2f& position)
+Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_ColliderPtr(nullptr), m_ColliderLeftPtr(nullptr),
-  m_ColliderRightPtr(nullptr), m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false)
+  m_ColliderRightPtr(nullptr), m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false), m_Flipped(false),
+  m_InputManagerPtr(inputManagerPtr)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
   // All the player animations
-  m_SpritePtr = new Sprite(Point2f{ PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE }, FRAMES_PER_SECOND, PLAYER_IDLE_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_WALK_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_CLIMB_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_SLIDE_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_DUCK_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_SLIDE_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_DUCK_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_FALL_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_JUMP_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_PUSH_RESOURCE);
-  m_SpritePtr->AddResource(PLAYER_DEATH_RESOURCE);
+  m_SpritePtr = new Sprite(Point2f{ PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE }, FRAMES_PER_SECOND, "idle", PLAYER_IDLE_RESOURCE);
+  m_SpritePtr->AddState("walk", PLAYER_WALK_RESOURCE);
+  m_SpritePtr->AddState("climb", PLAYER_CLIMB_RESOURCE);
+  m_SpritePtr->AddState("slide", PLAYER_SLIDE_RESOURCE);
+  m_SpritePtr->AddState("duck", PLAYER_DUCK_RESOURCE);
+  m_SpritePtr->AddState("fall", PLAYER_FALL_RESOURCE);
+  m_SpritePtr->AddState("jump", PLAYER_JUMP_RESOURCE);
+  m_SpritePtr->AddState("push", PLAYER_PUSH_RESOURCE);
+  m_SpritePtr->AddState("death", PLAYER_DEATH_RESOURCE);
 
   m_HairPtr = new Hair(m_Position, 3, HAIR_SCALE);
 
@@ -53,7 +52,7 @@ void Player::Draw(bool debug) const
 {
   // Draw the hair behind the player
   const float half{ PLAYER_SCALE / 2.f };
-  const bool flipped{ m_Direction.x < 0.f };
+  const bool flipped{ m_Flipped };
 
   m_HairPtr->Draw(flipped, debug);
   m_SpritePtr->Draw(m_Position, PIXEL_SCALE, flipped, debug);
@@ -77,6 +76,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 {
   // Reset grounded, the collision handling will check if the player is grounded
   m_IsGrounded = false;
+  m_Direction = m_Direction.Normalized();
 
   switch (m_State) {
     case Player::State::Idle:
@@ -96,6 +96,10 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       m_Stamina -= CLIMBING_STAMINA_COST * elapsedSec;
       break;
     }
+    case Player::State::Dashing:
+    {
+      m_Velocity = m_Direction * PLAYER_DASH_FORCE;
+    }
   }
 
   // Multiple iteration collision handling
@@ -106,8 +110,6 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     const Point2f newPos = MathUtils::Lerp(m_HairPtr->GetPosition(), Point2f{ m_Position.x + half, m_Position.y }, 0.05f);
     m_HairPtr->SetEnd(newPos); // Slowly move the hair toward the desired position
   }
-
-  m_SpritePtr->SetState((int)m_State);
 
   SetPosition(Point2f{
     m_Position.x + m_Velocity.x * elapsedSec,
@@ -132,7 +134,9 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
   m_CanHold = tilemap.IsTile(m_ColliderLeftPtr->GetShape()) || tilemap.IsTile(m_ColliderRightPtr->GetShape());
     
-  if ((m_Velocity.y != 0) && (m_State == State::Holding || m_State == State::Climbing) && m_CanHold) {
+  if (m_CanHold && !m_IsGrounded && ((m_InputManagerPtr->IsKeyDown(SDLK_LEFT) && m_Flipped) || (m_InputManagerPtr->IsKeyDown(SDLK_RIGHT) && !m_Flipped))) {
+    m_State = State::Sliding;
+  } else if ((m_Velocity.y != 0) && (m_State == State::Holding || m_State == State::Climbing) && m_CanHold) {
     m_State = State::Climbing;
   } else if (m_Velocity.y > 0) {
     m_State = State::Jumping;
@@ -146,7 +150,8 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     m_State = State::Idle;
   }
 
-  //m_Direction = Vector2f();
+  m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
+  m_Direction = Vector2f();
 }
 
 void Player::RefillDashes(int amount)
@@ -172,7 +177,6 @@ void Player::Dash()
     return;
   }
 
-  m_Velocity = m_Direction * PLAYER_DASH_FORCE;
   m_State = State::Dashing;
   --m_Dashes;
 }
@@ -253,6 +257,10 @@ void Player::Down()
 
 void Player::Left()
 {
+  if (m_State == State::Climbing || m_State == State::Holding || m_State == State::Crouching) {
+    return;
+  }
+
   m_Direction.x = -1;
 
   m_Velocity.x = m_Direction.x * PLAYER_ACCELERATION; // Too lazy to type a -
@@ -260,6 +268,10 @@ void Player::Left()
 
 void Player::Right()
 {
+  if (m_State == State::Climbing || m_State == State::Holding || m_State == State::Crouching) {
+    return;
+  }
+
   m_Direction.x = 1;
 
   m_Velocity.x = m_Direction.x * PLAYER_ACCELERATION; // Too lazy to type anything
@@ -329,7 +341,7 @@ void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
     }
 
     // Check if the collision happens on the top side
-    if (m_Velocity.y > 0 && tilemap.IsTile(Rectf{ nextCollisionRect.left + 2.f, nextCollisionRect.bottom + nextCollisionRect.height - (nextCollisionRect.height / 2.f), nextCollisionRect.width - 4.f, nextCollisionRect.height / 4.f}))
+    if (m_Velocity.y > 0 && tilemap.IsTile(Rectf{ nextCollisionRect.left + 2.f, nextCollisionRect.bottom + nextCollisionRect.height, nextCollisionRect.width - 4.f, nextCollisionRect.height / 4.f}))
     {
       // Player collided with the ceiling
       m_Velocity.y = 0.f;

@@ -4,6 +4,7 @@
 #include "RectangleShape.h"
 #include "Tilemap.h"
 #include "Hair.h"
+#include "InputManager.h"
 
 class Player final
 {
@@ -23,7 +24,7 @@ public:
     Dead
   };
 
-  Player(const Point2f& position);
+  Player(const Point2f& position, const InputManager* inputManagerPtr);
 
   // Look, I know that I am deleting a lot of copy operators / constructors, but I barely use these anyway and I lack the
   // time to actually implement something which I currently do not use. I'll implement them when I actually need them
@@ -96,4 +97,10 @@ private:
 
   bool m_IsGrounded;
   bool m_CanHold;
+  bool m_Flipped;
+
+  // To handle the input live we use the input manager here
+  // this is so we can easily check if the player is holding buttons
+  // to solve wonky controls
+  const InputManager* m_InputManagerPtr;
 };
