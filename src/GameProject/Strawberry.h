@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SoundEffect.h"
 
 class Strawberry final : public GameObject
 {
@@ -39,6 +40,9 @@ private:
 
   Sprite* m_SpritePtr;
   Shape* m_ColliderPtr;
+
+  SoundEffect* m_TouchSoundPtr;
+  SoundEffect* m_ConsumeSoundPtr;
 
   float m_Time;
 };

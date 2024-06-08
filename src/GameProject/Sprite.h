@@ -5,6 +5,12 @@
 class Sprite
 {
 public:
+  struct StateInfo
+  {
+    const Texture* texturePtr; // No rule of 3 required despite having a pointer here, this because the manager takes care of cleaning up textures & the pointer here is const
+    int frames;
+  };
+
   // Since each animation in Celeste has a variable amount of culumns, instead of asking for the amount of columns,
   // we ask for the size of a single frame
   Sprite(const Point2f& frameSize, float msPerFrame, const std::string& state, const std::string& resource);
@@ -21,16 +27,11 @@ public:
 
   // Adds a resource to this sprite and returns its id
   void AddState(const std::string& id, const std::string& resource);
+  StateInfo GetStateInfo(const std::string& id);
 
   void SetFrame(int frame);
 
   bool IsAnimationDone() const;
-
-  struct StateInfo
-  {
-    const Texture* texturePtr; // No rule of 3 required despite having a pointer here, this because the manager takes care of cleaning up textures & the pointer here is const
-    int frames;
-  };
 protected:
   Point2f m_FrameSize;
   float m_MsPerFrame;

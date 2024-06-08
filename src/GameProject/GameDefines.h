@@ -45,6 +45,21 @@ static const std::string STRAWBERRY_IDLE{ STRAWBERRY_FOLDER + FS + "idle" };
 static const std::string STRAWBERRY_CONSUMING{ STRAWBERRY_FOLDER + FS + "consuming" };
 static const std::string CRUMBLE_BLOCK_DEFAULT{ "default" };
 static const std::string CRUMBLE_BLOCK_OUTLINE{ "outline" };
+static const std::string DECAL_FOLDER{ GAMEPLAY_RESOURCE + FS + "decals" };
+static const std::string DANGER_FOLDER{ GAMEPLAY_RESOURCE + FS + "danger" };
+static const std::string SPIKE_DOWN{ "spike_down" };
+static const std::string SPIKE_UP{ "spike_up" };
+static const std::string SPIKE_LEFT{ "spike_left" };
+static const std::string SPIKE_RIGHT{ "spike_right" };
+static const std::string JUMPTHRU_FOLDER{ OBJECTS_FOLDER + FS + "jumpthru" };
+static const std::string JUMPTHRU_DEFAULT_RESOURCE{ "wood" };
+static const std::string CASSETTE_FOLDER{ COLLECTABLE_FOLDER + FS + "cassette" };
+static const std::string CASSETTE_RESOURCE_IDLE{ "idle" };
+static const std::string CASSETTE_RESOURCE_GHOST{ "ghost" };
+static const std::string NOTE_BLOCK_FOLDER{ OBJECTS_FOLDER + FS + "cassetteblock" };
+static const std::string NOTE_BLOCK_SOLID{ "solid" };
+static const std::string NOTE_BLOCK_PRESSED{ "pressed00" };
+static const std::string STRAWBERRY_SOUND_FOLDER{ SOUND_FOLDER + FS + "strawberry" };
 
 static const std::string BACKGROUND_SUFFIX_FRONT{ "_f" };
 static const std::string BACKGROUND_SUFFIX_MID{ "_m" };
@@ -161,14 +176,19 @@ static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }
 static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
 static const float PLAYER_JUMP_POTENTIAL{ 50.f }; // The maximum potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 550.f }; // The jump force applied to the player until it reaches max potential
-static const float PLAYER_DASH_FORCE{ 650.f }; // The force behind a player dash
+static const float PLAYER_DASH_FORCE{ 6500.f }; // The force behind a player dash
 static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
 static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
 static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };
 static const float PLAYER_LOW{ 10 * PIXEL_SCALE };
 static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
 static const float PLAYER_BODY_WIDTH{ 7 * PIXEL_SCALE };
-static const float PLAYER_BODY_HEIGHT{ 12 * PIXEL_SCALE };
+static const float PLAYER_BODY_HEIGHT{ 14 * PIXEL_SCALE };
+static const int MAX_JUMPTHRU_SIZE{ 3 };
+
+static const float NOTE_BLOCK_TIME{ 2.f };
+static const Color4f NOTE_BLOCK_COLOR_BLUE{ 57 / 255.f, 162 / 255.f, 231 / 255.f, 1.f };
+static const Color4f NOTE_BLOCK_COLOR_PINK{ 236 / 255.f, 73 / 255.f,206 / 255.f, 1.f };
 
 // I just moved the camera in edit mode, printing out the position values until I was satisfied
 static const Point2f START_CAMERA_POSITION{

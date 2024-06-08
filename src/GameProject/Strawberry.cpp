@@ -12,6 +12,12 @@ Strawberry::Strawberry(const Point2f& position)
   m_SpritePtr->AddState("consume", STRAWBERRY_CONSUMING);
 
   m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f}, true);
+
+  m_ConsumeSoundPtr = new SoundEffect(STRAWBERRY_SOUND_FOLDER + FS + "consume.ogg");
+  m_TouchSoundPtr = new SoundEffect(STRAWBERRY_SOUND_FOLDER + FS + "touch.ogg");
+
+  m_ConsumeSoundPtr->SetVolume(10);
+  m_TouchSoundPtr->SetVolume(10);
 }
 
 // Only the position is relevant for strawberries
@@ -24,6 +30,12 @@ Strawberry::~Strawberry()
 {
   delete m_SpritePtr;
   delete m_ColliderPtr;
+
+  m_ConsumeSoundPtr->StopAll();
+  m_TouchSoundPtr->StopAll();
+
+  delete m_ConsumeSoundPtr;
+  delete m_TouchSoundPtr;
 }
 
 void Strawberry::Draw(const Point2f& position, bool debug) const
@@ -60,6 +72,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 
     if (player.GetCollisionShape()->CollidesWith(*m_ColliderPtr)) {
       m_State = State::Following;
+      m_TouchSoundPtr->Play(0);
     }
 
     break;
@@ -70,6 +83,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 
     if (player.IsGrounded()) {
       m_State = State::Consuming;
+      m_ConsumeSoundPtr->Play(0);
       break;
     }
 

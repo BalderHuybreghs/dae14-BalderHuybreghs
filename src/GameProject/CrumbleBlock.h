@@ -15,6 +15,7 @@ public:
   CrumbleBlock(const CrumbleBlock& other);
 
   // Application of rule of 5
+  ~CrumbleBlock() = default;
   CrumbleBlock(const CrumbleBlock&& other) = delete;
   CrumbleBlock& operator=(const CrumbleBlock& other) = delete;
   CrumbleBlock& operator=(const CrumbleBlock&& other) = delete;
@@ -23,6 +24,8 @@ public:
   void Draw(bool debug) const override;
   void Update(Player& player, Camera& camera, float elapsedSec) override;
 
+  void SetPosition(const Point2f& position) override;
+
   GameObject* Clone() const override;
 
   int GetSize() const;
@@ -30,7 +33,7 @@ public:
   std::string GetResource() const;
 private:
   // Handles simple collision with the player. The function returns if the player collided with the block
-  bool HandleCollision(Player& player);
+  bool HandleCollision(Player& player) const;
 
   const std::string m_Resource;
   const Texture* m_TexturePtr;        // The texture that will be used

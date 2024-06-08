@@ -11,6 +11,7 @@
 #include "BackgroundTool.h"
 #include "ObjectTool.h"
 #include "DeathZoneTool.h"
+#include "CassetteAreaTool.h"
 
 using namespace utils;
 
@@ -48,6 +49,7 @@ void EditorScreen::Initialize()
   BackgroundTool* backgroundTool{ new BackgroundTool(m_LevelPtr->GetBackground(), m_InputManagerPtr)};
   ObjectTool* objectTool{ new ObjectTool(m_LevelPtr, m_InputManagerPtr) };
   DeathZoneTool* deathZoneTool{ new DeathZoneTool(m_LevelPtr, m_InputManagerPtr) };
+  CassetteAreaTool* cassetteAreaTool{ new CassetteAreaTool(m_LevelPtr, m_InputManagerPtr) };
 
   m_Tools.push_back(frontTilemapTool);
   m_Tools.push_back(backTilemapTool);
@@ -55,6 +57,7 @@ void EditorScreen::Initialize()
   m_Tools.push_back(backgroundTool);
   m_Tools.push_back(objectTool);
   m_Tools.push_back(deathZoneTool);
+  m_Tools.push_back(cassetteAreaTool);
 
   m_Tool = m_Tools.front();
 }

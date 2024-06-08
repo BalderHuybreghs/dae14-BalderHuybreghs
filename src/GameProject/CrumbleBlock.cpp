@@ -17,7 +17,6 @@ CrumbleBlock::CrumbleBlock(const Point2f& position, int size, float crumbleTime,
       TILE_SIZE * PIXEL_SCALE * m_Size,
       TILE_SIZE * PIXEL_SCALE
   };
-
 }
 
 CrumbleBlock::CrumbleBlock(const CrumbleBlock& other)
@@ -31,7 +30,7 @@ void CrumbleBlock::Draw(const Point2f& position, bool debug) const
   for (size_t tile{ 0 }; tile < m_Size; ++tile) {
     // Create the sourcerect
     const Rectf srcRect{
-      tile > 0 ? TILE_SIZE : (tile == m_Size -1 ? TILE_SIZE * 2 : 0.f),
+      tile > 0 ? (tile == m_Size - 1 ? TILE_SIZE * 2 : TILE_SIZE) : (m_Size == 1 ? TILE_SIZE * 3 : 0.f),
       0.f,
       TILE_SIZE,
       TILE_SIZE
@@ -56,6 +55,11 @@ void CrumbleBlock::Draw(const Point2f& position, bool debug) const
     case State::Gone:
       m_OutlineTexturePtr->Draw(dstRect, srcRect); // Draw only the outline if the block is gone
     }
+  }
+
+  if (debug) {
+    SetColor(Color4f{ 0.f, 0.f, 1.f, 0.8f });
+    FillRect(m_CollisionRect);
   }
 }
 
@@ -93,6 +97,18 @@ void CrumbleBlock::Update(Player& player, Camera& camera, float elapsedSec)
   }
 }
 
+void CrumbleBlock::SetPosition(const Point2f& position)
+{
+  m_Position = position;
+
+  m_CollisionRect = Rectf{
+    m_Position.x,
+    m_Position.y,
+    TILE_SIZE * PIXEL_SCALE * m_Size,
+    TILE_SIZE * PIXEL_SCALE
+  };
+}
+
 GameObject* CrumbleBlock::Clone() const
 {
   return new CrumbleBlock(*this);
@@ -113,45 +129,46 @@ std::string CrumbleBlock::GetResource() const
   return m_Resource;
 }
 
-bool CrumbleBlock::HandleCollision(Player& player)
+bool CrumbleBlock::HandleCollision(Player& player) const
 {
-  const Rectf playerRect = player.GetCollisionShape()->GetShape();
-  const Rectf blockRect = m_CollisionRect;
-  const Point2f playerPosition = player.GetPosition();
-  const Vector2f playerVelocity = player.GetVelocity();
-
-  bool collided = IsOverlapping(blockRect, playerRect);
+  const Rectf playerRect{ player.GetCollisionShape()->GetShape() };
+  bool collided = IsOverlapping(m_CollisionRect, playerRect);
 
   if (collided && m_State != State::Gone) {
-    // If the player is not colliding with the left or right side of the block
-    if (playerPosition.x + playerRect.width > blockRect.left && playerPosition.x < blockRect.left + blockRect.width) {
-      if (playerVelocity.y < 0) {
-        // Player moving upwards, adjust player position to be just above the block
-        player.SetPosition(Point2f(playerPosition.x, blockRect.bottom));
-        // Stop player's upward velocity
-        player.SetVelocity(Vector2f(playerVelocity.x, 0));
-      } else if (playerVelocity.y > 0) {
-        // Player moving downwards, adjust player position to be just below the block
-        player.SetPosition(Point2f(playerPosition.x, blockRect.bottom - playerRect.height));
-        // Stop player's downward velocity
-        player.SetVelocity(Vector2f(playerVelocity.x, 0));
-      }
-    } else {
-      // If the player is colliding with the bottom or top side of the block
-      if (playerVelocity.x < 0) {
-        // Player moving left, adjust player position to be just to the left of the block
-        player.SetPosition(Point2f(blockRect.left - playerRect.width, playerPosition.y));
-        // Stop player's leftward velocity
-        player.SetVelocity(Vector2f(0, playerVelocity.y));
-      } else if (playerVelocity.x > 0) {
-        // Player moving right, adjust player position to be just to the right of the block
-        player.SetPosition(Point2f(blockRect.left + blockRect.width, playerPosition.y));
-        // Stop player's rightward velocity
-        player.SetVelocity(Vector2f(0, playerVelocity.y));
-      }
+    Point2f position{ player.GetPosition() };
+    Vector2f velocity{ player.GetVelocity() };
+
+    // Left collision
+    if (IsOverlapping(player.GetLeftCollisionRect(playerRect), m_CollisionRect)) {
+      float overlap = (m_Position.x + m_CollisionRect.width) - playerRect.left;
+      position.x += overlap; // Adjust position by the overlap amount
+      velocity.x = 0;
     }
+
+    // Right collision
+    if (IsOverlapping(player.GetRightCollisionRect(playerRect), m_CollisionRect)) {
+      float overlap = (playerRect.left + playerRect.width) - m_Position.x;
+      position.x -= overlap; // Adjust position by the overlap amount
+      velocity.x = 0;
+    }
+
+    // Bottom collision
+    if (IsOverlapping(player.GetBottomCollisionRect(playerRect), m_CollisionRect)) {
+      float overlap = (m_Position.y + m_CollisionRect.height) - playerRect.bottom;
+      position.y += overlap; // Adjust position by the overlap amount
+      velocity.y = 0;
+    }
+
+    // Top collision
+    if (IsOverlapping(player.GetTopCollisionRect(playerRect), m_CollisionRect)) {
+      float overlap = (playerRect.bottom + playerRect.height) - m_Position.y;
+      position.y += overlap; // Adjust position by the overlap amount
+      velocity.y = 0;
+    }
+
+    player.SetVelocity(velocity);
+    player.SetPosition(position);
   }
 
   return collided;
 }
-

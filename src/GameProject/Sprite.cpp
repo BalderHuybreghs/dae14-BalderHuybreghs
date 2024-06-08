@@ -79,7 +79,7 @@ void Sprite::Update(float elapsedSec)
 
   if (m_Time > m_MsPerFrame) {
     m_Time = 0;
-    m_Frame = (m_Frame + 1) % m_States[m_State].frames;
+    m_Frame = m_States[m_State].frames > 0 ? ((m_Frame + 1) % m_States[m_State].frames) : 0;
   }
 }
 
@@ -104,6 +104,11 @@ void Sprite::AddState(const std::string& id, const std::string& resource)
   };
 
   m_States.insert(std::make_pair(id, state));
+}
+
+Sprite::StateInfo Sprite::GetStateInfo(const std::string& id)
+{
+  return m_States[id]; // Lazy and dangerous implementation
 }
 
 void Sprite::SetFrame(int frame)

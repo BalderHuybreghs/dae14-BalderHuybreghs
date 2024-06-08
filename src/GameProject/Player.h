@@ -12,15 +12,10 @@ public:
   enum class State
   {
     Idle,
-    Running,
     Climbing,
-    Holding,
     Dashing,
     Sliding,
     Crouching,
-    Falling,
-    Jumping,
-    Pushing,
     Dead
   };
 
@@ -42,7 +37,6 @@ public:
   // Player actions
   void Jump();
   void Dash();
-  void Hold();
 
   // Movement functions the player can do
   void Up();
@@ -65,6 +59,15 @@ public:
   Vector2f GetVelocity() const;
   State GetState() const;
 
+  Rectf GetLeftCollisionRect(const Rectf& rect) const;
+  Rectf GetRightCollisionRect(const Rectf& rect) const;
+  Rectf GetTopCollisionRect(const Rectf& rect) const;
+  Rectf GetBottomCollisionRect(const Rectf& rect) const;
+
+  Rectf GetLeftHoldRect(const Rectf& rect) const;
+  Rectf GetRightHoldRect(const Rectf& rect) const;
+  Rectf GetGroundedRect(const Rectf& rect) const;
+
   bool IsGrounded() const;
 
   void Kill(); // Instantly kills the player (as Celeste does not work with a health / damage system)
@@ -82,9 +85,7 @@ private:
   float m_Stamina;
 
   State m_State;
-
   Sprite* m_SpritePtr;
-
   // Visual effects stuff
   Sprite* m_ParticleSpritePtr;
 
@@ -92,8 +93,6 @@ private:
 
   // Colliders
   RectangleShape* m_ColliderPtr;
-  RectangleShape* m_ColliderLeftPtr;
-  RectangleShape* m_ColliderRightPtr;
 
   bool m_IsGrounded;
   bool m_CanHold;

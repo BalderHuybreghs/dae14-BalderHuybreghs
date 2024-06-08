@@ -36,7 +36,7 @@ void RectangleTool::Update(float elapsedSec, const Rectf& hoveringTile)
 
       m_BottomLeft = Point2f{
         std::min(position.x, std::min(m_BottomLeft.x, m_TopRight.x)),
-        std::min(position.y, std::min(m_BottomLeft.y, m_TopRight.x))
+        std::min(position.y, std::min(m_BottomLeft.y, m_TopRight.y))
       };
 
       return;

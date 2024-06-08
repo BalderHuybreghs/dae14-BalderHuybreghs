@@ -19,6 +19,9 @@ Spring::Spring(const Point2f& position, const Vector2f& force, Orientation orien
 
   m_SpritePtr = new Sprite(Point2f{ 16, 16 }, rewindTime / 5.f, "idle", SPRING_IDLE);
   m_SpritePtr->AddState("push", SPRING_PUSH);
+
+  m_JumpSoundPtr = new SoundEffect(SOUND_FOLDER + FS + "spring.ogg");
+  m_JumpSoundPtr->SetVolume(10);
 }
 
 Spring::Spring(const Spring& other)
@@ -29,6 +32,9 @@ Spring::Spring(const Spring& other)
 Spring::~Spring()
 {
   delete m_SpritePtr;
+
+  m_JumpSoundPtr->StopAll();
+  delete m_JumpSoundPtr;
 }
 
 void Spring::Draw(const Point2f& position, bool debug) const
@@ -70,6 +76,8 @@ void Spring::Update(Player& player, Camera& camera, float elapsedSec)
         player.SetVelocity(m_Force);
         m_SpritePtr->SetState("push");
         m_Time = 0.f;
+
+        m_JumpSoundPtr->Play(0);
       }
 
       break;

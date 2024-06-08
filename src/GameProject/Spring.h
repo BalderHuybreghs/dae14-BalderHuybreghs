@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Sprite.h"
+#include "SoundEffect.h"
 
 class Spring final : public GameObject
 {
@@ -21,7 +22,6 @@ public:
     Top,
     Bottom
   };
-
 
   Spring(const Point2f& position, const Vector2f& force, Orientation orientation, float rewindTime);
   Spring(const Spring& other);
@@ -56,6 +56,8 @@ private:
   Vector2f m_Force; // The force the spring applies to the player
 
   Rectf m_Collider; // The collision rectangle for the spring
+
+  SoundEffect* m_JumpSoundPtr;
 
   float m_RewindTime; // Ahh yeah, it's REWIND time!
   float m_Time;

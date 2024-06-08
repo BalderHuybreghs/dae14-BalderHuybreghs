@@ -162,6 +162,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="BinaryStream.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraTool.cpp" />
+    <ClCompile Include="Cassette.cpp" />
     <ClCompile Include="CircleShape.cpp" />
     <ClCompile Include="CrumbleBlock.cpp" />
     <ClCompile Include="DashRefill.cpp" />
@@ -172,6 +173,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Jumpthru.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="CassetteAreaTool.cpp" />
+    <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="ObjectBlueprint.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -211,6 +214,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="BinaryStream.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraTool.h" />
+    <ClInclude Include="Cassette.h" />
     <ClInclude Include="CircleShape.h" />
     <ClInclude Include="CrumbleBlock.h" />
     <ClInclude Include="DashRefill.h" />
@@ -221,6 +225,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Jumpthru.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="CassetteAreaTool.h" />
+    <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="ObjectBlueprint.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="ObjectManager.h" />

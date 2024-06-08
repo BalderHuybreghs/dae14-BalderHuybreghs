@@ -75,10 +75,6 @@ void PlayingScreen::Update(float elapsedSec)
     m_PlayerPtr->Jump();
   }
 
-  if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
-    m_PlayerPtr->Hold();
-  }
-
   if (m_InputManagerPtr->IsKeyDown(SDLK_w)) {
     m_PlayerPtr->Up();
   }
