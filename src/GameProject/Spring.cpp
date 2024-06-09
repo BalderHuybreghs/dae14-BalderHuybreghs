@@ -17,8 +17,11 @@ Spring::Spring(const Point2f& position, const Vector2f& force, Orientation orien
     3 * PIXEL_SCALE
   };
 
-  m_SpritePtr = new Sprite(Point2f{ 16, 16 }, rewindTime / 5.f, SPRING_IDLE);
-  m_SpritePtr->AddResource(SPRING_PUSH);
+  m_SpritePtr = new Sprite(Point2f{ 16, 16 }, rewindTime / 5.f, "idle", SPRING_IDLE);
+  m_SpritePtr->AddState("push", SPRING_PUSH);
+
+  m_JumpSoundPtr = new SoundEffect(SOUND_FOLDER + FS + "spring.ogg");
+  m_JumpSoundPtr->SetVolume(10);
 }
 
 Spring::Spring(const Spring& other)
@@ -29,6 +32,9 @@ Spring::Spring(const Spring& other)
 Spring::~Spring()
 {
   delete m_SpritePtr;
+
+  m_JumpSoundPtr->StopAll();
+  delete m_JumpSoundPtr;
 }
 
 void Spring::Draw(const Point2f& position, bool debug) const
@@ -63,13 +69,20 @@ void Spring::Update(Player& player, Camera& camera, float elapsedSec)
   switch (m_State) {
   case (State::Idle):
     {
-      m_SpritePtr->SetState(0);
+      m_SpritePtr->SetState("idle");
 
       if (IsOverlapping(m_Collider, player.GetCollisionShape()->GetShape())) {
         m_State = State::Rewinding;
-        player.SetVelocity(m_Force);
-        m_SpritePtr->SetState(1);
+        player.SetVelocity(player.IsHoldingSpace() ? m_Force * 1.3f : m_Force);
+
+        if (player.GetDashes() <= 0) {
+          player.RefillDashes(1);
+        }
+
+        m_SpritePtr->SetState("push");
         m_Time = 0.f;
+
+        m_JumpSoundPtr->Play(0);
       }
 
       break;
@@ -77,7 +90,7 @@ void Spring::Update(Player& player, Camera& camera, float elapsedSec)
   case (State::Rewinding):
     {
       if (m_SpritePtr->IsAnimationDone()) {
-        m_SpritePtr->SetState(0); // Reset the animation state
+        m_SpritePtr->SetState("idle"); // Reset the animation state
       }
 
       if (m_Time >= m_RewindTime) {

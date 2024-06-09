@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SoundEffect.h"
 
 class CrumbleBlock final : public GameObject
 {
@@ -13,6 +14,7 @@ public:
 
   CrumbleBlock(const Point2f& position, int size, float crumbleTime, const std::string& resource);
   CrumbleBlock(const CrumbleBlock& other);
+  ~CrumbleBlock();
 
   // Application of rule of 5
   CrumbleBlock(const CrumbleBlock&& other) = delete;
@@ -23,6 +25,8 @@ public:
   void Draw(bool debug) const override;
   void Update(Player& player, Camera& camera, float elapsedSec) override;
 
+  void SetPosition(const Point2f& position) override;
+
   GameObject* Clone() const override;
 
   int GetSize() const;
@@ -30,7 +34,7 @@ public:
   std::string GetResource() const;
 private:
   // Handles simple collision with the player. The function returns if the player collided with the block
-  bool HandleCollision(Player& player);
+  bool HandleCollision(Player& player) const;
 
   const std::string m_Resource;
   const Texture* m_TexturePtr;        // The texture that will be used
@@ -47,5 +51,7 @@ private:
 
   // The collision rectangle only needs to be calculated upon the creation of an object
   Rectf m_CollisionRect;
+
+  SoundEffect* m_BreakSoundEffectPtr;
 };
 

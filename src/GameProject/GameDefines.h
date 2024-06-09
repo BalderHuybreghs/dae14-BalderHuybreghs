@@ -9,7 +9,8 @@ static const char FS{ '\\' };
 
 // File extensions
 static const std::string TEXTURE_EXTENSION{ ".png" };
-static const std::string SOUND_EXTENSION{ ".mp3" };
+static const std::string MUSIC_EXTENSION{ ".mp3" };
+static const std::string SOUND_EXTENSION{ ".ogg" };
 static const std::string FONT_EXTENSION{ ".ttf" };
 
 // cev, a combination of celeste and level, very original, I know
@@ -45,6 +46,22 @@ static const std::string STRAWBERRY_IDLE{ STRAWBERRY_FOLDER + FS + "idle" };
 static const std::string STRAWBERRY_CONSUMING{ STRAWBERRY_FOLDER + FS + "consuming" };
 static const std::string CRUMBLE_BLOCK_DEFAULT{ "default" };
 static const std::string CRUMBLE_BLOCK_OUTLINE{ "outline" };
+static const std::string DECAL_FOLDER{ GAMEPLAY_RESOURCE + FS + "decals" };
+static const std::string DANGER_FOLDER{ GAMEPLAY_RESOURCE + FS + "danger" };
+static const std::string SPIKE_DOWN{ "spike_down" };
+static const std::string SPIKE_UP{ "spike_up" };
+static const std::string SPIKE_LEFT{ "spike_left" };
+static const std::string SPIKE_RIGHT{ "spike_right" };
+static const std::string JUMPTHRU_FOLDER{ OBJECTS_FOLDER + FS + "jumpthru" };
+static const std::string JUMPTHRU_DEFAULT_RESOURCE{ "wood" };
+static const std::string CASSETTE_FOLDER{ COLLECTABLE_FOLDER + FS + "cassette" };
+static const std::string CASSETTE_RESOURCE_IDLE{ "idle" };
+static const std::string CASSETTE_RESOURCE_GHOST{ "ghost" };
+static const std::string NOTE_BLOCK_FOLDER{ OBJECTS_FOLDER + FS + "cassetteblock" };
+static const std::string NOTE_BLOCK_SOLID{ "solid" };
+static const std::string NOTE_BLOCK_PRESSED{ "pressed00" };
+static const std::string STRAWBERRY_SOUND_FOLDER{ SOUND_FOLDER + FS + "strawberry" };
+static const std::string AMBIENCE_FOLDER{ "ambience" };
 
 static const std::string BACKGROUND_SUFFIX_FRONT{ "_f" };
 static const std::string BACKGROUND_SUFFIX_MID{ "_m" };
@@ -150,25 +167,37 @@ static const std::string FOREGROUND_TILES[]{
 // Animation information
 static const int PLAYER_FRAME_SIZE{ 32 };
 static const int HAIR_FRAME_SIZE{ 10 };
-static const int BANGS_FRAME_SIZE{ 10 };
-static const float FRAMES_PER_SECOND{ 1 / 8.f };
+static const Point2f BANGS_FRAME_SIZE{ 16, 10 };
+static const float FRAMES_PER_SECOND{ 1 / 14.f };
 static const float BACKGROUND_DOWNSCALE{ 0.2f }; // How much to scale the background down to allow for movement
 
 // Playing information
 static const Vector2f GRAVITY{0.f, -2000.f};
-static const Vector2f TERMINAL_VELOCITY{ 0.f, 0.f }; // TODO: Determine terminal velocity
+static const Vector2f TERMINAL_VELOCITY{ 1500.f, 1500.f };
 static const Color4f BACKGROUND_COLOR{ 11 / 255.f, 16 / 255.f, 19 / 255.f, 1.f }; // The absolute background color is always the same single color in Celeste
 static const float PLAYER_ACCELERATION{ 500.f }; // The rate at which the player accelerates when moving left / right
 static const float PLAYER_JUMP_POTENTIAL{ 50.f }; // The maximum potential jump force the player may reach
 static const float PLAYER_JUMP_FORCE{ 550.f }; // The jump force applied to the player until it reaches max potential
-static const float PLAYER_DASH_FORCE{ 650.f }; // The force behind a player dash
+static const float PLAYER_DASH_FORCE{ 1000.f }; // The force behind a player dash
 static const float PLAYER_SCALE{ PIXEL_SCALE * PLAYER_FRAME_SIZE };
 static const float HAIR_SCALE{ PIXEL_SCALE * HAIR_FRAME_SIZE };
 static const float PLAYER_HEIGHT{ 11 * PIXEL_SCALE };
 static const float PLAYER_LOW{ 10 * PIXEL_SCALE };
 static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
 static const float PLAYER_BODY_WIDTH{ 7 * PIXEL_SCALE };
-static const float PLAYER_BODY_HEIGHT{ 12 * PIXEL_SCALE };
+static const float PLAYER_BODY_HEIGHT{ 14 * PIXEL_SCALE };
+static const int MAX_JUMPTHRU_SIZE{ 4 };
+
+static const float SPIKE_VELOCITY_KILL_LIMIT{ 1.f };
+
+static const float NOTE_BLOCK_TIME{ 1.5f };
+static const Color4f NOTE_BLOCK_COLOR_BLUE{ 57 / 255.f, 162 / 255.f, 231 / 255.f, 1.f };
+static const Color4f NOTE_BLOCK_COLOR_PINK{ 236 / 255.f, 73 / 255.f,206 / 255.f, 1.f };
+
+static const Color4f PLAYER_DASH_HAIR_COLOR{ 177 / 255.f, 62 / 255.f, 69 / 255.f, 1.f };
+static const Color4f PLAYER_NO_DASH_HAIR_COLOR{ 71 / 255.f, 190 / 255.f,255 / 255.f, 1.f };
+
+static const float DEATH_ANIM_TIME{ .8f };
 
 // I just moved the camera in edit mode, printing out the position values until I was satisfied
 static const Point2f START_CAMERA_POSITION{

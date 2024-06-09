@@ -199,14 +199,26 @@
     <ClCompile Include="Decal.cpp">
       <Filter>Source Files\Object\Other</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\Object\Interactable</Filter>
-    </ClCompile>
     <ClCompile Include="Jumpthru.cpp">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
     <ClCompile Include="TrafficLight.cpp">
       <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
+    <ClCompile Include="Cassette.cpp">
+      <Filter>Source Files\Object\Collectable</Filter>
+    </ClCompile>
+    <ClCompile Include="NoteBlock.cpp">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClCompile>
+    <ClCompile Include="CassetteAreaTool.cpp">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPoint.cpp">
+      <Filter>Source Files\Object\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +260,6 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Source Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDefines.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Source Files\Object\Player</Filter>
@@ -350,6 +359,19 @@
     </ClInclude>
     <ClInclude Include="TrafficLight.h">
       <Filter>Source Files\Object\Interactable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cassette.h">
+      <Filter>Source Files\Object\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="NoteBlock.h">
+      <Filter>Source Files\Object\Interactable</Filter>
+    </ClInclude>
+    <ClInclude Include="CassetteAreaTool.h">
+      <Filter>Source Files\Level\EditorTool</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDefines.h" />
+    <ClInclude Include="CheckPoint.h">
+      <Filter>Source Files\Object\Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

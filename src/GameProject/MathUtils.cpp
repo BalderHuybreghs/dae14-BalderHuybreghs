@@ -25,6 +25,11 @@ float MathUtils::Wave(float amplitude, float period, float phase, float shift, f
   return amplitude * sinf((2 * float(M_PI)) / period * (t + phase)) + shift;
 }
 
+float MathUtils::Clamp(float val, float min, float max)
+{
+  return std::max(min, std::min(val, max));
+}
+
 Point2f MathUtils::Lerp(const Point2f& a, const Point2f& b, float t)
 {
   return Point2f{
@@ -50,4 +55,12 @@ Point2f MathUtils::RandPoint(const Circlef& range, int decimals)
   float randY = range.center.y + randRadius * sinf(randAngle);
 
   return Point2f(randX, randY);
+}
+
+Point2f MathUtils::Clamp(const Point2f& val, const Point2f& min, const Point2f& max)
+{
+  return Point2f(
+    Clamp(val.x, min.x, max.x),
+    Clamp(val.y, min.y, max.y)
+  );
 }

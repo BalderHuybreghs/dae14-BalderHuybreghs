@@ -114,6 +114,11 @@ Point2f Rectf::Center() const
     );
 }
 
+std::vector<Point2f> Rectf::Polygon() const
+{
+  return std::vector<Point2f>({ Point2f{left, bottom}, Point2f{left + width, bottom}, Point2f{left, bottom + height}, Point2f{left + width, bottom + height} });
+}
+
 //-----------------------------------------------------------------
 // Color4f Constructors
 //-----------------------------------------------------------------

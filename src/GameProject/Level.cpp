@@ -13,10 +13,16 @@
 #include <vector>
 
 Level::Level(const std::string& name)
-  : m_Name(name), m_PlayerSpawn(Point2f())
+  : m_Name(name), m_PlayerSpawn(Point2f()), m_CasetteZone(Rectf{}), m_CurrMusic(0)
 {
   m_MusicStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
   m_MusicStreamPtr->SetVolume(10);
+
+  m_CassetteStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name + "_cassette")); // Load the cassette music for the current level
+  m_CassetteStreamPtr->SetVolume(10);
+
+  m_AmbienceEffectPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath(AMBIENCE_FOLDER + FS + name));
+  m_AmbienceEffectPtr->SetVolume(1);
 
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
@@ -69,6 +75,8 @@ Level::~Level()
   delete m_ParallaxBackgroundPtr;
 
   delete m_MusicStreamPtr;
+  delete m_CassetteStreamPtr;
+  delete m_AmbienceEffectPtr;
 }
 
 void Level::Build()
@@ -92,6 +100,10 @@ void Level::Build()
   // Queue the music :-)
   if (m_MusicStreamPtr->IsLoaded()) {
     m_MusicStreamPtr->Play(true);
+  }
+
+  if (m_AmbienceEffectPtr->IsLoaded()) {
+    m_AmbienceEffectPtr->Play(-1);
   }
 }
 
@@ -159,10 +171,29 @@ void Level::DrawForeground(Camera& camera, bool debug) const
     utils::SetColor(Color4f{ 0.f, 0.f, 1.f, 1.f });
     utils::DrawRect(rect, 2.f);
   }
+
+  // Draw the cassette zone
+  utils::SetColor(Color4f{ .4f, 0.f, 0.4f, 0.8f });
+  utils::FillRect(m_CasetteZone);
 }
 
 void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
+  // Change the music if the player is or is not in the cassette area
+  if (m_MusicStreamPtr->IsLoaded() && m_CassetteStreamPtr->IsLoaded()) {
+    if (IsOverlapping(player.GetCollisionShape()->GetShape(), m_CasetteZone))
+    {
+      if (m_CurrMusic == 0) {
+        m_CassetteStreamPtr->Play(true);
+        m_CurrMusic = 1;
+      }
+    } else if (m_CurrMusic == 1)
+    {
+      m_MusicStreamPtr->Play(true);
+      m_CurrMusic = 0;
+    }
+  }
+  
   // The player dies if below Y 0, this in case the player ever gets out of bounds somehow
   if (player.GetPosition().y < 0) {
     player.Kill();
@@ -182,7 +213,7 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   }
 
   // Apply gravity to the player
-  if (player.GetState() != Player::State::Climbing && player.GetState() != Player::State::Holding) {
+  if (player.GetState() != Player::State::Climbing || player.GetStamina() <= 0.f || player.GetVelocity().y < 200.f) {
     (&player)->ApplyForce(GRAVITY * elapsedSec);
   }
 
@@ -297,6 +328,16 @@ bool Level::RemoveDeathZone(const Point2f position)
   return false;
 }
 
+void Level::SetCassetteZone(const Rectf& rect)
+{
+  m_CasetteZone = rect;
+}
+
+Rectf Level::GetCassettezone() const
+{
+  return m_CasetteZone;
+}
+
 Tilemap* Level::GetFrontTilemap() const
 {
   return m_ForegroundTilemapPtr;
@@ -339,6 +380,7 @@ void Level::Load()
   m_BackgroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ForegroundTilemapPtr->LoadRawTileData(stream->ReadIntVec());
   m_ObjectBlueprints = stream->ReadBlueprintVec();
+  m_CasetteZone = stream->ReadRect();
 
   delete stream;
 }
@@ -357,6 +399,7 @@ void Level::Save() const
   stream->Write(m_BackgroundTilemapPtr->ToRawTileData());
   stream->Write(m_ForegroundTilemapPtr->ToRawTileData());
   stream->Write(m_ObjectBlueprints);
+  stream->Write(m_CasetteZone);
   stream->Save();
 
   delete stream;

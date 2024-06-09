@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SoundEffect.h"
 
 class Strawberry final : public GameObject
 {
@@ -36,9 +37,13 @@ private:
   // The strawberry makes use of a velocity to move towards the player
   Vector2f m_Velocity;
   State m_State;
+  Point2f m_StartPos;
 
   Sprite* m_SpritePtr;
   Shape* m_ColliderPtr;
+
+  SoundEffect* m_TouchSoundPtr;
+  SoundEffect* m_ConsumeSoundPtr;
 
   float m_Time;
 };
