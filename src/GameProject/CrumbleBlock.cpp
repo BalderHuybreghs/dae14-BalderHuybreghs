@@ -151,15 +151,21 @@ bool CrumbleBlock::HandleCollision(Player& player) const
     // Left collision
     if (IsOverlapping(player.GetLeftCollisionRect(playerRect), m_CollisionRect)) {
       float overlap = (m_Position.x + m_CollisionRect.width) - playerRect.left;
-      position.x += overlap; // Adjust position by the overlap amount
-      velocity.x = 0;
+
+      if (overlap > 0.f) {
+        position.x += overlap; // Adjust position by the overlap amount
+        velocity.x = 0;
+      }
     }
 
     // Right collision
     if (IsOverlapping(player.GetRightCollisionRect(playerRect), m_CollisionRect)) {
       float overlap = (playerRect.left + playerRect.width) - m_Position.x;
-      position.x -= overlap; // Adjust position by the overlap amount
-      velocity.x = 0;
+ 
+      if (overlap > 0.f) {
+        position.x -= overlap; // Adjust position by the overlap amount
+        velocity.x = 0;
+      }
     }
 
     // Bottom collision
