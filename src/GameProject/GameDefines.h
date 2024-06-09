@@ -167,7 +167,7 @@ static const std::string FOREGROUND_TILES[]{
 // Animation information
 static const int PLAYER_FRAME_SIZE{ 32 };
 static const int HAIR_FRAME_SIZE{ 10 };
-static const Point2f BANGS_FRAME_SIZE{ 16, 10 };
+static const Point2f BANGS_FRAME_SIZE{ 32, 32 };
 static const float FRAMES_PER_SECOND{ 1 / 14.f };
 static const float BACKGROUND_DOWNSCALE{ 0.2f }; // How much to scale the background down to allow for movement
 
@@ -186,6 +186,7 @@ static const float PLAYER_LOW{ 10 * PIXEL_SCALE };
 static const float PLAYER_HAIR_START{ 16 * PIXEL_SCALE };
 static const float PLAYER_BODY_WIDTH{ 7 * PIXEL_SCALE };
 static const float PLAYER_BODY_HEIGHT{ 14 * PIXEL_SCALE };
+static const float PLAYER_FLASH_TIME{ .1f };
 static const int MAX_JUMPTHRU_SIZE{ 4 };
 
 static const float SPIKE_VELOCITY_KILL_LIMIT{ 1.f };

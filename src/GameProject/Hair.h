@@ -8,14 +8,14 @@ class Hair final // Why on earth would we need polymorphism on this simple hair 
 {
 public:
   // Parts determine how many hair parts there are
-  Hair(const Point2f& position, int parts, float startingSize);
+  Hair(const Point2f& goal, int parts, float startingSize);
 
   // No copying required (totally not being lazy)
   Hair(const Hair& other) = delete;
   Hair& operator=(const Hair& other) = delete;
   ~Hair();
 
-  void DrawBangs(const Color4f& color, bool flipped = false, bool debug = false) const;
+  void DrawBangs(const Point2f& position, const Color4f& color, bool flipped = false, bool debug = false) const;
   void Draw(const Color4f& color, bool flipped = false, bool debug = false) const;
   void Update(float elapsedSec); // The update function applies the velocity in an appropriate way (at least it is intended to be this way)
 

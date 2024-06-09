@@ -96,6 +96,8 @@ private:
   float m_DashCooldown;
   float m_DeathSecs; // Determines how long the death animation should play
   float m_SpawnProtection; // A small delay protecting the player from instantly dying again
+  float m_HoldCooldown;
+  float m_Timer; // A timer used for flashing the player a color
 
   State m_State;
   Sprite* m_SpritePtr;
@@ -108,7 +110,6 @@ private:
 
   // Colliders
   RectangleShape* m_ColliderPtr;
-
 
   bool m_IsGrounded;
   bool m_CanHold;

@@ -8,13 +8,15 @@
 #include "ResourceUtils.h"
 #include "structs.h"
 #include "TextureManager.h"
+#include <cmath>
 
 using namespace utils;
 
 Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_ColliderPtr(nullptr),
   m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false), m_Flipped(false),
-  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false), m_DashCooldown(0), m_RespawnPoint(position), m_DeathSecs(0), m_ShouldRespawn(false)
+  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false), m_DashCooldown(0), m_RespawnPoint(position), m_DeathSecs(0), m_ShouldRespawn(false), 
+  m_SpawnProtection(0), m_HoldCooldown(0), m_Timer(0)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
@@ -70,14 +72,29 @@ void Player::Draw(bool debug) const
   if (!m_ShouldRespawn) {
     if (m_State != State::Dead) {
       m_HairPtr->Draw(hairColor, flipped, debug);
-      m_HairPtr->DrawBangs(hairColor, flipped, debug);
+      m_HairPtr->DrawBangs(m_Position, hairColor, flipped, debug);
     }
 
-    m_SpritePtr->Draw(m_Position, PIXEL_SCALE, flipped, debug);
+    Color4f playerColor{ 1.f, 1.f, 1.f, 1.f };
+
+    if (m_Stamina <= 0.f) {
+      // Source: https://en.cppreference.com/w/cpp/numeric/math/fmod
+      float flashCycleTime = fmod(m_Timer, PLAYER_FLASH_TIME * 2);
+
+      // Determine the color based on the flash cycle time
+      if (flashCycleTime < PLAYER_FLASH_TIME) {
+        playerColor = Color4f{ .8f, 0.f, 0.f, 1.f };
+      } else {
+        playerColor = Color4f{ 1.f, 1.f, 1.f, 1.f };
+      }
+    }
+
+    m_SpritePtr->DrawColor(Rectf{ m_Position.x, m_Position.y, PLAYER_SCALE, PLAYER_SCALE }, playerColor, flipped, debug);
+
   } else {
     // Draw all the hair balls rotating around the player
     const float perc{ m_DeathSecs / DEATH_ANIM_TIME };
-    const float circ{ M_PI * 2.f };
+    const float circ{ (float)M_PI * 2.f };
     const Point2f center{ m_ColliderPtr->GetShape().Center() };
 
     for (int index{ 0 }; index < 8; index++)
@@ -164,7 +181,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     case Player::State::Idle:
     {
       if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
-        if ((tilemap.IsTile(GetLeftHoldRect(collider)) && m_Flipped) || (tilemap.IsTile(GetRightHoldRect(collider)) && !m_Flipped)) {
+        if (((tilemap.IsTile(GetLeftHoldRect(collider)) && m_Flipped) || (tilemap.IsTile(GetRightHoldRect(collider)) && !m_Flipped)) && m_HoldCooldown <= 0.f) {
           m_State = State::Climbing;
           m_Velocity.y = 0.f;
           break;
@@ -177,9 +194,15 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       }
 
       if (m_InputManagerPtr->IsKeyDown(SDLK_a) || m_InputManagerPtr->IsKeyDown(SDLK_d)) {
+        if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE) && m_IsGrounded) {
+          m_Position.y += 10.f;
+          m_Velocity.y = PLAYER_JUMP_FORCE;
+        }
+
         if (floorf(std::abs(m_Velocity.x)) <= 0.1f && tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape()))) {
           m_SpritePtr->SetState("push");
-        } else if (tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) {
+          m_HairPtr->SetState("push");
+        } else if ((tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) && m_HoldCooldown <= 0.f) {
           m_State = State::Sliding;
         } else {
           m_SpritePtr->SetState("run");
@@ -193,6 +216,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
           m_HairPtr->SetState("jump");
         } else {
           m_SpritePtr->SetState("fall");
+          m_HairPtr->SetState("fall");
         }
       } else {
         m_SpritePtr->SetState("idle");
@@ -236,6 +260,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       }
 
       m_SpritePtr->SetState("hold");
+      m_HairPtr->SetState("hold");
       break;
     }
     case Player::State::Climbing:
@@ -257,8 +282,11 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
       if (!(m_InputManagerPtr->IsKeyDown(SDLK_s) || m_InputManagerPtr->IsKeyDown(SDLK_w))) {
         m_SpritePtr->SetState("hold");
+        m_HairPtr->SetState("hold");
+        m_Position.y += 33.f * elapsedSec; // Correct for the strange sliding bug
       } else {
         m_SpritePtr->SetState("climb");
+        m_HairPtr->SetState("climb");
       }
 
       if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
@@ -266,6 +294,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         m_Velocity.x = PLAYER_JUMP_FORCE * cosf(angle);
         m_Velocity.y = PLAYER_JUMP_FORCE * sinf(angle);
         m_State = State::Idle;
+        m_HoldCooldown = .2f;
         break;
       }
 
@@ -276,7 +305,8 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     }
     case Player::State::Dashing:
     {
-      m_SpritePtr->SetState("dash");
+      m_SpritePtr->SetState("duck");
+      m_HairPtr->SetState("duck");
       if (m_SpritePtr->IsAnimationDone() || m_IsGrounded) {
         m_State = State::Idle;
         break;
@@ -291,7 +321,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       }
 
       m_SpritePtr->SetState("duck");
-      m_HairPtr->SetState("crouch");
+      m_HairPtr->SetState("duck");
       m_Velocity.x = 0.f;
 
       break;
@@ -347,8 +377,12 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
   m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
   m_Direction = Vector2f();
+
   m_DashCooldown = std::max(0.f, m_DashCooldown - elapsedSec);
   m_SpawnProtection = std::max(0.f, m_SpawnProtection - elapsedSec);
+  m_HoldCooldown = std::max(0.f, m_HoldCooldown - elapsedSec);
+
+  m_Timer += elapsedSec;
 }
 
 void Player::RefillDashes(int amount)

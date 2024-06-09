@@ -106,6 +106,8 @@ Color4f NoteBlock::GetColor() const
       return NOTE_BLOCK_COLOR_BLUE;
     case Variant::Pink:
       return NOTE_BLOCK_COLOR_PINK;
+    default:
+      return Color4f{ 1.f, 1.f, 1.f, 1.f };
   }
 }
 

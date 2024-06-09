@@ -3,22 +3,26 @@
 #include "GameDefines.h"
 #include "TextureManager.h"
 
-Hair::Hair(const Point2f& position, int parts, float startingSize)
-  : m_Goal(position), m_Size(startingSize)
+Hair::Hair(const Point2f& goal, int parts, float startingSize)
+  : m_Goal(goal), m_Size(startingSize)
 {
   m_HairTexturePtr = TextureManager::GetInstance()->GetTexture(HAIR_RESOURCE);
   float length{ startingSize / 2.f }; // We can safely asume that the hair is the same size in both width and height
-  m_HairLimbPtr = new Limb(position, 1, length);
+  m_HairLimbPtr = new Limb(goal, 1, length);
 
   for (size_t i = 1; i < parts; ++i)
   {
-    m_HairLimbPtr->AddJoint(new Joint(position, length * (1 - i / float(parts))));
+    m_HairLimbPtr->AddJoint(new Joint(goal, length * (1 - i / float(parts))));
   }
 
-  m_BangsSpritePtr = new Sprite(BANGS_FRAME_SIZE, FRAMES_PER_SECOND, "run", BANGS_RESOURCE + "_run");
-  m_BangsSpritePtr->AddState("idle", BANGS_RESOURCE + "_idle");
-  m_BangsSpritePtr->AddState("crouch", BANGS_RESOURCE + "_crouch");
-  m_BangsSpritePtr->AddState("jump", BANGS_RESOURCE + "_jump");
+  m_BangsSpritePtr = new Sprite(BANGS_FRAME_SIZE, FRAMES_PER_SECOND, "idle", BANGS_RESOURCE + "_idle");
+  m_BangsSpritePtr->AddState("duck", BANGS_RESOURCE + "_duck");
+  m_BangsSpritePtr->AddState("jump", BANGS_RESOURCE + "_jump_fast");
+  m_BangsSpritePtr->AddState("climb", BANGS_RESOURCE + "_climb");
+  m_BangsSpritePtr->AddState("hold", BANGS_RESOURCE + "_hold");
+  m_BangsSpritePtr->AddState("push", BANGS_RESOURCE + "_push");
+  m_BangsSpritePtr->AddState("run", BANGS_RESOURCE + "_run_fast");
+  m_BangsSpritePtr->AddState("fall", BANGS_RESOURCE + "_fall");
 }
 
 Hair::~Hair()
@@ -27,11 +31,11 @@ Hair::~Hair()
   delete m_BangsSpritePtr;
 }
 
-void Hair::DrawBangs(const Color4f& color, bool flipped, bool debug) const
+void Hair::DrawBangs(const Point2f& position, const Color4f& color, bool flipped, bool debug) const
 {
   const Rectf dstRectBangs{
-    m_Goal.x - BANGS_FRAME_SIZE.x * PIXEL_SCALE / 2.f,
-    m_Goal.y - (BANGS_FRAME_SIZE.y - 3) * PIXEL_SCALE / 2.f,
+    position.x,
+    position.y,
     BANGS_FRAME_SIZE.x * PIXEL_SCALE,
     BANGS_FRAME_SIZE.y * PIXEL_SCALE
   };
