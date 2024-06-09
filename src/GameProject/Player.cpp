@@ -130,7 +130,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   m_Direction = m_Direction.Normalized();
 
   // Update velocity
-  if (m_State != State::Dashing) {
+  if (m_State != State::Dashing || m_DashCooldown > 0.f) {
     m_Velocity = Vector2f{
       MathUtils::Lerp(m_Velocity.x, 0.f, 0.3f),
       m_Velocity.y,

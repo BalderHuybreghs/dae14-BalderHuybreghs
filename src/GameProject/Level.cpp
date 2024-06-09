@@ -213,7 +213,7 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   }
 
   // Apply gravity to the player
-  if (player.GetState() != Player::State::Climbing || player.GetStamina() <= 0.f) {
+  if (player.GetState() != Player::State::Climbing || player.GetStamina() <= 0.f || player.GetVelocity().y < 200.f) {
     (&player)->ApplyForce(GRAVITY * elapsedSec);
   }
 

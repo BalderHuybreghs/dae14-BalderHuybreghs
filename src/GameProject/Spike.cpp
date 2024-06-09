@@ -48,6 +48,11 @@ void Spike::Draw(const Point2f& position, bool debug) const
   };
 
   m_TexturePtr->Draw(dstRect);
+
+  if (debug) {
+    SetColor(Color4f{ .8f, 0.f, .2f, .8f });
+    FillRect(m_Collider);
+  }
 }
 
 void Spike::Draw(bool debug) const
@@ -57,10 +62,33 @@ void Spike::Draw(bool debug) const
 
 void Spike::Update(Player& player, Camera& camera, float elapsedSec)
 {
-  // If player toucha my spaghet, player equals dead
-  if (IsOverlapping(m_Collider, player.GetCollisionShape()->GetShape())){
-    player.Kill();
+  const Vector2f vel{ player.GetVelocity() };
+
+  // The player can go through spikes in the opposite orientation
+  switch (m_Orientation)
+  {
+    case Spike::Orientation::Left:
+      if (vel.x < SPIKE_VELOCITY_KILL_LIMIT) {
+        TryKillPlayer(player);
+      }
+      break;
+    case Spike::Orientation::Right:
+      if (vel.x > -SPIKE_VELOCITY_KILL_LIMIT) {
+        TryKillPlayer(player);
+      }
+      break;
+    case Spike::Orientation::Top:
+      if (vel.y < SPIKE_VELOCITY_KILL_LIMIT) {
+        TryKillPlayer(player);
+      }
+      break;
+    case Spike::Orientation::Bottom:
+      if (vel.y > -SPIKE_VELOCITY_KILL_LIMIT) {
+        TryKillPlayer(player);
+      }
+      break;
   }
+
 }
 
 void Spike::SetPosition(const Point2f& position)
@@ -82,4 +110,12 @@ Spike::Orientation Spike::GetOrientation() const
 GameObject* Spike::Clone() const
 {
   return new Spike(*this);
+}
+
+void Spike::TryKillPlayer(Player& player) const
+{
+  // If player toucha my spaghet, player equals dead
+  if (IsOverlapping(m_Collider, player.GetCollisionShape()->GetShape())) {
+    player.Kill();
+  }
 }

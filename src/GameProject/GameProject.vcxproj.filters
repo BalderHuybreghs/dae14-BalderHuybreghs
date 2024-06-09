@@ -199,9 +199,6 @@
     <ClCompile Include="Decal.cpp">
       <Filter>Source Files\Object\Other</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\Object\Interactable</Filter>
-    </ClCompile>
     <ClCompile Include="Jumpthru.cpp">
       <Filter>Source Files\Object\Interactable</Filter>
     </ClCompile>
@@ -219,6 +216,9 @@
     </ClCompile>
     <ClCompile Include="CheckPoint.cpp">
       <Filter>Source Files\Object\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

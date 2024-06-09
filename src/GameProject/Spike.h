@@ -32,6 +32,8 @@ public:
 
   GameObject* Clone() const override;
 private:
+  void TryKillPlayer(Player& player) const;
+
   const Texture* m_TexturePtr;
   Orientation m_Orientation;
 

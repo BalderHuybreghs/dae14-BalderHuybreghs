@@ -188,6 +188,8 @@ static const float PLAYER_BODY_WIDTH{ 7 * PIXEL_SCALE };
 static const float PLAYER_BODY_HEIGHT{ 14 * PIXEL_SCALE };
 static const int MAX_JUMPTHRU_SIZE{ 4 };
 
+static const float SPIKE_VELOCITY_KILL_LIMIT{ 1.f };
+
 static const float NOTE_BLOCK_TIME{ 1.5f };
 static const Color4f NOTE_BLOCK_COLOR_BLUE{ 57 / 255.f, 162 / 255.f, 231 / 255.f, 1.f };
 static const Color4f NOTE_BLOCK_COLOR_PINK{ 236 / 255.f, 73 / 255.f,206 / 255.f, 1.f };
