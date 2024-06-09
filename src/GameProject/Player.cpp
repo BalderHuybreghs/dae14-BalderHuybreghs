@@ -307,6 +307,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
           // Play the other death animation
           m_DeathSecs = DEATH_ANIM_TIME;
           m_ShouldRespawn = true;
+          m_DeathSoundPtr->Play(0);
         }
       }
 
@@ -314,7 +315,6 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       if (m_DeathSecs > 0.f) {
         m_DeathSecs -= elapsedSec;
       } else if (m_ShouldRespawn) {
-        m_DeathSoundPtr->Play(0);
         m_Position = m_RespawnPoint;
         m_Velocity = Vector2f{};
         m_State = State::Idle;

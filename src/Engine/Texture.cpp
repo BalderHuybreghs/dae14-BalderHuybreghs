@@ -10,7 +10,7 @@ Texture::Texture( const std::string& imagePath )
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
   ,m_Color{}
-  ,m_UsesColor{}
+  ,m_UsesColor{ false }
 {
 	CreateFromImage( imagePath );
 }
@@ -27,6 +27,7 @@ Texture::Texture( const std::string& text, TTF_Font *pFont, const Color4f& textC
 	,m_Width{ 10.0f }
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
+  ,m_UsesColor{ false }
 {
 	CreateFromString( text, pFont, textColor );
 }
@@ -36,6 +37,7 @@ Texture::Texture( const std::string& text, const std::string& fontPath, int ptSi
 	,m_Width{ 10.0f }
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
+  , m_UsesColor{ false }
 {
 	CreateFromString( text, fontPath, ptSize, textColor );
 }
@@ -44,7 +46,7 @@ Texture::Texture( Texture&& other ) noexcept
 	,m_Width{ other.m_Width }
 	,m_Height{ other.m_Height }
 	,m_CreationOk{ other.m_CreationOk }
-  ,m_UsesColor{false}
+  ,m_UsesColor{ false }
 {
 	other.m_Id = 0;
 	other.m_CreationOk = false;
@@ -224,7 +226,7 @@ void Texture::CreateFromSurface( SDL_Surface* pSurface )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
 
-void Texture::Draw( const Point2f& dstBottomLeft, const Rectf& srcRect ) const
+void Texture::Draw( const Point2f& dstBottomLeft, const Rectf& srcRect) const
 {
 	const float epsilon{ 0.001f };
 	if ( !m_CreationOk )
