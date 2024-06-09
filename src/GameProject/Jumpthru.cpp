@@ -150,6 +150,11 @@ bool Jumpthru::HandleCollision(Player& player) const
       float overlap = (m_Position.y + m_CollisionRect.height) - playerRect.bottom;
       position.y += overlap; // Adjust position by the overlap amount
       velocity.y = 0;
+      player.SetArtificalGrounded();
+    }
+
+    if (IsOverlapping(player.GetGroundedRect(playerRect), m_CollisionRect)) {
+      player.SetArtificalGrounded();
     }
 
     player.SetVelocity(velocity);

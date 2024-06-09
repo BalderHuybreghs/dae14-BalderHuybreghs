@@ -16,6 +16,7 @@ public:
   Sprite(const Point2f& frameSize, float msPerFrame, const std::string& state, const std::string& resource);
   virtual ~Sprite() = default;
 
+  void DrawColor(const Rectf& dstRect, const Color4f& color, bool flipped = false, bool debug = false) const;
   void Draw(const Rectf& dstRect, bool flipped = false, bool debug = false) const;
   void Draw(const Point2f& position, float scale, bool flipped = false, bool debug = false) const;
   void Draw(const Point2f& position, bool flipped = false, bool debug = false) const;

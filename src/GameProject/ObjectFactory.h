@@ -43,7 +43,10 @@ namespace ObjectFactory
 
   GameObject* CreateCassette();
 
-  GameObject* CreateNoteBlock();
+  GameObject* CreateNoteBlockBlue4x2();
+  GameObject* CreateNoteBlockPink4x2();
+  GameObject* CreateNoteBlockBlue2x6();
+  GameObject* CreateNoteBlockPink2x6();
 
   // Creates a bunch of jumpthrus with different sizes
   void RegisterJumpthrus(ObjectManager* omInstance);

@@ -5,6 +5,7 @@
 #include "RectangleShape.h"
 #include "utils.h"
 #include "MathUtils.h"
+#include "ResourceUtils.h"
 #include "structs.h"
 
 using namespace utils;
@@ -12,7 +13,7 @@ using namespace utils;
 Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_ColliderPtr(nullptr),
   m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false), m_Flipped(false),
-  m_InputManagerPtr(inputManagerPtr)
+  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
@@ -33,6 +34,12 @@ Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   const Color4f colliderSideColor{ 0.f, 0.f, .5f, 0.5f };
 
   m_ColliderPtr = new RectangleShape(Point2f{ PLAYER_BODY_WIDTH, PLAYER_BODY_HEIGHT }, m_Position, colliderColor, true);
+
+  m_DashSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("player/dash"));
+  m_DashSoundPtr->SetVolume(5);
+
+  m_DeathSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("player/death"));
+  m_DeathSoundPtr->SetVolume(5);
 }
 
 Player::~Player()
@@ -42,6 +49,8 @@ Player::~Player()
   delete m_ParticleSpritePtr;
   delete m_HairPtr;
   delete m_ColliderPtr;
+  delete m_DashSoundPtr;
+  delete m_DeathSoundPtr;
 }
 
 void Player::Draw(bool debug) const
@@ -50,8 +59,12 @@ void Player::Draw(bool debug) const
   const float half{ PLAYER_SCALE / 2.f };
   const bool flipped{ m_Flipped };
 
-  m_HairPtr->Draw(flipped, debug);
-  m_SpritePtr->Draw(m_Position, PIXEL_SCALE, flipped, debug);
+  if (m_State != State::Dead) {
+    // I attempted to draw the player between the bangs and the hair...
+    m_HairPtr->Draw(m_Dashes > 0 ? PLAYER_DASH_HAIR_COLOR : PLAYER_NO_DASH_HAIR_COLOR, flipped, debug);
+    m_HairPtr->DrawBangs(m_Dashes > 0 ? PLAYER_DASH_HAIR_COLOR : PLAYER_NO_DASH_HAIR_COLOR, flipped, debug);
+    m_SpritePtr->Draw(m_Position, PIXEL_SCALE, flipped, debug);
+  }
 
   if (debug) {
     m_ColliderPtr->Draw();
@@ -84,18 +97,29 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec, const Tilemap& tilemap)
 {
+  if (m_State == State::Dead) {
+    return;
+  }
+
   // Reset grounded, the collision handling will check if the player is grounded
   const Rectf collider{ m_ColliderPtr->GetShape() };
   m_Direction = m_Direction.Normalized();
 
   // Update velocity
+  if (m_State != State::Dashing) {
+    m_Velocity = Vector2f{
+      MathUtils::Lerp(m_Velocity.x, 0.f, 0.3f),
+      m_Velocity.y,
+    };
+  }
+
+  // Clamp the velocity between the terminal velocity
   m_Velocity = Vector2f{
-    MathUtils::Lerp(m_Velocity.x, 0.f, 0.3f),
-    m_Velocity.y,
+    MathUtils::Clamp(m_Velocity.x, -TERMINAL_VELOCITY.x, TERMINAL_VELOCITY.x),
+    MathUtils::Clamp(m_Velocity.y, -TERMINAL_VELOCITY.y, TERMINAL_VELOCITY.y)
   };
 
   HandleCollision(elapsedSec, tilemap);
-  m_IsGrounded = tilemap.IsTile(GetGroundedRect(collider));
 
   const float half{ PLAYER_SCALE / 2.f };
   if (floorf(m_Velocity.y) == 0.f) {
@@ -108,26 +132,39 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     m_Position.y + m_Velocity.y * elapsedSec
   });
 
+  m_IsHoldingSpace = m_InputManagerPtr->IsKeyDown(SDLK_SPACE);
+
   switch (m_State) {
     case Player::State::Idle:
     {
-      if (!m_IsGrounded) {
+      if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE) && m_IsGrounded) {
+        m_Position.y += 10.f;
+        m_Velocity.y = PLAYER_JUMP_FORCE;
+      }
+
+      if (m_InputManagerPtr->IsKeyDown(SDLK_a) || m_InputManagerPtr->IsKeyDown(SDLK_d)) {
+        m_SpritePtr->SetState("run");
+        m_HairPtr->SetState("run");
+
+        if (floorf(std::abs(m_Velocity.x)) <= 0.1f && m_IsGrounded) {
+          m_SpritePtr->SetState("push");
+        }
+        
+        if (tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) {
+          m_State = State::Sliding;
+        }
+      } else if (m_InputManagerPtr->IsKeyDown(SDLK_s) && m_IsGrounded) {
+        m_State = State::Crouching;
+      } else if (!m_IsGrounded) {
         if (m_Velocity.y > 0.f) {
           m_SpritePtr->SetState("jump");
+          m_HairPtr->SetState("jump");
         } else {
           m_SpritePtr->SetState("fall");
         }
-      } else if (m_InputManagerPtr->IsKeyDown(SDLK_a) || m_InputManagerPtr->IsKeyDown(SDLK_d)) {
-        if (floorf(std::abs(m_Velocity.x)) <= 0.1f && m_IsGrounded) {
-          m_SpritePtr->SetState("push");
-        } else if (tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) {
-          m_State = State::Sliding;
-          break;
-        }
-      } else if (floorf(std::abs(m_Velocity.x)) >= 0.1f) {
-        m_SpritePtr->SetState("run");
       } else {
         m_SpritePtr->SetState("idle");
+        m_HairPtr->SetState("idle");
       }
 
       if (m_IsGrounded) {
@@ -148,6 +185,11 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
+      if (tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape()))) {
+        m_State = State::Idle;
+        break;
+      }
+
       if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
         m_State = State::Climbing;
       }
@@ -162,13 +204,13 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
-      if (m_IsGrounded) {
+      if (!(tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider)))) {
         m_State = State::Idle;
         break;
       }
 
-      if (!(tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider)))) {
-        m_State = State::Idle;
+      if (tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape())) || m_IsGrounded) {
+        m_Velocity.y = 0.f;
         break;
       }
 
@@ -185,19 +227,44 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     case Player::State::Dashing:
     {
       m_SpritePtr->SetState("dash");
-      if (m_SpritePtr->IsAnimationDone()) {
+      if (m_SpritePtr->IsAnimationDone() || m_IsGrounded) {
         m_State = State::Idle;
         break;
       }
       break;
     }
+
+    case Player::State::Crouching:
+    {
+      if (!m_InputManagerPtr->IsKeyDown(SDLK_s)) {
+        m_State = State::Idle;
+      }
+
+      m_SpritePtr->SetState("duck");
+      m_HairPtr->SetState("crouch");
+      m_Velocity.x = 0.f;
+    }
+
+    case Player::State::Dead:
+    {
+      break;
+    }
+  }
+
+  m_HairPtr->Update(elapsedSec);
+  m_SpritePtr->Update(elapsedSec);
+
+  m_IsGrounded = tilemap.IsTile(GetGroundedRect(collider));
+
+  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT) && m_Dashes > 0 && m_State != State::Dashing) {
+    m_DashSoundPtr->Play(0);
+    m_State = State::Dashing;
+    m_Velocity = m_Direction * PLAYER_DASH_FORCE;
+    --m_Dashes;
   }
 
   m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
   m_Direction = Vector2f();
-
-  m_HairPtr->Update(elapsedSec);
-  m_SpritePtr->Update(elapsedSec);
 }
 
 void Player::RefillDashes(int amount)
@@ -208,24 +275,6 @@ void Player::RefillDashes(int amount)
   }
 
   m_Dashes += amount;
-}
-
-void Player::Jump()
-{
-  if (m_IsGrounded || m_State == State::Climbing || m_State == State::Sliding) {
-    m_Velocity.y = PLAYER_JUMP_FORCE;
-  }
-}
-
-void Player::Dash()
-{
-  if (m_Dashes < 1) {
-    return;
-  }
-
-  m_State = State::Dashing;
-  m_Velocity = m_Direction * PLAYER_DASH_FORCE;
-  --m_Dashes;
 }
 
 void Player::ApplyForce(const Vector2f& force)
@@ -269,17 +318,6 @@ void Player::Up()
 
   if (m_State == State::Climbing) {
     m_Velocity.y = 100;
-  }
-}
-
-void Player::Down()
-{
-  m_Direction.y = -1;
-
-  if (m_State == State::Idle) {
-    m_State = State::Crouching;
-  } else if (m_State == State::Climbing) {
-    m_Velocity.y = -100;
   }
 }
 
@@ -331,9 +369,28 @@ bool Player::IsGrounded() const
   return m_IsGrounded;
 }
 
+bool Player::IsHoldingSpace() const
+{
+  return m_IsHoldingSpace;
+}
+
 void Player::Kill()
 {
+  if (m_State == State::Dead) {
+    return;
+  }
+
+  m_DeathSoundPtr->Play(0);
   m_State = State::Dead; // No matter the state, when the player is killed, they die... Who would have thought?
+}
+
+void Player::Respawn(const Point2f& position)
+{
+  if (m_State == State::Dead) {
+    m_Position = position;
+    m_Velocity = Vector2f{};
+    m_State = State::Idle;
+  }
 }
 
 void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
@@ -361,22 +418,22 @@ void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
     // For example, stop player's movement in the direction of collision
 
     // Check if the collision happens on the bottom side
-    if (m_Velocity.y < 0 && tilemap.IsTile(GetBottomCollisionRect(nextCollisionRect)) || tilemap.IsTile(nextPlayerPos))
+    if (tilemap.IsTile(GetBottomCollisionRect(nextCollisionRect)) || tilemap.IsTile(nextPlayerPos))
     {
       // Player collided with the ground
       m_Velocity.y = 0.f;
     }
 
     // Check if the collision happens on the top side
-    if (m_Velocity.y > 0 && tilemap.IsTile(GetTopCollisionRect(nextCollisionRect)))
+    if (tilemap.IsTile(GetTopCollisionRect(nextCollisionRect)))
     {
       // Player collided with the ceiling
       m_Velocity.y = 0.f;
+      m_Position.y -= 1.5f;
     }
 
     // Check if the collision happens on the horizontal sides
-    if (m_Velocity.x != 0 && 
-        tilemap.IsTile(GetLeftCollisionRect(nextCollisionRect)) || 
+    if (tilemap.IsTile(GetLeftCollisionRect(nextCollisionRect)) || 
         tilemap.IsTile(GetRightCollisionRect(nextCollisionRect))
         )
     {
@@ -426,4 +483,9 @@ Rectf Player::GetGroundedRect(const Rectf& rect) const
   collisionRect.height = collisionRect.height * 0.3f;
   collisionRect.bottom -= collisionRect.height;
   return collisionRect;
+}
+
+void Player::SetArtificalGrounded()
+{
+  m_IsGrounded = true;
 }

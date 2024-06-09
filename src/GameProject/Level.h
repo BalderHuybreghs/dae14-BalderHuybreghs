@@ -7,6 +7,7 @@
 #include "ParticleEmitter.h"
 #include "SoundStream.h"
 #include "ParallaxBackground.h"
+#include "SoundEffect.h"
 
 class Level
 {
@@ -88,4 +89,5 @@ private:
 
   SoundStream* m_MusicStreamPtr;
   SoundStream* m_CassetteStreamPtr; // The music that should play then the player is in a cassette area
+  SoundEffect* m_AmbienceEffectPtr;
 };

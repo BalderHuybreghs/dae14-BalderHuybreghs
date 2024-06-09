@@ -21,6 +21,9 @@ Level::Level(const std::string& name)
   m_CassetteStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name + "_cassette")); // Load the cassette music for the current level
   m_CassetteStreamPtr->SetVolume(10);
 
+  m_AmbienceEffectPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath(AMBIENCE_FOLDER + FS + name));
+  m_AmbienceEffectPtr->SetVolume(1);
+
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
   m_ForegroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, FOREGROUND_TILES, FOREGROUND_TILES_SIZE);
@@ -73,6 +76,7 @@ Level::~Level()
 
   delete m_MusicStreamPtr;
   delete m_CassetteStreamPtr;
+  delete m_AmbienceEffectPtr;
 }
 
 void Level::Build()
@@ -96,6 +100,10 @@ void Level::Build()
   // Queue the music :-)
   if (m_MusicStreamPtr->IsLoaded()) {
     m_MusicStreamPtr->Play(true);
+  }
+
+  if (m_AmbienceEffectPtr->IsLoaded()) {
+    m_AmbienceEffectPtr->Play(-1);
   }
 }
 

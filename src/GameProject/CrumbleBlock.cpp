@@ -3,6 +3,7 @@
 #include "GameDefines.h"
 #include "TextureManager.h"
 #include "MathUtils.h"
+#include "ResourceUtils.h"
 
 CrumbleBlock::CrumbleBlock(const Point2f& position, int size, float crumbleTime, const std::string& resource)
   : GameObject(position), m_Size(size), m_CrumbleTime(crumbleTime), m_Resource(resource), m_Time(0), m_State(State::Stable), m_PlayerPosBeforeCollision(Point2f{})
@@ -17,11 +18,19 @@ CrumbleBlock::CrumbleBlock(const Point2f& position, int size, float crumbleTime,
       TILE_SIZE * PIXEL_SCALE * m_Size,
       TILE_SIZE * PIXEL_SCALE
   };
+
+  m_BreakSoundEffectPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("break"));
+  m_BreakSoundEffectPtr->SetVolume(5);
 }
 
 CrumbleBlock::CrumbleBlock(const CrumbleBlock& other)
   : CrumbleBlock(other.GetPosition(), other.GetSize(), other.GetCrumbleTime(), other.GetResource())
 {
+}
+
+CrumbleBlock::~CrumbleBlock()
+{
+  delete m_BreakSoundEffectPtr;
 }
 
 void CrumbleBlock::Draw(const Point2f& position, bool debug) const
@@ -80,6 +89,7 @@ void CrumbleBlock::Update(Player& player, Camera& camera, float elapsedSec)
     break;
   case State::Unstable:
     if (m_Time >= m_CrumbleTime) {
+      m_BreakSoundEffectPtr->Play(0);
       m_State = State::Gone;
       m_Time = 0;
     }
@@ -157,6 +167,11 @@ bool CrumbleBlock::HandleCollision(Player& player) const
       float overlap = (m_Position.y + m_CollisionRect.height) - playerRect.bottom;
       position.y += overlap; // Adjust position by the overlap amount
       velocity.y = 0;
+      player.SetArtificalGrounded();
+    }
+
+    if (IsOverlapping(player.GetGroundedRect(playerRect), m_CollisionRect)) {
+      player.SetArtificalGrounded();
     }
 
     // Top collision

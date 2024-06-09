@@ -169,9 +169,24 @@ GameObject* ObjectFactory::CreateCassette()
   return new Cassette(Point2f{});
 }
 
-GameObject* ObjectFactory::CreateNoteBlock()
+GameObject* ObjectFactory::CreateNoteBlockBlue4x2()
 {
-  return new NoteBlock(Point2f{}, NoteBlock::Variant::Blue, 3, 2);
+  return new NoteBlock(Point2f{}, NoteBlock::Variant::Blue, 4, 2);
+}
+
+GameObject* ObjectFactory::CreateNoteBlockPink4x2()
+{
+  return new NoteBlock(Point2f{}, NoteBlock::Variant::Pink, 4, 2);
+}
+
+GameObject* ObjectFactory::CreateNoteBlockBlue2x6()
+{
+  return new NoteBlock(Point2f{}, NoteBlock::Variant::Blue, 2, 6);
+}
+
+GameObject* ObjectFactory::CreateNoteBlockPink2x6()
+{
+  return new NoteBlock(Point2f{}, NoteBlock::Variant::Pink, 2, 6);
 }
 
 void ObjectFactory::RegisterJumpthrus(ObjectManager* omInstance)
@@ -227,5 +242,8 @@ void ObjectFactory::RegisterGameObjects()
 
   omInstance->RegisterObject(CreateCassette());
 
-  omInstance->RegisterObject(CreateNoteBlock());
+  omInstance->RegisterObject(CreateNoteBlockBlue4x2());
+  omInstance->RegisterObject(CreateNoteBlockPink4x2());
+  omInstance->RegisterObject(CreateNoteBlockBlue2x6());
+  omInstance->RegisterObject(CreateNoteBlockPink2x6());
 }

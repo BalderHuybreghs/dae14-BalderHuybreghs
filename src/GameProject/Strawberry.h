@@ -37,6 +37,7 @@ private:
   // The strawberry makes use of a velocity to move towards the player
   Vector2f m_Velocity;
   State m_State;
+  Point2f m_StartPos;
 
   Sprite* m_SpritePtr;
   Shape* m_ColliderPtr;

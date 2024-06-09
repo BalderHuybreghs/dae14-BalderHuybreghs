@@ -14,7 +14,7 @@ std::string ResourceUtils::ResourceToSoundPath(const std::string& resource)
 
 std::string ResourceUtils::ResourceToMusicPath(const std::string& resource)
 {
-  return MUSIC_FOLDER + FS + resource + SOUND_EXTENSION;
+  return MUSIC_FOLDER + FS + resource + MUSIC_EXTENSION;
 }
 
 std::string ResourceUtils::ResourceToFontPath(const std::string& resource)

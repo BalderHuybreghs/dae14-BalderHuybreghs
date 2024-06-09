@@ -6,7 +6,7 @@
 #include "utils.h"
 
 Strawberry::Strawberry(const Point2f& position)
-  : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
+  : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0), m_StartPos(position)
 {
   m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, "idle", STRAWBERRY_IDLE);
   m_SpritePtr->AddState("consume", STRAWBERRY_CONSUMING);
@@ -81,6 +81,13 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
   {
     m_SpritePtr->SetState("idle");
 
+    if (player.GetState() == Player::State::Dead) {
+      m_State = State::Idle;
+      m_Position = m_StartPos;
+      m_Velocity = Vector2f{};
+      break;
+    }
+
     if (player.IsGrounded()) {
       m_State = State::Consuming;
       m_ConsumeSoundPtr->Play(0);
@@ -125,6 +132,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 void Strawberry::SetPosition(const Point2f& position)
 {
   m_Position = position;
+  m_StartPos = m_Position;
   m_ColliderPtr->SetPosition(m_Position + 8.f * PIXEL_SCALE);
 }
 

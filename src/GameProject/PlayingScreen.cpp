@@ -57,12 +57,6 @@ void PlayingScreen::Draw()
 void PlayingScreen::Update(float elapsedSec)
 {
   // Player controls
-  const Vector2f playerVel{ m_PlayerPtr->GetVelocity() };
-
-  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT)) {
-    m_PlayerPtr->Dash();
-  }
-
   if (m_InputManagerPtr->IsKeyDown(SDLK_a)) {
     m_PlayerPtr->Left();
   }
@@ -71,16 +65,8 @@ void PlayingScreen::Update(float elapsedSec)
     m_PlayerPtr->Right();
   }
 
-  if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
-    m_PlayerPtr->Jump();
-  }
-
   if (m_InputManagerPtr->IsKeyDown(SDLK_w)) {
     m_PlayerPtr->Up();
-  }
-
-  if (m_InputManagerPtr->IsKeyDown(SDLK_s)) {
-    m_PlayerPtr->Down();
   }
 
   m_LevelPtr->Update(*m_PlayerPtr, *m_CameraPtr, elapsedSec);

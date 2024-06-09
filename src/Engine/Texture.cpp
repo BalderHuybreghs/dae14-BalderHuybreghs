@@ -44,6 +44,7 @@ Texture::Texture( Texture&& other ) noexcept
 	,m_Width{ other.m_Width }
 	,m_Height{ other.m_Height }
 	,m_CreationOk{ other.m_CreationOk }
+  ,m_UsesColor{false}
 {
 	other.m_Id = 0;
 	other.m_CreationOk = false;
@@ -398,7 +399,7 @@ void Texture::DrawColor(const Rectf& dstRect, const Color4f& color, const Rectf&
 
   // Tell opengl which texture we will use
   glBindTexture(GL_TEXTURE_2D, m_Id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   // Set the color
   glColor3f(color.r, color.g, color.b);

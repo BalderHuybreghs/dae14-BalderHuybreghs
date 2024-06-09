@@ -15,6 +15,47 @@ Sprite::Sprite(const Point2f& frameSize, float msPerFrame, const std::string& st
   SetState(state, true);
 }
 
+void Sprite::DrawColor(const Rectf& dstRect, const Color4f& color, bool flipped, bool debug) const
+{
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const StateInfo>>>>
+    state = m_States.find(m_State);
+
+  if (debug) {
+    SetColor(Color4f{ 1.f, 1.f, 1.f, 0.2f });
+    FillRect(dstRect);
+  }
+
+  if (state == m_States.end()) {
+    return;
+  }
+
+  // Every animation is only 1 row
+  const Rectf srcRect{
+    float(m_FrameSize.x * m_Frame),
+    m_FrameSize.y,
+    m_FrameSize.x,
+    m_FrameSize.y
+  };
+
+  if (state->second.texturePtr == nullptr) {
+    std::cout << "Sprite texture is null" << std::endl;
+    return;
+  }
+
+  // For mirroring the sprite
+  glPushMatrix();
+
+  // Apply mirroring transformation
+  glTranslatef(dstRect.left + dstRect.width / 2, dstRect.bottom + dstRect.height / 2, 0.f);
+  glScalef(flipped ? -1.f : 1.f, 1.f, 1.f);
+  glTranslatef(-dstRect.left - dstRect.width / 2, -dstRect.bottom - dstRect.height / 2, 0.f);
+
+  // Draw the sprite
+  state->second.texturePtr->DrawColor(dstRect, color, srcRect);
+
+  glPopMatrix();
+}
+
 void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
 {
   std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const StateInfo>>>>

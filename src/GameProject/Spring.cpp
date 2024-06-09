@@ -73,7 +73,7 @@ void Spring::Update(Player& player, Camera& camera, float elapsedSec)
 
       if (IsOverlapping(m_Collider, player.GetCollisionShape()->GetShape())) {
         m_State = State::Rewinding;
-        player.SetVelocity(m_Force);
+        player.SetVelocity(player.IsHoldingSpace() ? m_Force * 1.3f : m_Force);
         m_SpritePtr->SetState("push");
         m_Time = 0.f;
 

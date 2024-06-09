@@ -15,16 +15,19 @@ public:
   Hair& operator=(const Hair& other) = delete;
   ~Hair();
 
-  void Draw(bool flipped = false, bool debug = false) const;
+  void DrawBangs(const Color4f& color, bool flipped = false, bool debug = false) const;
+  void Draw(const Color4f& color, bool flipped = false, bool debug = false) const;
   void Update(float elapsedSec); // The update function applies the velocity in an appropriate way (at least it is intended to be this way)
 
   Point2f GetPosition() const;
 
   float SetEnd(const Point2f& position); // Returns the distance from the goal position
   void SetGoal(const Point2f& goal);
+
+  void SetState(const std::string& state);
 private:
-  // The goal position for the hair
   const float m_Size;
+  // The goal position for the hair
   Point2f m_Position;
   Point2f m_Goal;
 

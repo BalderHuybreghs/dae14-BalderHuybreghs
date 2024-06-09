@@ -5,6 +5,7 @@
 #include "Tilemap.h"
 #include "Hair.h"
 #include "InputManager.h"
+#include "SoundEffect.h"
 
 class Player final
 {
@@ -34,13 +35,8 @@ public:
 
   void RefillDashes(int amount);
 
-  // Player actions
-  void Jump();
-  void Dash();
-
   // Movement functions the player can do
   void Up();
-  void Down();
   void Left();
   void Right();
 
@@ -68,9 +64,14 @@ public:
   Rectf GetRightHoldRect(const Rectf& rect) const;
   Rectf GetGroundedRect(const Rectf& rect) const;
 
+  void SetArtificalGrounded(); // Sets the player to grounded, useful for game objects which have their own collision
+
   bool IsGrounded() const;
 
+  bool IsHoldingSpace() const;
+
   void Kill(); // Instantly kills the player (as Celeste does not work with a health / damage system)
+  void Respawn(const Point2f& position);
 private:
   // Collision handling stuff
   void HandleCollision(float elapsedSec, const Tilemap& tilemap);
@@ -97,9 +98,13 @@ private:
   bool m_IsGrounded;
   bool m_CanHold;
   bool m_Flipped;
+  bool m_IsHoldingSpace;
 
   // To handle the input live we use the input manager here
   // this is so we can easily check if the player is holding buttons
   // to solve wonky controls
   const InputManager* m_InputManagerPtr;
+
+  SoundEffect* m_DeathSoundPtr;
+  SoundEffect* m_DashSoundPtr;
 };

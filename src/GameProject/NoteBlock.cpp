@@ -4,7 +4,7 @@
 #include "GameDefines.h"
 
 NoteBlock::NoteBlock(const Point2f& position, Variant variant, int width, int height)
-  : GameObject(position), m_Variant(variant), m_Width(width), m_Height(height), m_Time(0), m_State(State::Stable)
+  : GameObject(position), m_Variant(variant), m_Width(width), m_Height(height), m_Time(0)
 {
   m_TexturePtr = TextureManager::GetInstance()->GetTexture(NOTE_BLOCK_FOLDER + FS + NOTE_BLOCK_SOLID);
   m_TexturePressedPtr = TextureManager::GetInstance()->GetTexture(NOTE_BLOCK_FOLDER + FS + NOTE_BLOCK_PRESSED);
@@ -15,6 +15,8 @@ NoteBlock::NoteBlock(const Point2f& position, Variant variant, int width, int he
     m_Width * 8 * PIXEL_SCALE,
     m_Height * 8 * PIXEL_SCALE
   };
+
+  m_State = m_Variant == Variant::Blue ? State::Stable : State::Gone;
 }
 
 NoteBlock::NoteBlock(const NoteBlock& other)
@@ -135,6 +137,11 @@ bool NoteBlock::HandleCollision(Player& player) const
       float overlap = (m_Position.y + m_CollisionRect.height) - playerRect.bottom;
       position.y += overlap; // Adjust position by the overlap amount
       velocity.y = 0;
+      player.SetArtificalGrounded();
+    }
+
+    if (IsOverlapping(player.GetGroundedRect(playerRect), m_CollisionRect)) {
+      player.SetArtificalGrounded();
     }
 
     // Top collision
@@ -176,7 +183,7 @@ void NoteBlock::DrawMap(const Texture* texture, const Point2f& position) const
 Rectf NoteBlock::GetSrcRect(int x, int y) const
 {
   // Calculate the src rect
-  if (x == 0 && y == 0) {
+  if (x == 0 && y == m_Height -1) {
     return Rectf{
       0,
       0,
@@ -185,10 +192,28 @@ Rectf NoteBlock::GetSrcRect(int x, int y) const
     };
   }
 
-  if (x == 0 && y == m_Height) {
+  if (x == 0 && y == 0) {
     return Rectf{
       0,
       8 * 2,
+      8,
+      8
+    };
+  }
+
+  if (x == m_Width -1 && y == 0) {
+    return Rectf{
+      8 * 2,
+      8 * 2,
+      8,
+      8
+    };
+  }
+
+  if (x == m_Width - 1 && y == m_Height - 1) {
+    return Rectf{
+      8 * 2,
+      0,
       8,
       8
     };
@@ -196,44 +221,35 @@ Rectf NoteBlock::GetSrcRect(int x, int y) const
 
   if (x == 0) {
     return Rectf{
+      8,
+      8,
+      8,
+      8
+    };
+  }
+
+  if (y == 0) {
+    return Rectf{
+      8,
+      8 * 2,
+      8,
+      8
+    };
+  }
+
+  if (y == m_Height - 1) {
+    return Rectf{
+      8,
       0,
       8,
-      8,
       8
     };
   }
 
-  if (x == m_Width && y == 0) {
-    return Rectf{
-      8 * 2,
-      0,
-      8,
-      8
-    };
-  }
-
-  if (x == m_Width) {
+  if (x == m_Width - 1) {
     return Rectf{
       8 * 2,
       8,
-      8,
-      8
-    };
-  }
-
-  if (x == m_Width && y == m_Height) {
-    return Rectf{
-      8 * 2,
-      8 * 2,
-      8,
-      8
-    };
-  }
-
-  if (y == m_Height) {
-    return Rectf{
-      8,
-      8 * 2,
       8,
       8
     };

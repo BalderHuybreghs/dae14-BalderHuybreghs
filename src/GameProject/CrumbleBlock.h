@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SoundEffect.h"
 
 class CrumbleBlock final : public GameObject
 {
@@ -13,9 +14,9 @@ public:
 
   CrumbleBlock(const Point2f& position, int size, float crumbleTime, const std::string& resource);
   CrumbleBlock(const CrumbleBlock& other);
+  ~CrumbleBlock();
 
   // Application of rule of 5
-  ~CrumbleBlock() = default;
   CrumbleBlock(const CrumbleBlock&& other) = delete;
   CrumbleBlock& operator=(const CrumbleBlock& other) = delete;
   CrumbleBlock& operator=(const CrumbleBlock&& other) = delete;
@@ -50,5 +51,7 @@ private:
 
   // The collision rectangle only needs to be calculated upon the creation of an object
   Rectf m_CollisionRect;
+
+  SoundEffect* m_BreakSoundEffectPtr;
 };
 
