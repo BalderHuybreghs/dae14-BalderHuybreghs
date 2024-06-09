@@ -9,8 +9,17 @@ Texture::Texture( const std::string& imagePath )
 	,m_Width{ 10.0f }
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
+  ,m_Color{}
+  ,m_UsesColor{ false }
 {
 	CreateFromImage( imagePath );
+}
+
+Texture::Texture(const std::string& imagePath, const Color4f& color)
+  : Texture(imagePath)
+{
+  m_Color = color;
+  m_UsesColor = true;
 }
 
 Texture::Texture( const std::string& text, TTF_Font *pFont, const Color4f& textColor )
@@ -18,6 +27,7 @@ Texture::Texture( const std::string& text, TTF_Font *pFont, const Color4f& textC
 	,m_Width{ 10.0f }
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
+  ,m_UsesColor{ false }
 {
 	CreateFromString( text, pFont, textColor );
 }
@@ -27,6 +37,7 @@ Texture::Texture( const std::string& text, const std::string& fontPath, int ptSi
 	,m_Width{ 10.0f }
 	,m_Height{ 10.0f }
 	,m_CreationOk{ false }
+  , m_UsesColor{ false }
 {
 	CreateFromString( text, fontPath, ptSize, textColor );
 }
@@ -35,6 +46,7 @@ Texture::Texture( Texture&& other ) noexcept
 	,m_Width{ other.m_Width }
 	,m_Height{ other.m_Height }
 	,m_CreationOk{ other.m_CreationOk }
+  ,m_UsesColor{ false }
 {
 	other.m_Id = 0;
 	other.m_CreationOk = false;
@@ -214,7 +226,7 @@ void Texture::CreateFromSurface( SDL_Surface* pSurface )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
 
-void Texture::Draw( const Point2f& dstBottomLeft, const Rectf& srcRect ) const
+void Texture::Draw( const Point2f& dstBottomLeft, const Rectf& srcRect) const
 {
 	const float epsilon{ 0.001f };
 	if ( !m_CreationOk )
@@ -242,85 +254,187 @@ void Texture::Draw( const Point2f& dstBottomLeft, const Rectf& srcRect ) const
 
 void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 {
-	const float epsilon{ 0.001f };
-	if ( !m_CreationOk )
-	{
-		DrawFilledRect( dstRect );
-		return;
-	}
+  // This is done for backwars compatibility
+  if (m_UsesColor) {
+    DrawColor(dstRect, m_Color, srcRect);
+    return;
+  }
 
-	// Determine texture coordinates using srcRect and default destination width and height
-	float textLeft{};
-	float textRight{};
-	float textTop{};
-	float textBottom{};
+  DrawNoColor(dstRect, srcRect);
+}
 
-	float defaultDestWidth{};
-	float defaultDestHeight{};
-	if ( !( srcRect.width > epsilon && srcRect.height > epsilon) ) // No srcRect specified
-	{
-		// Use complete texture
-		textLeft = 0.0f;
-		textRight = 1.0f;
-		textTop = 0.0f;
-		textBottom = 1.0f;
+void Texture::DrawNoColor(const Rectf& dstRect, const Rectf& srcRect) const
+{
+  const float epsilon{ 0.001f };
+  if (!m_CreationOk)
+  {
+    DrawFilledRect(dstRect);
+    return;
+  }
 
-		defaultDestHeight = m_Height;
-		defaultDestWidth = m_Width;
-	}
-	else // srcRect specified
-	{
-		// Convert to the range [0.0, 1.0]
-		textLeft = srcRect.left / m_Width;
-		textRight = ( srcRect.left + srcRect.width ) / m_Width;
+  // Determine texture coordinates using srcRect and default destination width and height
+  float textLeft{};
+  float textRight{};
+  float textTop{};
+  float textBottom{};
+
+  float defaultDestWidth{};
+  float defaultDestHeight{};
+  if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
+  {
+    // Use complete texture
+    textLeft = 0.0f;
+    textRight = 1.0f;
+    textTop = 0.0f;
+    textBottom = 1.0f;
+
+    defaultDestHeight = m_Height;
+    defaultDestWidth = m_Width;
+  } else // srcRect specified
+  {
+    // Convert to the range [0.0, 1.0]
+    textLeft = srcRect.left / m_Width;
+    textRight = (srcRect.left + srcRect.width) / m_Width;
     textTop = srcRect.bottom / m_Height;
     textBottom = (srcRect.bottom + srcRect.height) / m_Height;
 
-		defaultDestHeight = srcRect.height;
-		defaultDestWidth = srcRect.width;
-	}
+    defaultDestHeight = srcRect.height;
+    defaultDestWidth = srcRect.width;
+  }
 
-	// Determine vertex coordinates
-	float vertexLeft{ dstRect.left };
-	float vertexBottom{ dstRect.bottom };
-	float vertexRight{};
-	float vertexTop{};
-	if ( !( dstRect.width > 0.001f && dstRect.height > 0.001f ) ) // If no size specified use default size
-	{
-		vertexRight = vertexLeft + defaultDestWidth;
-		vertexTop = vertexBottom + defaultDestHeight;
-	}
-	else
-	{
-		vertexRight = vertexLeft + dstRect.width;
-		vertexTop = vertexBottom + dstRect.height;
+  // Determine vertex coordinates
+  float vertexLeft{ dstRect.left };
+  float vertexBottom{ dstRect.bottom };
+  float vertexRight{};
+  float vertexTop{};
+  if (!(dstRect.width > 0.001f && dstRect.height > 0.001f)) // If no size specified use default size
+  {
+    vertexRight = vertexLeft + defaultDestWidth;
+    vertexTop = vertexBottom + defaultDestHeight;
+  } else
+  {
+    vertexRight = vertexLeft + dstRect.width;
+    vertexTop = vertexBottom + dstRect.height;
 
-	}
+  }
 
-	// Tell opengl which texture we will use
-	glBindTexture( GL_TEXTURE_2D, m_Id );
-	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+  // Tell opengl which texture we will use
+  glBindTexture(GL_TEXTURE_2D, m_Id);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-	// Draw
-	glEnable( GL_TEXTURE_2D );
-	{
-		glBegin( GL_QUADS );
-		{
-			glTexCoord2f( textLeft, textBottom );
-			glVertex2f( vertexLeft, vertexBottom );
+  // Draw
+  glEnable(GL_TEXTURE_2D);
+  {
+    glBegin(GL_QUADS);
+    {
+      glTexCoord2f(textLeft, textBottom);
+      glVertex2f(vertexLeft, vertexBottom);
 
-			glTexCoord2f( textLeft, textTop );
-			glVertex2f( vertexLeft, vertexTop );
+      glTexCoord2f(textLeft, textTop);
+      glVertex2f(vertexLeft, vertexTop);
 
-			glTexCoord2f( textRight, textTop );
-			glVertex2f( vertexRight, vertexTop );
+      glTexCoord2f(textRight, textTop);
+      glVertex2f(vertexRight, vertexTop);
 
-			glTexCoord2f( textRight, textBottom );
-			glVertex2f( vertexRight, vertexBottom );
-		}
-		glEnd( );
-	}
-	glDisable( GL_TEXTURE_2D );
+      glTexCoord2f(textRight, textBottom);
+      glVertex2f(vertexRight, vertexBottom);
+    }
+    glEnd();
+  }
+  glDisable(GL_TEXTURE_2D);
+}
+
+void Texture::DrawColor(const Rectf& dstRect, const Color4f& color, const Rectf& srcRect) const
+{
+  const float epsilon{ 0.001f };
+  if (!m_CreationOk)
+  {
+    DrawFilledRect(dstRect);
+    return;
+  }
+
+  // Determine texture coordinates using srcRect and default destination width and height
+  float textLeft{};
+  float textRight{};
+  float textTop{};
+  float textBottom{};
+
+  float defaultDestWidth{};
+  float defaultDestHeight{};
+  if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
+  {
+    // Use complete texture
+    textLeft = 0.0f;
+    textRight = 1.0f;
+    textTop = 0.0f;
+    textBottom = 1.0f;
+
+    defaultDestHeight = m_Height;
+    defaultDestWidth = m_Width;
+  } else // srcRect specified
+  {
+    // Convert to the range [0.0, 1.0]
+    textLeft = srcRect.left / m_Width;
+    textRight = (srcRect.left + srcRect.width) / m_Width;
+    textTop = srcRect.bottom / m_Height;
+    textBottom = (srcRect.bottom + srcRect.height) / m_Height;
+
+    defaultDestHeight = srcRect.height;
+    defaultDestWidth = srcRect.width;
+  }
+
+  // Determine vertex coordinates
+  float vertexLeft{ dstRect.left };
+  float vertexBottom{ dstRect.bottom };
+  float vertexRight{};
+  float vertexTop{};
+  if (!(dstRect.width > 0.001f && dstRect.height > 0.001f)) // If no size specified use default size
+  {
+    vertexRight = vertexLeft + defaultDestWidth;
+    vertexTop = vertexBottom + defaultDestHeight;
+  } else
+  {
+    vertexRight = vertexLeft + dstRect.width;
+    vertexTop = vertexBottom + dstRect.height;
+
+  }
+
+  // Tell opengl which texture we will use
+  glBindTexture(GL_TEXTURE_2D, m_Id);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+  // Set the color
+  glColor3f(color.r, color.g, color.b);
+
+  // Draw
+  glEnable(GL_TEXTURE_2D);
+  {
+    glBegin(GL_QUADS);
+    {
+      glTexCoord2f(textLeft, textBottom);
+      glVertex2f(vertexLeft, vertexBottom);
+
+      glTexCoord2f(textLeft, textTop);
+      glVertex2f(vertexLeft, vertexTop);
+
+      glTexCoord2f(textRight, textTop);
+      glVertex2f(vertexRight, vertexTop);
+
+      glTexCoord2f(textRight, textBottom);
+      glVertex2f(vertexRight, vertexBottom);
+    }
+    glEnd();
+  }
+  glDisable(GL_TEXTURE_2D);
+
+  // Reset te color
+  glColor3f(1.f, 1.f, 1.f);
+}
+
+void Texture::SetColor(const Color4f& color)
+{
+  m_Color = color;
+  m_UsesColor = true;
 }
 
 float Texture::GetWidth() const

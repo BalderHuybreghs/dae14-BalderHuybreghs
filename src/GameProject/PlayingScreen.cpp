@@ -28,7 +28,7 @@ void PlayingScreen::Initialize()
   // Load the level from disk
   m_LevelPtr->Load();
 
-  m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn());
+  m_PlayerPtr = new Player(m_LevelPtr->GetPlayerSpawn(), m_InputManagerPtr);
 
   // Calculate the right starting positions
   const Point2f playerPos{ m_PlayerPtr->GetCenter() };
@@ -57,26 +57,12 @@ void PlayingScreen::Draw()
 void PlayingScreen::Update(float elapsedSec)
 {
   // Player controls
-  const Vector2f playerVel{ m_PlayerPtr->GetVelocity() };
-
-  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT)) {
-    m_PlayerPtr->Dash();
-  }
-
   if (m_InputManagerPtr->IsKeyDown(SDLK_a)) {
     m_PlayerPtr->Left();
   }
 
   if (m_InputManagerPtr->IsKeyDown(SDLK_d)) {
     m_PlayerPtr->Right();
-  }
-
-  if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
-    m_PlayerPtr->Jump();
-  }
-
-  if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
-    m_PlayerPtr->Hold();
   }
 
   if (m_InputManagerPtr->IsKeyDown(SDLK_w)) {

@@ -3,7 +3,7 @@
 #include "GameDefines.h"
 
 LoadingScreen::LoadingScreen(GameScreen* nextScreenPtr, float loadingTime)
-  : m_NextScreenPtr(nextScreenPtr), m_LogoPtr(nullptr), m_LoadingPtr(nullptr), m_TimeLeft(loadingTime)
+  : m_NextScreenPtr(nextScreenPtr), m_LogoPtr(nullptr), m_LoadingPtr(nullptr), m_TimeLeft(loadingTime), m_ParticleEmitterPtr(nullptr)
 {
 }
 
@@ -15,8 +15,8 @@ LoadingScreen::~LoadingScreen()
 
 void LoadingScreen::Initialize()
 {
-  m_LogoPtr = new Sprite(Point2f{ LOGO_WIDTH, LOGO_HEIGHT }, 0, LOGO_RESOURCE);
-  m_LoadingPtr = new Sprite(Point2f{ 200.f, 200.f }, FRAMES_PER_SECOND, LOADING_RESOURCE);
+  m_LogoPtr = new Sprite(Point2f{ LOGO_WIDTH, LOGO_HEIGHT }, 0, "logo", LOGO_RESOURCE);
+  m_LoadingPtr = new Sprite(Point2f{ 200.f, 200.f }, FRAMES_PER_SECOND, "loading", LOADING_RESOURCE);
 }
 
 void LoadingScreen::Draw()

@@ -7,6 +7,7 @@
 #include "ParticleEmitter.h"
 #include "SoundStream.h"
 #include "ParallaxBackground.h"
+#include "SoundEffect.h"
 
 class Level
 {
@@ -43,6 +44,9 @@ public:
   void AddDeathZone(const Rectf& rect);
   bool RemoveDeathZone(const Point2f position);
 
+  void SetCassetteZone(const Rectf& rect);
+  Rectf GetCassettezone() const;
+
   Tilemap* GetFrontTilemap() const;
   Tilemap* GetBackTilemap() const;
 
@@ -72,6 +76,10 @@ private:
   // A list of zones in which when the player enters them, they die
   std::vector<Rectf> m_DeathZones;
 
+  // A zone which should play the casette tape music
+  Rectf m_CasetteZone;
+  int m_CurrMusic; // Keeps track of the currently playing music
+
   // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBackPtr;
   ParticleEmitter* m_ParticleEmitterMidPtr;
@@ -80,4 +88,6 @@ private:
   ParallaxBackground* m_ParallaxBackgroundPtr;
 
   SoundStream* m_MusicStreamPtr;
+  SoundStream* m_CassetteStreamPtr; // The music that should play then the player is in a cassette area
+  SoundEffect* m_AmbienceEffectPtr;
 };

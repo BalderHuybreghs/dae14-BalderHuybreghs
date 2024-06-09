@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 struct Window
 {
@@ -51,6 +52,7 @@ struct Rectf
 	float height;
 
   Point2f Center() const;
+  std::vector<Point2f> Polygon() const; // Creates a polygon from a rectf
 };
 
 

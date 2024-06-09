@@ -15,7 +15,10 @@ Hair::Hair(const Point2f& position, int parts, float startingSize)
     m_HairLimbPtr->AddJoint(new Joint(position, length * (1 - i / float(parts))));
   }
 
-  m_BangsSpritePtr = new Sprite(Point2f{ BANGS_FRAME_SIZE, BANGS_FRAME_SIZE }, 0, BANGS_RESOURCE);
+  m_BangsSpritePtr = new Sprite(BANGS_FRAME_SIZE, FRAMES_PER_SECOND, "run", BANGS_RESOURCE + "_run");
+  m_BangsSpritePtr->AddState("idle", BANGS_RESOURCE + "_idle");
+  m_BangsSpritePtr->AddState("crouch", BANGS_RESOURCE + "_crouch");
+  m_BangsSpritePtr->AddState("jump", BANGS_RESOURCE + "_jump");
 }
 
 Hair::~Hair()
@@ -24,7 +27,24 @@ Hair::~Hair()
   delete m_BangsSpritePtr;
 }
 
-void Hair::Draw(bool flipped, bool debug) const
+void Hair::DrawBangs(const Color4f& color, bool flipped, bool debug) const
+{
+  const Rectf dstRectBangs{
+    m_Goal.x - BANGS_FRAME_SIZE.x * PIXEL_SCALE / 2.f,
+    m_Goal.y - (BANGS_FRAME_SIZE.y - 3) * PIXEL_SCALE / 2.f,
+    BANGS_FRAME_SIZE.x * PIXEL_SCALE,
+    BANGS_FRAME_SIZE.y * PIXEL_SCALE
+  };
+
+  m_BangsSpritePtr->DrawColor(dstRectBangs, color, flipped);
+
+  // Debug symbols should be drawn before the actual hair is drawn (obviously :) )
+  if (debug) {
+    m_HairLimbPtr->Draw(); // This will draw a bunch of mysterious debug symbols
+  }
+}
+
+void Hair::Draw(const Color4f& color, bool flipped, bool debug) const
 {
   const int joints{ (int)m_HairLimbPtr->Joints()->size()}; // Used to calculate the size of each hair piece
   
@@ -39,18 +59,8 @@ void Hair::Draw(bool flipped, bool debug) const
       length
     };
 
-    m_HairTexturePtr->Draw(dstRect);
+    m_HairTexturePtr->DrawColor(dstRect, color);
   }
-
-  const float half{ m_Size / 2.f };
-  const Rectf dstRectBangs{
-    m_Goal.x - half,
-    m_Goal.y - half,
-    m_Size,
-    m_Size
-  };
-
-  m_BangsSpritePtr->Draw(dstRectBangs, flipped);
 
   // Debug symbols should be drawn before the actual hair is drawn (obviously :) )
   if (debug) {
@@ -60,6 +70,7 @@ void Hair::Draw(bool flipped, bool debug) const
 
 void Hair::Update(float elapsedSec)
 {
+  m_BangsSpritePtr->Update(elapsedSec);
   const Point2f start{ m_HairLimbPtr->GetAnchor() };
 
   const float distance{ SetEnd(start) }; // Get the distance from the end
@@ -88,4 +99,9 @@ float Hair::SetEnd(const Point2f& position)
 void Hair::SetGoal(const Point2f& goal)
 {
   m_Goal = goal;
+}
+
+void Hair::SetState(const std::string& state)
+{
+  m_BangsSpritePtr->SetState(state);
 }

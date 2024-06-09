@@ -8,17 +8,25 @@
 
 using namespace utils;
 
-Sprite::Sprite(const Point2f& frameSize, float msPerFrame, const std::string& resource)
-  : m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State({0, nullptr, 0})
+Sprite::Sprite(const Point2f& frameSize, float msPerFrame, const std::string& state, const std::string& resource)
+  : m_FrameSize(frameSize), m_MsPerFrame(msPerFrame), m_Frame(0), m_Time(0), m_State(state)
 {
-  SetState((int)AddResource(resource) - 1, true);
+  AddState(state, resource);
+  SetState(state, true);
 }
 
-void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
+void Sprite::DrawColor(const Rectf& dstRect, const Color4f& color, bool flipped, bool debug) const
 {
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const StateInfo>>>>
+    state = m_States.find(m_State);
+
   if (debug) {
     SetColor(Color4f{ 1.f, 1.f, 1.f, 0.2f });
     FillRect(dstRect);
+  }
+
+  if (state == m_States.end()) {
+    return;
   }
 
   // Every animation is only 1 row
@@ -29,7 +37,7 @@ void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
     m_FrameSize.y
   };
 
-  if (m_State.texturePtr == nullptr) {
+  if (state->second.texturePtr == nullptr) {
     std::cout << "Sprite texture is null" << std::endl;
     return;
   }
@@ -43,7 +51,48 @@ void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
   glTranslatef(-dstRect.left - dstRect.width / 2, -dstRect.bottom - dstRect.height / 2, 0.f);
 
   // Draw the sprite
-  m_State.texturePtr->Draw(dstRect, srcRect);
+  state->second.texturePtr->DrawColor(dstRect, color, srcRect);
+
+  glPopMatrix();
+}
+
+void Sprite::Draw(const Rectf& dstRect, bool flipped, bool debug) const
+{
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const StateInfo>>>>
+    state = m_States.find(m_State);
+
+  if (debug) {
+    SetColor(Color4f{ 1.f, 1.f, 1.f, 0.2f });
+    FillRect(dstRect);
+  }
+
+  if (state == m_States.end()) {
+    return;
+  }
+
+  // Every animation is only 1 row
+  const Rectf srcRect{
+    float(m_FrameSize.x * m_Frame),
+    m_FrameSize.y,
+    m_FrameSize.x,
+    m_FrameSize.y
+  };
+
+  if (state->second.texturePtr == nullptr) {
+    std::cout << "Sprite texture is null" << std::endl;
+    return;
+  }
+
+  // For mirroring the sprite
+  glPushMatrix();
+
+  // Apply mirroring transformation
+  glTranslatef(dstRect.left + dstRect.width / 2, dstRect.bottom + dstRect.height / 2, 0.f);
+  glScalef(flipped ? -1.f : 1.f, 1.f, 1.f);
+  glTranslatef(-dstRect.left - dstRect.width / 2, -dstRect.bottom - dstRect.height / 2, 0.f);
+
+  // Draw the sprite
+  state->second.texturePtr->Draw(dstRect, srcRect);
 
   glPopMatrix();
 }
@@ -71,39 +120,42 @@ void Sprite::Update(float elapsedSec)
 
   if (m_Time > m_MsPerFrame) {
     m_Time = 0;
-    m_Frame = (m_Frame + 1) % m_State.frames;
+    m_Frame = m_States[m_State].frames > 0 ? ((m_Frame + 1) % m_States[m_State].frames) : 0;
   }
 }
 
-void Sprite::SetState(int state, bool reset)
+void Sprite::SetState(const std::string& state, bool reset)
 {
-  if (m_State.id == state && !reset) {
+  if ((m_State == state && !reset) || !m_States.count(state)) {
     return;
   }
 
-  m_State = m_States.at(state);
+  m_State = state;
   m_Frame = 0;
   m_Time = 0;
 }
 
-size_t Sprite::AddResource(const std::string& resource)
+void Sprite::AddState(const std::string& id, const std::string& resource)
 {
   const Texture* texturePtr = TextureManager::GetInstance()->GetTexture(resource);
 
   const Sprite::StateInfo state{
-    (int)m_States.size(),
     texturePtr,
     int(texturePtr->GetWidth() / m_FrameSize.x)
   };
 
-  m_States.push_back(state);
-  return m_States.size();
+  m_States.insert(std::make_pair(id, state));
+}
+
+Sprite::StateInfo Sprite::GetStateInfo(const std::string& id)
+{
+  return m_States[id]; // Lazy and dangerous implementation
 }
 
 void Sprite::SetFrame(int frame)
 {
-  if (frame < 0 || frame > m_State.frames) {
-    std::cout << "Sprite frame for state " << m_State.id << " invalid, frame was: " << frame << std::endl;
+  if (frame < 0 || frame > m_States[m_State].frames) {
+    std::cout << "Sprite frame for state " << m_State << " invalid, frame was: " << frame << std::endl;
     return;
   }
 
@@ -112,5 +164,12 @@ void Sprite::SetFrame(int frame)
 
 bool Sprite::IsAnimationDone() const
 {
-    return m_Frame >= m_State.frames -1;
+  std::_List_const_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, const StateInfo>>>>
+    state = m_States.find(m_State);
+
+  if (state == m_States.end()) {
+    return true;
+  }
+
+  return m_Frame >= state->second.frames - 1;
 }

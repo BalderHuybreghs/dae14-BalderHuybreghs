@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SoundEffect.h"
 
 class DashRefill final : public GameObject
 {
@@ -35,6 +36,9 @@ private:
 
   Sprite* m_SpritePtr;
   Shape* m_ColliderPtr;
+
+  SoundEffect* m_TouchSoundPtr;
+  SoundEffect* m_ReturnSoundPtr;
 
   float m_Cooldown; // The time it takes to refill the dash
   float m_Time;

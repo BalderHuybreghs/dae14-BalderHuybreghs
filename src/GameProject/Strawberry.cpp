@@ -6,12 +6,18 @@
 #include "utils.h"
 
 Strawberry::Strawberry(const Point2f& position)
-  : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0)
+  : GameObject(position), m_Velocity(Vector2f()), m_State(State::Idle), m_Time(0), m_StartPos(position)
 {
-  m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, STRAWBERRY_IDLE);
-  m_SpritePtr->AddResource(STRAWBERRY_CONSUMING);
+  m_SpritePtr = new Sprite(Point2f{ 18.f, 16.f }, FRAMES_PER_SECOND, "idle", STRAWBERRY_IDLE);
+  m_SpritePtr->AddState("consume", STRAWBERRY_CONSUMING);
 
   m_ColliderPtr = new CircleShape(8.f * PIXEL_SCALE, m_Position + 8.f * PIXEL_SCALE, Color4f{ 0.f, 0.6f, 0.f, .5f}, true);
+
+  m_ConsumeSoundPtr = new SoundEffect(STRAWBERRY_SOUND_FOLDER + FS + "consume.ogg");
+  m_TouchSoundPtr = new SoundEffect(STRAWBERRY_SOUND_FOLDER + FS + "touch.ogg");
+
+  m_ConsumeSoundPtr->SetVolume(10);
+  m_TouchSoundPtr->SetVolume(10);
 }
 
 // Only the position is relevant for strawberries
@@ -24,6 +30,12 @@ Strawberry::~Strawberry()
 {
   delete m_SpritePtr;
   delete m_ColliderPtr;
+
+  m_ConsumeSoundPtr->StopAll();
+  m_TouchSoundPtr->StopAll();
+
+  delete m_ConsumeSoundPtr;
+  delete m_TouchSoundPtr;
 }
 
 void Strawberry::Draw(const Point2f& position, bool debug) const
@@ -56,20 +68,29 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
   switch (m_State) {
   case State::Idle:
   {
-    m_SpritePtr->SetState(0);
+    m_SpritePtr->SetState("idle");
 
     if (player.GetCollisionShape()->CollidesWith(*m_ColliderPtr)) {
       m_State = State::Following;
+      m_TouchSoundPtr->Play(0);
     }
 
     break;
   }
   case State::Following:
   {
-    m_SpritePtr->SetState(0);
+    m_SpritePtr->SetState("idle");
+
+    if (player.GetState() == Player::State::Dead) {
+      m_State = State::Idle;
+      m_Position = m_StartPos;
+      m_Velocity = Vector2f{};
+      break;
+    }
 
     if (player.IsGrounded()) {
       m_State = State::Consuming;
+      m_ConsumeSoundPtr->Play(0);
       break;
     }
 
@@ -93,7 +114,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 
   case State::Consuming:
   {
-    m_SpritePtr->SetState(1);
+    m_SpritePtr->SetState("consume");
     m_Velocity = Vector2f{}; // Reset the velocity
 
     if (m_SpritePtr->IsAnimationDone()) {
@@ -111,6 +132,7 @@ void Strawberry::Update(Player& player, Camera& camera, float elapsedSec)
 void Strawberry::SetPosition(const Point2f& position)
 {
   m_Position = position;
+  m_StartPos = m_Position;
   m_ColliderPtr->SetPosition(m_Position + 8.f * PIXEL_SCALE);
 }
 
