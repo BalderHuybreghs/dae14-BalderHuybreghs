@@ -50,7 +50,7 @@ void NoteBlock::Update(Player& player, Camera& camera, float elapsedSec)
 {
   HandleCollision(player);
 
-  if (m_Time - NOTE_BLOCK_TIME >= 0.f) {
+  if (m_Time - NOTE_BLOCK_INTERVAL >= 0.f) {
     switch (m_State) {
       case State::Stable:
         m_State = State::Gone;

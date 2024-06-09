@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Sprite.h"
+#include "SoundEffect.h"
 
 class Cassette : public GameObject
 {
@@ -33,5 +34,7 @@ private:
   Rectf m_CollisionRect;
 
   float m_Time;
+
+  SoundEffect* m_ConsumeSoundPtr;
 };
 

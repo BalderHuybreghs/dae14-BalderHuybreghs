@@ -3,6 +3,7 @@
 #include "GameDefines.h"
 #include "MathUtils.h"
 #include "utils.h"
+#include "ResourceUtils.h"
 
 Cassette::Cassette(const Point2f& position)
   : GameObject(position), m_State(State::Idle), m_Time(0)
@@ -15,6 +16,9 @@ Cassette::Cassette(const Point2f& position)
     32.f * PIXEL_SCALE,
     32.f * PIXEL_SCALE
   };
+
+  m_ConsumeSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("cassette/consume"));
+  m_ConsumeSoundPtr->SetVolume(5);
 }
 
 Cassette::Cassette(const Cassette& other)
@@ -25,6 +29,7 @@ Cassette::Cassette(const Cassette& other)
 Cassette::~Cassette()
 {
   delete m_SpritePtr;
+  delete m_ConsumeSoundPtr;
 }
 
 void Cassette::Draw(const Point2f& position, bool debug) const
@@ -50,6 +55,8 @@ void Cassette::Update(Player& player, Camera& camera, float elapsedSec)
 
   if (m_State == State::Idle && IsOverlapping(player.GetCollisionShape()->GetShape(), m_CollisionRect)) {
     m_State = State::Consumed;
+    m_ConsumeSoundPtr->Play(0);
+    player.Kill(); // A lazy solution to prevent having to make the bubble thing (time constraints)
   }
 
   m_Time += elapsedSec;

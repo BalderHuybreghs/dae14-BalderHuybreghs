@@ -80,6 +80,8 @@ private:
   Rectf m_CasetteZone;
   int m_CurrMusic; // Keeps track of the currently playing music
 
+  float m_SwitchTime; // The time used to time the cassette players
+
   // Every level has 3 possible particle layers
   ParticleEmitter* m_ParticleEmitterBackPtr;
   ParticleEmitter* m_ParticleEmitterMidPtr;
@@ -90,4 +92,5 @@ private:
   SoundStream* m_MusicStreamPtr;
   SoundStream* m_CassetteStreamPtr; // The music that should play then the player is in a cassette area
   SoundEffect* m_AmbienceEffectPtr;
+  SoundEffect* m_SwitchSoundPtr;
 };

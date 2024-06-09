@@ -13,7 +13,7 @@
 #include <vector>
 
 Level::Level(const std::string& name)
-  : m_Name(name), m_PlayerSpawn(Point2f()), m_CasetteZone(Rectf{}), m_CurrMusic(0)
+  : m_Name(name), m_PlayerSpawn(Point2f()), m_CasetteZone(Rectf{}), m_CurrMusic(0), m_SwitchTime(0)
 {
   m_MusicStreamPtr = new SoundStream(ResourceUtils::ResourceToMusicPath(name)); // Load the music for the current level
   m_MusicStreamPtr->SetVolume(10);
@@ -23,6 +23,9 @@ Level::Level(const std::string& name)
 
   m_AmbienceEffectPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath(AMBIENCE_FOLDER + FS + name));
   m_AmbienceEffectPtr->SetVolume(1);
+
+  m_SwitchSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("cassette/switch"));
+  m_SwitchSoundPtr->SetVolume(5);
 
   // Load both the foreground and background tilemaps
   m_BackgroundTilemapPtr = new Tilemap(Point2f{PIXEL_SCALE, PIXEL_SCALE }, TILE_SIZE, BACKGROUND_TILES, BACKGROUND_TILES_SIZE);
@@ -77,6 +80,7 @@ Level::~Level()
   delete m_MusicStreamPtr;
   delete m_CassetteStreamPtr;
   delete m_AmbienceEffectPtr;
+  delete m_SwitchSoundPtr;
 }
 
 void Level::Build()
@@ -105,6 +109,8 @@ void Level::Build()
   if (m_AmbienceEffectPtr->IsLoaded()) {
     m_AmbienceEffectPtr->Play(-1);
   }
+
+  m_SwitchTime = 0.f;
 }
 
 void Level::DrawBackground(Camera& camera, bool debug) const
@@ -179,10 +185,17 @@ void Level::DrawForeground(Camera& camera, bool debug) const
 
 void Level::Update(Player& player, Camera& camera, float elapsedSec)
 {
+  m_SwitchTime += elapsedSec;
+   
   // Change the music if the player is or is not in the cassette area
   if (m_MusicStreamPtr->IsLoaded() && m_CassetteStreamPtr->IsLoaded()) {
     if (IsOverlapping(player.GetCollisionShape()->GetShape(), m_CasetteZone))
     {
+      if (m_SwitchTime - NOTE_BLOCK_INTERVAL >= 0.f) {
+        m_SwitchSoundPtr->Play(0);
+        m_SwitchTime = 0.f;
+      }
+
       if (m_CurrMusic == 0) {
         m_CassetteStreamPtr->Play(true);
         m_CurrMusic = 1;
