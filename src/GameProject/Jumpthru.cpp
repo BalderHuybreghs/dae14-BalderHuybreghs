@@ -127,23 +127,9 @@ bool Jumpthru::HandleCollision(Player& player) const
     Point2f position{ player.GetPosition() };
     Vector2f velocity{ player.GetVelocity() };
 
-    if (IsOverlapping(player.GetTopCollisionRect(playerRect), m_CollisionRect)) {
-      return false;
-    }
-
-    // Left collision
-    if (IsOverlapping(player.GetLeftCollisionRect(playerRect), m_CollisionRect)) {
-      float overlap = (m_Position.x + m_CollisionRect.width) - playerRect.left;
-      position.x += overlap; // Adjust position by the overlap amount
-      velocity.x = 0;
-    }
-
-    // Right collision
-    if (IsOverlapping(player.GetRightCollisionRect(playerRect), m_CollisionRect)) {
-      float overlap = (playerRect.left + playerRect.width) - m_Position.x;
-      position.x -= overlap; // Adjust position by the overlap amount
-      velocity.x = 0;
-    }
+    //if (IsOverlapping(player.GetTopCollisionRect(playerRect), m_CollisionRect)) {
+    //  return false;
+    //}
 
     // Bottom collision with a smaller top collision rect
     const Rectf topCollisionRect{ m_CollisionRect.left, m_CollisionRect.bottom + m_CollisionRect.height - 2.f, m_CollisionRect.width, 2.f };

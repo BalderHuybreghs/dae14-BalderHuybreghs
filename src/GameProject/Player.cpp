@@ -163,7 +163,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   HandleCollision(elapsedSec, tilemap);
 
   const float half{ PLAYER_SCALE / 2.f };
-  if (floorf(m_Velocity.y) == 0.f) {
+  if (m_IsGrounded || floorf(m_Velocity.y) == 0.f) {
     const Point2f newPos = MathUtils::Lerp(m_HairPtr->GetPosition(), Point2f{ m_Position.x + half, m_Position.y }, 0.1f);
     m_HairPtr->SetEnd(newPos); // Slowly move the hair toward the desired position
   }
@@ -232,6 +232,11 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     case Player::State::Sliding:
     {
       if (!((m_InputManagerPtr->IsKeyDown(SDLK_a) && m_Flipped) || (m_InputManagerPtr->IsKeyDown(SDLK_d) && !m_Flipped)) || m_IsGrounded) {
+        if (m_IsGrounded) {
+          m_Velocity.y = 0.f;
+          m_Position.y += 3.5f;
+        }
+
         m_State = State::Idle;
         break;
       }
@@ -243,6 +248,10 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
       if (tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape()))) {
         m_State = State::Idle;
+
+        // Another edge case patch
+        m_Velocity.y = 0.f;
+        m_Position.y += 3.5f;
         break;
       }
 
@@ -254,9 +263,13 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
-      if (m_InputManagerPtr->IsKeyDown(SDLK_j) && m_Stamina >= 0.f) {
+      if (m_InputManagerPtr->IsKeyDown(SDLK_j) && m_Stamina > 0.f) {
         m_Velocity.y = 0.f;
         m_State = State::Climbing;
+      }
+
+      if (m_Velocity.y < 0.f) {
+        m_Velocity.y /= 2.f;
       }
 
       m_SpritePtr->SetState("hold");
@@ -275,6 +288,12 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
+      if (tilemap.IsTile(GetTopCollisionRect(collider))) {
+        m_Velocity.y = 0;
+        m_Position.y -= 5.f;
+        break;
+      }
+
       if (m_IsGrounded) {
         m_Velocity.y = std::max(0.f, m_Velocity.y);
         break;
@@ -284,7 +303,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         m_SpritePtr->SetState("hold");
         m_HairPtr->SetState("hold");
         m_Position.y += 33.f * elapsedSec; // Correct for the strange sliding bug
-      } else {
+      } else if (m_Stamina > 0.f) {
         m_SpritePtr->SetState("climb");
         m_HairPtr->SetState("climb");
       }
@@ -438,14 +457,14 @@ void Player::Up()
 
   m_Direction.y = 1;
 
-  if (m_State == State::Climbing) {
+  if (m_State == State::Climbing && m_Stamina > 0.f) {
     m_Velocity.y = 100;
   }
 }
 
 void Player::Down()
 {
-  if (m_State == State::Climbing) {
+  if (m_State == State::Climbing && m_Stamina > 0.f) {
     m_Velocity.y = -100;
   }
 }
