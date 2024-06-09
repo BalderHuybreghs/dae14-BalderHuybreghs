@@ -168,7 +168,7 @@ static const std::string FOREGROUND_TILES[]{
 static const int PLAYER_FRAME_SIZE{ 32 };
 static const int HAIR_FRAME_SIZE{ 10 };
 static const Point2f BANGS_FRAME_SIZE{ 16, 10 };
-static const float FRAMES_PER_SECOND{ 1 / 8.f };
+static const float FRAMES_PER_SECOND{ 1 / 14.f };
 static const float BACKGROUND_DOWNSCALE{ 0.2f }; // How much to scale the background down to allow for movement
 
 // Playing information
@@ -194,6 +194,8 @@ static const Color4f NOTE_BLOCK_COLOR_PINK{ 236 / 255.f, 73 / 255.f,206 / 255.f,
 
 static const Color4f PLAYER_DASH_HAIR_COLOR{ 177 / 255.f, 62 / 255.f, 69 / 255.f, 1.f };
 static const Color4f PLAYER_NO_DASH_HAIR_COLOR{ 71 / 255.f, 190 / 255.f,255 / 255.f, 1.f };
+
+static const float DEATH_ANIM_TIME{ 1.f };
 
 // I just moved the camera in edit mode, printing out the position values until I was satisfied
 static const Point2f START_CAMERA_POSITION{

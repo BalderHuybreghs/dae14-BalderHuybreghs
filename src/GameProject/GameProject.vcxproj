@@ -182,6 +182,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="ParallaxBackground.cpp" />
     <ClCompile Include="PlayingScreen.cpp" />
     <ClCompile Include="RectangleTool.cpp" />
+    <ClCompile Include="CheckPoint.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="EditorScreen.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -234,6 +235,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ParallaxBackground.h" />
     <ClInclude Include="PlayingScreen.h" />
     <ClInclude Include="RectangleTool.h" />
+    <ClInclude Include="CheckPoint.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="EditorScreen.h" />
     <ClInclude Include="Game.h" />

@@ -217,6 +217,9 @@
     <ClCompile Include="CassetteAreaTool.cpp">
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClCompile>
+    <ClCompile Include="CheckPoint.cpp">
+      <Filter>Source Files\Object\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextureManager.h">
@@ -367,5 +370,8 @@
       <Filter>Source Files\Level\EditorTool</Filter>
     </ClInclude>
     <ClInclude Include="GameDefines.h" />
+    <ClInclude Include="CheckPoint.h">
+      <Filter>Source Files\Object\Other</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

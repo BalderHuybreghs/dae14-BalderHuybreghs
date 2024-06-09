@@ -48,6 +48,8 @@ namespace ObjectFactory
   GameObject* CreateNoteBlockBlue2x6();
   GameObject* CreateNoteBlockPink2x6();
 
+  GameObject* CreateCheckPoint();
+
   // Creates a bunch of jumpthrus with different sizes
   void RegisterJumpthrus(ObjectManager* omInstance);
 

@@ -9,6 +9,7 @@
 #include "Jumpthru.h"
 #include "Cassette.h"
 #include "NoteBlock.h"
+#include "CheckPoint.h"
 
 #include <iostream>
 #include "GameDefines.h"
@@ -189,6 +190,11 @@ GameObject* ObjectFactory::CreateNoteBlockPink2x6()
   return new NoteBlock(Point2f{}, NoteBlock::Variant::Pink, 2, 6);
 }
 
+GameObject* ObjectFactory::CreateCheckPoint()
+{
+  return new CheckPoint(Point2f{});
+}
+
 void ObjectFactory::RegisterJumpthrus(ObjectManager* omInstance)
 {
   // Register jumpthrus until the size is satisfied
@@ -246,4 +252,6 @@ void ObjectFactory::RegisterGameObjects()
   omInstance->RegisterObject(CreateNoteBlockPink4x2());
   omInstance->RegisterObject(CreateNoteBlockBlue2x6());
   omInstance->RegisterObject(CreateNoteBlockPink2x6());
+
+  omInstance->RegisterObject(CreateCheckPoint());
 }

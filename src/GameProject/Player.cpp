@@ -7,13 +7,14 @@
 #include "MathUtils.h"
 #include "ResourceUtils.h"
 #include "structs.h"
+#include "TextureManager.h"
 
 using namespace utils;
 
 Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_ColliderPtr(nullptr),
   m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false), m_Flipped(false),
-  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false), m_DashCooldown(0)
+  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false), m_DashCooldown(0), m_RespawnPoint(position), m_DeathSecs(0), m_ShouldRespawn(false)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
@@ -29,6 +30,7 @@ Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   m_SpritePtr->AddState("death", PLAYER_DEATH_RESOURCE);
 
   m_HairPtr = new Hair(m_Position, 3, HAIR_SCALE);
+  m_BallTexturePtr = TextureManager::GetInstance()->GetTexture(HAIR_RESOURCE); // The ball texture is the same as a hair texture
 
   const Color4f colliderColor{ 0.f, 5.f, 0.f, 0.5f };
   const Color4f colliderSideColor{ 0.f, 0.f, .5f, 0.5f };
@@ -40,6 +42,9 @@ Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
 
   m_DeathSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("player/death"));
   m_DeathSoundPtr->SetVolume(5);
+
+  m_PreDeathSoundPtr = new SoundEffect(ResourceUtils::ResourceToSoundPath("player/pre_death"));
+  m_PreDeathSoundPtr->SetVolume(5);
 }
 
 Player::~Player()
@@ -49,8 +54,10 @@ Player::~Player()
   delete m_ParticleSpritePtr;
   delete m_HairPtr;
   delete m_ColliderPtr;
+  delete m_HairPtr;
   delete m_DashSoundPtr;
   delete m_DeathSoundPtr;
+  delete m_PreDeathSoundPtr;
 }
 
 void Player::Draw(bool debug) const
@@ -59,12 +66,34 @@ void Player::Draw(bool debug) const
   const float half{ PLAYER_SCALE / 2.f };
   const bool flipped{ m_Flipped };
 
-  if (m_State != State::Dead) {
-    // I attempted to draw the player between the bangs and the hair...
-    m_HairPtr->Draw(m_Dashes > 0 ? PLAYER_DASH_HAIR_COLOR : PLAYER_NO_DASH_HAIR_COLOR, flipped, debug);
-    m_HairPtr->DrawBangs(m_Dashes > 0 ? PLAYER_DASH_HAIR_COLOR : PLAYER_NO_DASH_HAIR_COLOR, flipped, debug);
+  // I attempted to draw the player between the bangs and the hair...
+  const Color4f hairColor{ m_Dashes > 0 ? PLAYER_DASH_HAIR_COLOR : PLAYER_NO_DASH_HAIR_COLOR };
+  if (!m_ShouldRespawn) {
+    if (m_State != State::Dead) {
+      m_HairPtr->Draw(hairColor, flipped, debug);
+      m_HairPtr->DrawBangs(hairColor, flipped, debug);
+    }
+
     m_SpritePtr->Draw(m_Position, PIXEL_SCALE, flipped, debug);
+  } else {
+    // Draw all the hair balls rotating around the player
+    const float perc{ m_DeathSecs / DEATH_ANIM_TIME };
+    const float circ{ M_PI * 2.f };
+    const Point2f center{ m_ColliderPtr->GetShape().Center() };
+
+    for (int index{ 0 }; index < 8; index++)
+    {
+      const Rectf dstRect{
+        center.x + cosf((float)index / 8 * circ - perc * circ) * ((1 - perc) * 50.f),
+        center.y + sin((float)index / 8 * circ - perc * circ) * ((1 - perc) * 50.f),
+        8 * PIXEL_SCALE,
+        8 * PIXEL_SCALE
+      };
+
+      m_BallTexturePtr->DrawColor(dstRect, hairColor);
+    }
   }
+
 
   if (debug) {
     m_ColliderPtr->Draw();
@@ -97,10 +126,6 @@ void Player::Draw(bool debug) const
 
 void Player::Update(float elapsedSec, const Tilemap& tilemap)
 {
-  if (m_State == State::Dead) {
-    return;
-  }
-
   // Reset grounded, the collision handling will check if the player is grounded
   const Rectf collider{ m_ColliderPtr->GetShape() };
   m_Direction = m_Direction.Normalized();
@@ -127,10 +152,12 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     m_HairPtr->SetEnd(newPos); // Slowly move the hair toward the desired position
   }
 
-  SetPosition(Point2f{
-    m_Position.x + m_Velocity.x * elapsedSec,
-    m_Position.y + m_Velocity.y * elapsedSec
-  });
+  if (!m_ShouldRespawn) {
+    SetPosition(Point2f{
+      m_Position.x + m_Velocity.x * elapsedSec,
+      m_Position.y + m_Velocity.y * elapsedSec
+    });
+  }
 
   m_IsHoldingSpace = m_InputManagerPtr->IsKeyDown(SDLK_SPACE);
 
@@ -247,16 +274,45 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
     case Player::State::Dead:
     {
+      if (!m_ShouldRespawn) {
+        m_SpritePtr->SetState("death");
+        m_Velocity = {};
+
+        if (m_SpritePtr->IsAnimationDone()) {
+          // Play the other death animation
+          m_DeathSecs = DEATH_ANIM_TIME;
+          m_ShouldRespawn = true;
+        }
+      }
+
+      // Respawn the player if the death animation is done
+      if (m_DeathSecs > 0.f) {
+        m_DeathSecs -= elapsedSec;
+      } else if (m_ShouldRespawn) {
+        m_DeathSoundPtr->Play(0);
+        m_Position = m_RespawnPoint;
+        m_Velocity = Vector2f{};
+        m_State = State::Idle;
+        m_DeathSecs = 0.f;
+        m_ShouldRespawn = false;
+        m_Dashes = 1;
+        m_DashCooldown = 0.f;
+        m_IsGrounded = true;
+        m_SpawnProtection = 0.2f;
+      }
+
       break;
     }
   }
 
   m_HairPtr->Update(elapsedSec);
-  m_SpritePtr->Update(elapsedSec);
+
+  // Play the animation faster when the player is dead lol
+  m_SpritePtr->Update(m_State == State::Dead ? elapsedSec * 5 : elapsedSec);
 
   m_IsGrounded = tilemap.IsTile(GetGroundedRect(collider));
 
-  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT) && m_Dashes > 0 && m_State != State::Dashing && m_DashCooldown <= 0.f) {
+  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT) && m_Dashes > 0 && m_State != State::Dashing && m_State != State::Dead && m_DashCooldown <= 0.f) {
     m_DashSoundPtr->Play(0);
     m_State = State::Dashing;
     m_Velocity = m_Direction * PLAYER_DASH_FORCE;
@@ -267,6 +323,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
   m_Direction = Vector2f();
   m_DashCooldown = std::max(0.f, m_DashCooldown - elapsedSec);
+  m_SpawnProtection = std::max(0.f, m_SpawnProtection - elapsedSec);
 }
 
 void Player::RefillDashes(int amount)
@@ -316,6 +373,10 @@ void Player::SetVelocity(const Vector2f& velocity)
 
 void Player::Up()
 {
+  if (m_State == State::Dead) {
+    return;
+  }
+
   m_Direction.y = 1;
 
   if (m_State == State::Climbing) {
@@ -325,7 +386,7 @@ void Player::Up()
 
 void Player::Left()
 {
-  if (m_State == State::Climbing || m_State == State::Crouching) {
+  if (m_State == State::Climbing || m_State == State::Crouching || m_State == State::Dead) {
     return;
   }
 
@@ -336,7 +397,7 @@ void Player::Left()
 
 void Player::Right()
 {
-  if (m_State == State::Climbing || m_State == State::Crouching) {
+  if (m_State == State::Climbing || m_State == State::Crouching || m_State == State::Dead) {
     return;
   }
 
@@ -378,21 +439,13 @@ bool Player::IsHoldingSpace() const
 
 void Player::Kill()
 {
-  if (m_State == State::Dead) {
+  if (m_State == State::Dead || m_SpawnProtection > 0.f) {
     return;
   }
 
-  m_DeathSoundPtr->Play(0);
+  m_PreDeathSoundPtr->Play(0);
   m_State = State::Dead; // No matter the state, when the player is killed, they die... Who would have thought?
-}
-
-void Player::Respawn(const Point2f& position)
-{
-  if (m_State == State::Dead) {
-    m_Position = position;
-    m_Velocity = Vector2f{};
-    m_State = State::Idle;
-  }
+  m_Velocity = Vector2f{}; // Instantly kill any velocity going on
 }
 
 void Player::HandleCollision(float elapsedSec, const Tilemap& tilemap)
@@ -485,6 +538,16 @@ Rectf Player::GetGroundedRect(const Rectf& rect) const
   collisionRect.height = collisionRect.height * 0.3f;
   collisionRect.bottom -= collisionRect.height;
   return collisionRect;
+}
+
+Point2f Player::GetRespawnPoint() const
+{
+  return m_RespawnPoint;
+}
+
+void Player::SetRespawnPoint(const Point2f& position)
+{
+  m_RespawnPoint = position;
 }
 
 void Player::SetArtificalGrounded()
