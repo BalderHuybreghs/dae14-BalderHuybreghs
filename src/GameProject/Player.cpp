@@ -54,7 +54,6 @@ Player::~Player()
   delete m_ParticleSpritePtr;
   delete m_HairPtr;
   delete m_ColliderPtr;
-  delete m_BallTexturePtr;
   delete m_DashSoundPtr;
   delete m_DeathSoundPtr;
   delete m_PreDeathSoundPtr;
