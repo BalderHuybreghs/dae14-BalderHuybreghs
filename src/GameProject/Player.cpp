@@ -269,6 +269,8 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
       m_SpritePtr->SetState("duck");
       m_HairPtr->SetState("crouch");
       m_Velocity.x = 0.f;
+
+      break;
     }
 
     case Player::State::Dead:
@@ -537,6 +539,11 @@ Rectf Player::GetGroundedRect(const Rectf& rect) const
   collisionRect.height = collisionRect.height * 0.3f;
   collisionRect.bottom -= collisionRect.height;
   return collisionRect;
+}
+
+int Player::GetDashes() const
+{
+  return m_Dashes;
 }
 
 Point2f Player::GetRespawnPoint() const

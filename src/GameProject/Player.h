@@ -64,6 +64,7 @@ public:
   Rectf GetLeftHoldRect(const Rectf& rect) const;
   Rectf GetRightHoldRect(const Rectf& rect) const;
   Rectf GetGroundedRect(const Rectf& rect) const;
+  int GetDashes() const;
 
   Point2f GetRespawnPoint() const;
   void SetRespawnPoint(const Point2f& position);

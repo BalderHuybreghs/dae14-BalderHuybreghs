@@ -22,7 +22,7 @@ CheckPoint::CheckPoint(const CheckPoint& other)
 void CheckPoint::Draw(const Point2f& position, bool debug) const
 {
   if (debug) {
-    SetColor(Color4f{ .5f, .5f, .8f, 1.f });
+    SetColor(Color4f{ .5f, .5f, .8f, .9f });
     FillRect(Rectf{ position.x, position.y, m_CollisionRect.width, m_CollisionRect.height });
   }
 }

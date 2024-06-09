@@ -195,7 +195,7 @@ static const Color4f NOTE_BLOCK_COLOR_PINK{ 236 / 255.f, 73 / 255.f,206 / 255.f,
 static const Color4f PLAYER_DASH_HAIR_COLOR{ 177 / 255.f, 62 / 255.f, 69 / 255.f, 1.f };
 static const Color4f PLAYER_NO_DASH_HAIR_COLOR{ 71 / 255.f, 190 / 255.f,255 / 255.f, 1.f };
 
-static const float DEATH_ANIM_TIME{ 1.f };
+static const float DEATH_ANIM_TIME{ .8f };
 
 // I just moved the camera in edit mode, printing out the position values until I was satisfied
 static const Point2f START_CAMERA_POSITION{
