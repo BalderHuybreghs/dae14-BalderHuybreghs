@@ -213,7 +213,9 @@ void Level::Update(Player& player, Camera& camera, float elapsedSec)
   }
 
   // Apply gravity to the player
-  (&player)->ApplyForce(GRAVITY * elapsedSec);
+  if (player.GetState() != Player::State::Climbing || player.GetStamina() <= 0.f) {
+    (&player)->ApplyForce(GRAVITY * elapsedSec);
+  }
 
   // Update the particle emitters, especially the location such that they follow the player
   const Point2f cameraPosition{ camera.GetPosition() };

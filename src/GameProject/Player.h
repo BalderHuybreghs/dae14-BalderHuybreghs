@@ -38,6 +38,7 @@ public:
 
   // Movement functions the player can do
   void Up();
+  void Down();
   void Left();
   void Right();
 
@@ -65,6 +66,9 @@ public:
   Rectf GetRightHoldRect(const Rectf& rect) const;
   Rectf GetGroundedRect(const Rectf& rect) const;
   int GetDashes() const;
+  float GetStamina() const;
+
+  void SetDashCooldown(float secs);
 
   Point2f GetRespawnPoint() const;
   void SetRespawnPoint(const Point2f& position);

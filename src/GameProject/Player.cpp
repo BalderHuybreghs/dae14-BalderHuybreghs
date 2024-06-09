@@ -22,7 +22,7 @@ Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   m_SpritePtr = new Sprite(Point2f{ PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE }, FRAMES_PER_SECOND, "idle", PLAYER_IDLE_RESOURCE);
   m_SpritePtr->AddState("run", PLAYER_RUN_RESOURCE);
   m_SpritePtr->AddState("climb", PLAYER_CLIMB_RESOURCE);
-  m_SpritePtr->AddState("slide", PLAYER_SLIDE_RESOURCE);
+  m_SpritePtr->AddState("hold", PLAYER_SLIDE_RESOURCE);
   m_SpritePtr->AddState("duck", PLAYER_DUCK_RESOURCE);
   m_SpritePtr->AddState("fall", PLAYER_FALL_RESOURCE);
   m_SpritePtr->AddState("jump", PLAYER_JUMP_RESOURCE);
@@ -163,21 +163,27 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
   switch (m_State) {
     case Player::State::Idle:
     {
+      if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
+        if ((tilemap.IsTile(GetLeftHoldRect(collider)) && m_Flipped) || (tilemap.IsTile(GetRightHoldRect(collider)) && !m_Flipped)) {
+          m_State = State::Climbing;
+          m_Velocity.y = 0.f;
+          break;
+        }
+      }
+
       if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE) && m_IsGrounded) {
         m_Position.y += 10.f;
         m_Velocity.y = PLAYER_JUMP_FORCE;
       }
 
       if (m_InputManagerPtr->IsKeyDown(SDLK_a) || m_InputManagerPtr->IsKeyDown(SDLK_d)) {
-        m_SpritePtr->SetState("run");
-        m_HairPtr->SetState("run");
-
-        if (floorf(std::abs(m_Velocity.x)) <= 0.1f && m_IsGrounded) {
+        if (floorf(std::abs(m_Velocity.x)) <= 0.1f && tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape()))) {
           m_SpritePtr->SetState("push");
-        }
-        
-        if (tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) {
+        } else if (tilemap.IsTile(GetLeftHoldRect(collider)) || tilemap.IsTile(GetRightHoldRect(collider))) {
           m_State = State::Sliding;
+        } else {
+          m_SpritePtr->SetState("run");
+          m_HairPtr->SetState("run");
         }
       } else if (m_InputManagerPtr->IsKeyDown(SDLK_s) && m_IsGrounded) {
         m_State = State::Crouching;
@@ -201,7 +207,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     }
     case Player::State::Sliding:
     {
-      if ((m_InputManagerPtr->IsKeyDown(SDLK_a) && m_Flipped) || (m_InputManagerPtr->IsKeyDown(SDLK_d) && !m_Flipped) || m_IsGrounded) {
+      if (!((m_InputManagerPtr->IsKeyDown(SDLK_a) && m_Flipped) || (m_InputManagerPtr->IsKeyDown(SDLK_d) && !m_Flipped)) || m_IsGrounded) {
         m_State = State::Idle;
         break;
       }
@@ -216,11 +222,20 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
-      if (m_InputManagerPtr->IsKeyDown(SDLK_j)) {
+      if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
+        float angle{ ((m_Flipped ? 135 : 45) / 360.f) * (float)M_PI * 2.f };
+        m_Velocity.x = PLAYER_JUMP_FORCE * cosf(angle);
+        m_Velocity.y = PLAYER_JUMP_FORCE * sinf(angle);
+        m_State = State::Idle;
+        break;
+      }
+
+      if (m_InputManagerPtr->IsKeyDown(SDLK_j) && m_Stamina >= 0.f) {
+        m_Velocity.y = 0.f;
         m_State = State::Climbing;
       }
 
-      m_SpritePtr->SetState("slide");
+      m_SpritePtr->SetState("hold");
       break;
     }
     case Player::State::Climbing:
@@ -235,18 +250,27 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
         break;
       }
 
-      if (tilemap.IsTile(GetGroundedRect(m_ColliderPtr->GetShape())) || m_IsGrounded) {
-        m_Velocity.y = 0.f;
+      if (m_IsGrounded) {
+        m_Velocity.y = std::max(0.f, m_Velocity.y);
         break;
       }
 
-      if (floorf(std::abs(m_Velocity.y)) <= 0.1f) {
+      if (!(m_InputManagerPtr->IsKeyDown(SDLK_s) || m_InputManagerPtr->IsKeyDown(SDLK_w))) {
         m_SpritePtr->SetState("hold");
       } else {
         m_SpritePtr->SetState("climb");
       }
 
-      m_Velocity.y = 0;
+      if (m_InputManagerPtr->IsKeyDown(SDLK_SPACE)) {
+        float angle{ ((m_Flipped ? 135 : 45) / 360.f) * (float)M_PI * 2.f };
+        m_Velocity.x = PLAYER_JUMP_FORCE * cosf(angle);
+        m_Velocity.y = PLAYER_JUMP_FORCE * sinf(angle);
+        m_State = State::Idle;
+        break;
+      }
+
+      m_Velocity.y = 0.f;
+      m_Velocity.x = 0.f;
       m_Stamina -= CLIMBING_STAMINA_COST * elapsedSec;
       break;
     }
@@ -308,8 +332,8 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
   m_HairPtr->Update(elapsedSec);
 
-  // Play the animation faster when the player is dead lol
-  m_SpritePtr->Update(m_State == State::Dead ? elapsedSec * 5 : elapsedSec);
+  // Play the animation faster when the player is dying
+  m_SpritePtr->Update(m_State == State::Dead ? elapsedSec * 3 : elapsedSec);
 
   m_IsGrounded = tilemap.IsTile(GetGroundedRect(collider));
 
@@ -318,7 +342,7 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
     m_State = State::Dashing;
     m_Velocity = m_Direction * PLAYER_DASH_FORCE;
     --m_Dashes;
-    m_DashCooldown = 1.f;
+    m_DashCooldown = 1.0f;
   }
 
   m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
@@ -382,6 +406,13 @@ void Player::Up()
 
   if (m_State == State::Climbing) {
     m_Velocity.y = 100;
+  }
+}
+
+void Player::Down()
+{
+  if (m_State == State::Climbing) {
+    m_Velocity.y = -100;
   }
 }
 
@@ -544,6 +575,16 @@ Rectf Player::GetGroundedRect(const Rectf& rect) const
 int Player::GetDashes() const
 {
   return m_Dashes;
+}
+
+float Player::GetStamina() const
+{
+  return m_Stamina;
+}
+
+void Player::SetDashCooldown(float secs)
+{
+  m_DashCooldown = secs;
 }
 
 Point2f Player::GetRespawnPoint() const

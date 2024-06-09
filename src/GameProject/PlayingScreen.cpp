@@ -69,6 +69,10 @@ void PlayingScreen::Update(float elapsedSec)
     m_PlayerPtr->Up();
   }
 
+  if (m_InputManagerPtr->IsKeyDown(SDLK_s)) {
+    m_PlayerPtr->Down();
+  }
+
   m_LevelPtr->Update(*m_PlayerPtr, *m_CameraPtr, elapsedSec);
 
   // Update the player with some collision polygons to collide with
