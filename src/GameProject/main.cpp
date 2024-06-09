@@ -6,6 +6,14 @@
 #include "PlayingScreen.h"
 #include "LoadingScreen.h"
 
+// Run code on GPU (otherwise OBS does not detect my game window)
+// Sources:
+// https://stackoverflow.com/questions/30024364/any-ways-to-run-program-debugging-in-visual-studio-on-nvidia-graphics-card
+// http://developer.download.nvidia.com/devzone/devcenter/gamegraphics/files/OptimusRenderingPolicies.pdf
+extern "C" {
+  _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
 void StartHeapControl();
 void DumpMemoryLeaks();
 
@@ -15,7 +23,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-  GameScreen* startScreenPtr{ new LoadingScreen{ new PlayingScreen(LEVEL1_NAME), 0.f } };
+  GameScreen* startScreenPtr{ new LoadingScreen{ new PlayingScreen(LEVEL1_NAME), 3.f } };
 	Game* pGame{ new Game{ Window{ PROJECT_NAME, WINDOW_WIDTH , WINDOW_HEIGHT }, startScreenPtr } };
 	pGame->Run();
 	delete pGame;

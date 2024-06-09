@@ -108,10 +108,12 @@ My implementation of the game has 2 modes: play and edit, you can switch between
 
 #### Play
 - F1 to toggle debug mode
-- ad to move
+- a & d to move
 - space to jump
-- Shift to dash
-- w & s to look up or down (or crouch when grounded)
+- Shift to dash in the direction you are looking
+- w & s to climb up or down (or crouch when grounded)
+- j to grab
+- a & d against a wall to wall slide
 
 #### Edit
 - wasd (or drag with middle mouse) to pan the camera
@@ -119,19 +121,39 @@ My implementation of the game has 2 modes: play and edit, you can switch between
 - q and e to switch editor tools
 - space to save the level
 - LMB, RMB and scrolling are tool-specific
+- g to place the player spawn location
 
 ##### Tools
 - Tilemap (there are 2 tilemap tools, front tilemap and back tilemap), LMB to place, RMB to remove, scroll to select tile
 - Camera click and drag to draw camera rectangles, when a player enters one of these, the camera moves to the bottom left of the rectangle the player is in. RMB inside a rectangle to remove it
+- Deathzone tool, this tool is used to mark areas in which the player should die
+- Object tool, the tool responsible for placing and managing objects
+- Background tool, this tool is used to mark the area used in the background calculation 
+- Cassette tool, this tool is used to mark the cassette music area
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CLASS STRUCTURE -->
 ## Class structure
-Since the class structure is still subject to change (and it is quite large), I will reserve writing this section for the end of the semester.
+I will provide a quick and abstract overview of the program structure, rather than the class structure, since the class structure is incredibly complex.
+
+First of all my entire game makes use of a screen manager system, which keeps track of the current screen and uses that to draw, update, etc. 
+
+There are 2 big screens (not accounting for the loading screen) inside te game. The level editor screen, and the playing screen. Both of them keep track of the Level class.
+
+The level class keeps track of the TileMap class, which can be edited. The level class loads in its data from a .cev file, which is a binary format that is compressed using a simple compression algorithm.
+
+The level class keeps track of most level related things such as the parallax background (class) and more.
+
+Textures are loaded in a unique way, as they are stored, managed, and deleted globally by the TextureManager class (singleton pattern). This class is called whenever I need a new texture.
+
+The level editor actually has a vector of EditTools, which receive some information (by choice) in their constructor, and they can then manipulate that information in the update function.
+
+Last is the ObjectManager. The reason this exists is because of the way levels are stored. The object manager is essentially a registry linking object IDs to an actual (copyable) instance of an object, which the ObjectBlueprint class uses to instance an object (The level class keeps track of a vector of ObjectBlueprints, which are written to the file in edit mode, and used to build the level in play mode).
 
 ### Object composition 
 Since there are a large amount of classes that make use of object composition, I will simply list them without further elaboration.
+As of today, there are so many classes making use of this pattern that I decided to neglect writing them all down.
 
 - Limb
 - ObjectManager
@@ -184,9 +206,9 @@ The third one, for which the implementation is more complex, is the screen syste
 - [x] week 04 topics applied
 - [x] week 05 topics applied
 - [x] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
-- [ ] week 09 topics applied (optional)
+- [x] week 07 topics applied
+- [x] week 08 topics applied
+- [x] week 09 topics applied (optional)
 - [ ] week 10 topics applied (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

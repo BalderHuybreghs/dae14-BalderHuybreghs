@@ -69,6 +69,7 @@ public:
   float GetStamina() const;
 
   void SetDashCooldown(float secs);
+  void ResetStamina();
 
   Point2f GetRespawnPoint() const;
   void SetRespawnPoint(const Point2f& position);

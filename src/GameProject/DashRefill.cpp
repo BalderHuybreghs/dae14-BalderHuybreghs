@@ -69,6 +69,7 @@ void DashRefill::Update(Player& player, Camera& camera, float elapsedSec)
       m_TouchSoundPtr->Play(0);
       m_State = State::Consumed;
       player.RefillDashes(1);
+      player.ResetStamina();
       player.SetDashCooldown(0.01f); // Protect the player from accidentally spending their dash immediately
       m_Cooldown = 2.5f; // A 2.5 second cooldown, refer to https://celeste.ink/wiki/Dash_Refills
     }

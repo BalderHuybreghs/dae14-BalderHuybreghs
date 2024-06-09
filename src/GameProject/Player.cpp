@@ -640,6 +640,11 @@ void Player::SetDashCooldown(float secs)
   m_DashCooldown = secs;
 }
 
+void Player::ResetStamina()
+{
+  m_Stamina = PLAYER_BASE_STAMINA;
+}
+
 Point2f Player::GetRespawnPoint() const
 {
   return m_RespawnPoint;

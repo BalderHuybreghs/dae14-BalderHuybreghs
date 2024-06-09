@@ -42,10 +42,10 @@ void LoadingScreen::Update(float elapsedSec)
   m_LoadingPtr->Update(elapsedSec);
   
   // Fake loading lol, it's for the "immersion"
-  --m_TimeLeft;
+  m_TimeLeft -= elapsedSec;
 
   // Set the screen
-  if (m_TimeLeft < 1) {
+  if (m_TimeLeft <= 0.f) {
     m_ScreenManagerPtr->SetScreen(m_NextScreenPtr);
   }
 }
