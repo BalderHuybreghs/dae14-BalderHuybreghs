@@ -145,11 +145,16 @@ bool Jumpthru::HandleCollision(Player& player) const
       velocity.x = 0;
     }
 
-    // Bottom collision
-    if (IsOverlapping(player.GetBottomCollisionRect(playerRect), m_CollisionRect)) {
+    // Bottom collision with a smaller top collision rect
+    const Rectf topCollisionRect{ m_CollisionRect.left, m_CollisionRect.bottom + m_CollisionRect.height - 2.f, m_CollisionRect.width, 2.f };
+    if (IsOverlapping(player.GetBottomCollisionRect(playerRect), topCollisionRect)) {
       float overlap = (m_Position.y + m_CollisionRect.height) - playerRect.bottom;
       position.y += overlap; // Adjust position by the overlap amount
-      velocity.y = 0;
+
+      if (velocity.y < 0) {
+        velocity.y = 0;
+      }
+
       player.SetArtificalGrounded();
     }
 

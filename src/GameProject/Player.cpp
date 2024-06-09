@@ -13,7 +13,7 @@ using namespace utils;
 Player::Player(const Point2f& position, const InputManager* inputManagerPtr)
   : m_State(Player::State::Idle), m_Position(position), m_Velocity(Vector2f()), m_Direction(Vector2f()), m_Dashes(1), m_ColliderPtr(nullptr),
   m_SpritePtr(nullptr), m_ParticleSpritePtr(nullptr), m_IsGrounded(false), m_Stamina(PLAYER_BASE_STAMINA), m_CanHold(false), m_Flipped(false),
-  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false)
+  m_InputManagerPtr(inputManagerPtr), m_IsHoldingSpace(false), m_DashCooldown(0)
 {
   std::cout << "Creating player at (" << position.x << ", " << position.y << ')' << std::endl;
 
@@ -256,15 +256,17 @@ void Player::Update(float elapsedSec, const Tilemap& tilemap)
 
   m_IsGrounded = tilemap.IsTile(GetGroundedRect(collider));
 
-  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT) && m_Dashes > 0 && m_State != State::Dashing) {
+  if (m_InputManagerPtr->IsKeyDown(SDLK_LSHIFT) && m_Dashes > 0 && m_State != State::Dashing && m_DashCooldown <= 0.f) {
     m_DashSoundPtr->Play(0);
     m_State = State::Dashing;
     m_Velocity = m_Direction * PLAYER_DASH_FORCE;
     --m_Dashes;
+    m_DashCooldown = 1.f;
   }
 
   m_Flipped = (m_Flipped && m_Direction.x == 0.f) || m_Direction.x < 0.f;
   m_Direction = Vector2f();
+  m_DashCooldown = std::max(0.f, m_DashCooldown - elapsedSec);
 }
 
 void Player::RefillDashes(int amount)

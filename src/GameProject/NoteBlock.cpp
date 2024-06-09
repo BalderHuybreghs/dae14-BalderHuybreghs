@@ -147,7 +147,7 @@ bool NoteBlock::HandleCollision(Player& player) const
     // Top collision
     if (IsOverlapping(player.GetTopCollisionRect(playerRect), m_CollisionRect)) {
       float overlap = (playerRect.bottom + playerRect.height) - m_Position.y;
-      position.y += overlap; // Adjust position by the overlap amount
+      position.y -= overlap; // Adjust position by the overlap amount
       velocity.y = 0;
     }
 

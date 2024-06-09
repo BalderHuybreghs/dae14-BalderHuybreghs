@@ -84,6 +84,7 @@ private:
   // The player Celeste has stamina
   // source: https://celeste.ink/wiki/Stamina
   float m_Stamina;
+  float m_DashCooldown;
 
   State m_State;
   Sprite* m_SpritePtr;
